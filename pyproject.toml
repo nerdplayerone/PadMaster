@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "padlab"
+version = "0.1.0"
+description = "Log a game controller in the background while you play, then get a report on deadzones, drift, D-pad flicker and double inputs."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = ["pygame-ce>=2.4"]
+
+[project.scripts]
+padlab = "padlab.cli:main"
+
+[tool.setuptools]
+packages = ["padlab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

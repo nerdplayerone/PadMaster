@@ -76,6 +76,12 @@ THRESHOLDS = {
     "flicker_ok_pct": 2, "flicker_watch_pct": 10,
     "blip_ok_pct": 2, "blip_watch_pct": 10,
     "dpad_min_cardinals": 20,
+    # Rolls: a quick move from one direction to the next (right -> down). A working rocker passes
+    # through the diagonal on almost every roll. A skip is a direct switch, or a short gap of nothing.
+    "roll_diag_max_ms": 100,      # a diagonal longer than this is a held diagonal, not a roll
+    "roll_gap_max_ms": 40,        # a gap of nothing shorter than this, between neighbours, is a skip
+    "roll_min": 20,
+    "roll_skip_ok_pct": 10, "roll_skip_watch_pct": 25,
     # Chords
     "chord_window_ms": 50,
     "frame_ms": 1000 / 60,
@@ -628,6 +634,42 @@ def analyse_dpad(log: Log) -> dict:
             blips += 1
             blip_times.append({"t": t, "dir": DIRS.get(tuple(sorted(st)), "?"), "ms": dur(i)})
 
+    # Rolls between neighbouring directions.
+    rolls_through: dict[str, int] = {}
+    rolls_skipped: dict[str, int] = {}
+    skip_times: list[dict] = []
+    for i in range(1, len(tl)):
+        a, b = tl[i - 1][1], tl[i][1]
+        # C1 -> C2 directly
+        if _is_card(a) and _is_card(b) and _is_diag(a | b):
+            name = DIRS[tuple(sorted(a | b))]
+            rolls_skipped[name] = rolls_skipped.get(name, 0) + 1
+            skip_times.append({"t": tl[i][0], "dir": name, "how": "direct switch", "ms": 0.0})
+        if i < 2:
+            continue
+        c1 = tl[i - 2][1]
+        if not (_is_card(c1) and _is_card(b) and c1 != b and _is_diag(c1 | b)):
+            continue
+        name = DIRS[tuple(sorted(c1 | b))]
+        mid_ms = tl[i][0] - tl[i - 1][0]
+        # C1 -> nothing (short) -> C2
+        if not a and mid_ms < th["roll_gap_max_ms"]:
+            rolls_skipped[name] = rolls_skipped.get(name, 0) + 1
+            skip_times.append({"t": tl[i - 1][0], "dir": name, "how": "gap of nothing", "ms": mid_ms})
+        # C1 -> D -> C2 (quick)
+        elif a == c1 | b and mid_ms <= th["roll_diag_max_ms"]:
+            rolls_through[name] = rolls_through.get(name, 0) + 1
+    n_through = sum(rolls_through.values())
+    n_skip = sum(rolls_skipped.values())
+    n_rolls = n_through + n_skip
+    res.update(
+        rolls=n_rolls,
+        rolls_through=rolls_through,
+        rolls_skipped=rolls_skipped,
+        roll_skip_times=skip_times,
+        roll_skip_pct=(n_skip / n_rolls * 100) if n_rolls >= th["roll_min"] else float("nan"),
+    )
+
     res.update(
         diag_entries=diag_entries,
         card_presses=card_from_neutral,
@@ -846,6 +888,16 @@ def build_findings(r: Report) -> None:
        f"{d['blips']} ({d['blip_pct']:.1f}%)" if not math.isnan(d["blip_pct"]) else f"{d['blips']}",
        f"A diagonal showed for less than {th['flicker_ms']} ms during a single-direction press. "
        f"Out of {d['card_presses']} single-direction presses.")
+    n_skip = sum(d["rolls_skipped"].values())
+    worst = max(d["rolls_skipped"].items(), key=lambda kv: kv[1])[0] if n_skip else None
+    _f(F, "dpad_roll_skip", "D-pad: diagonal skipped in rolls",
+       grade(d["roll_skip_pct"], th["roll_skip_ok_pct"], th["roll_skip_watch_pct"]),
+       f"{n_skip} of {d['rolls']} ({d['roll_skip_pct']:.0f}%)" if not math.isnan(d["roll_skip_pct"])
+       else f"{n_skip} of {d['rolls']}",
+       "A quick move from one direction to the next (for example right to down) did not show the diagonal "
+       f"between them. A working D-pad shows the diagonal on almost every roll. Most skips: {worst or '-'}. "
+       f"At least {th['roll_min']} rolls are necessary for a result. Your thumb technique also has an effect, "
+       "so compare pads with the same player and game.")
     if d["invalid"]:
         _f(F, "dpad_invalid", "D-pad: opposite directions together", PROBLEM, str(d["invalid"]),
            "Up+down or left+right at the same time. A rocker D-pad should not do this.")

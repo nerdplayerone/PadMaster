@@ -227,6 +227,76 @@ def test_resolution_of_a_full_16_bit_stick(tmp_path):
     assert r.sticks["l"]["resolution"]["lx"]["bits"] > 14
 
 
+# ------------------------------------------------------------ D-pad rolls
+
+ROLL_PAIRS = [("right", "down"), ("down", "left"), ("left", "up"), ("up", "right")]
+
+
+def _rolls(tmp_path, name, n, skip_every=0, skip_kind="direct"):
+    """n quarter rolls C1 -> (C1+C2 for 16 ms) -> C2. Every skip_every-th roll skips the diagonal."""
+    rows = []
+    t = 1000.0
+    for i in range(n):
+        c1, c2 = ROLL_PAIRS[i % 4]
+        rows.append((t, "b", c1, 1))
+        skip = skip_every and i % skip_every == 0
+        if skip and skip_kind == "direct":
+            rows.append((t + 80, "b", c1, 0))
+            rows.append((t + 80, "b", c2, 1))
+        elif skip:
+            rows.append((t + 80, "b", c1, 0))
+            rows.append((t + 92, "b", c2, 1))  # 12 ms of nothing
+        else:
+            rows.append((t + 80, "b", c2, 1))
+            rows.append((t + 96, "b", c1, 0))
+        rows.append((t + 200, "b", c2, 0))
+        t += 500
+    return _write(tmp_path, name, rows, t)
+
+
+def test_rolls_that_skip_the_diagonal_are_problem(tmp_path):
+    r = _rolls(tmp_path, "skip.csv.gz", 40, skip_every=2)
+    d = r.dpad
+    assert d["rolls"] == 40
+    assert sum(d["rolls_skipped"].values()) == 20
+    assert d["roll_skip_pct"] == pytest.approx(50)
+    assert find(r, "dpad_roll_skip").status == PROBLEM
+    assert len(d["roll_skip_times"]) == 20
+
+
+def test_gap_of_nothing_counts_as_skip(tmp_path):
+    r = _rolls(tmp_path, "gap.csv.gz", 40, skip_every=4, skip_kind="gap")
+    assert r.dpad["roll_skip_pct"] == pytest.approx(25)
+    assert find(r, "dpad_roll_skip").status == PROBLEM
+    assert r.dpad["roll_skip_times"][0]["how"] == "gap of nothing"
+
+
+def test_clean_rolls_are_ok(tmp_path):
+    r = _rolls(tmp_path, "rolls_ok.csv.gz", 40)
+    assert r.dpad["roll_skip_pct"] == 0
+    assert find(r, "dpad_roll_skip").status == OK
+
+
+def test_slow_separate_presses_are_not_rolls(tmp_path):
+    """Right, release, wait 200 ms, down: two separate presses, not a skipped roll."""
+    rows = []
+    t = 0.0
+    for i in range(40):
+        c1, c2 = ROLL_PAIRS[i % 4]
+        rows += [(t, "b", c1, 1), (t + 80, "b", c1, 0), (t + 280, "b", c2, 1), (t + 360, "b", c2, 0)]
+        t += 600
+    r = _write(tmp_path, "separate.csv.gz", rows, t)
+    assert r.dpad["rolls"] == 0
+    assert find(r, "dpad_roll_skip").status == NODATA
+
+
+def test_synthetic_session_has_no_roll_skips(tmp_path):
+    p = str(tmp_path / "synth.csv.gz")
+    build(p)
+    r = analyse(read_log(p))
+    assert sum(r.dpad["rolls_skipped"].values()) == 0
+
+
 # ------------------------------------------------------------ device ids
 
 def test_guid_info_usb_xbox_pad():

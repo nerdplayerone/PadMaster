@@ -345,10 +345,11 @@ def render(r: Report, log_name: str = "") -> str:
         for x in d["blip_times"]:
             bl[x["dir"]] = bl.get(x["dir"], 0) + 1
         out.append("<table><thead><tr><th>Diagonal</th><th>Times entered</th><th>Flickers</th>"
-                   "<th>Accidental blips</th></tr></thead><tbody>")
+                   "<th>Accidental blips</th><th>Rolls through / skipped</th></tr></thead><tbody>")
         for k in ("up-left", "up-right", "down-left", "down-right"):
             out.append(f"<tr><td>{k}</td><td class='v'>{d['per_dir'].get(k, 0)}</td>"
-                       f"<td class='v'>{fl.get(k, 0)}</td><td class='v'>{bl.get(k, 0)}</td></tr>")
+                       f"<td class='v'>{fl.get(k, 0)}</td><td class='v'>{bl.get(k, 0)}</td>"
+                       f"<td class='v'>{d['rolls_through'].get(k, 0)} / {d['rolls_skipped'].get(k, 0)}</td></tr>")
         out.append("</tbody></table>")
     else:
         out.append('<div class="sub">No diagonals in this session.</div>')
@@ -365,6 +366,9 @@ def render(r: Report, log_name: str = "") -> str:
         events.append((x["t"], "D-pad flicker", f'{x["dir"]}: dropped for {x["ms"]:.0f} ms'))
     for x in d["blip_times"]:
         events.append((x["t"], "D-pad blip", f'{x["dir"]} for {x["ms"]:.0f} ms'))
+    for x in d["roll_skip_times"]:
+        det = f'{x["dir"]} not seen: {x["how"]}' + (f' ({x["ms"]:.0f} ms)' if x["ms"] else "")
+        events.append((x["t"], "D-pad diagonal skipped", det))
     for side, label in (("l", "Left stick"), ("r", "Right stick")):
         for x in r.sticks.get(side, {}).get("stutters", []):
             events.append((x["t"], f"{label} stutter", f'{x["gap_ms"]:.0f} ms gap, jump {x["jump"] * 100:.0f}%'))

@@ -6,7 +6,16 @@ You don't need to do test routines. Play as normal, then read the report.
 
 ![Sample report](docs/sample_report.png)
 
-> **Status: early version, not tested on real hardware yet.** The analysis is tested with synthetic logs that contain known faults (see `tests/`). The logger has not run on a Windows PC with a real controller yet. Please report problems in Issues.
+> **Status: early version (0.1.0).** Tested on real hardware with the pads in the list below. Other pads can work, but they are not tested. Please report problems in Issues.
+
+### Tested pads
+
+| Pad | Connection | Result |
+|---|---|---|
+| Xbox One Controller | Wired (USB) | Logging in the background works in fullscreen games. Mapping is correct. All checks give results. |
+| DualSense Wireless Controller | Not recorded | Logging works. The D-pad roll check found skipped diagonals that the owner can feel. |
+
+Details: `docs/hardware_results.md`.
 
 ## What it checks
 
@@ -49,6 +58,7 @@ The OK / Watch / Problem limits are PadMaster defaults (judgement calls), not in
 1. Download `PadMaster.exe` from [Releases](../../releases).
 2. Connect your controller.
 3. Start `PadMaster.exe`. The PadMaster window opens.
+   - Windows can show "Windows protected your PC", because the .exe has no paid code signature. Click **More info**, then **Run anyway**. Do not turn off your antivirus. If you are not sure, build PadMaster from the source (Option B).
 4. Select your controller. Select the connection type (optional).
 5. Click **Start**. Put the controller down for 10 seconds. The window counts down.
 6. Play your game. PadMaster keeps logging in the background. The "Inputs" number goes up while you play.

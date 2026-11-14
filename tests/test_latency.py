@@ -119,3 +119,25 @@ def test_only_the_typed_name_is_matched_not_the_windows_name():
     assert latency.resolve(meta, {})["entry"]["name"] == "Sony DualSense"
     no_label = latency.resolve({"device": "Microsoft Xbox Series Controller"}, {})
     assert no_label["state"] == "ask" and no_label["entry"] is None
+
+
+def test_near_model_is_asked_not_guessed(monkeypatch):
+    """Owner report (2026-11-14): "Flydigi Vader 5S Pro" is not in the data. "Vader 5 Pro" and
+    "Vader 5s" are different pads, so the app must ask."""
+    data = {"controllers": [
+        {"name": "Flydigi vader 5 pro", "url": "a", "results": []},
+        {"name": "Flydigi Vader 5s", "url": "b", "results": []}]}
+    monkeypatch.setattr(latency, "_cache", data)
+    res = latency.resolve({}, {}, typed="Flydigi Vader 5S Pro")
+    assert res["state"] == "ask" and {s["url"] for s in res["suggest"][:2]} == {"a", "b"}
+    assert latency.resolve({}, {}, typed="flydigi vader 5s")["state"] == "auto"
+
+
+def test_history_rename_counts_as_typed_name(tmp_path):
+    from padlab.cli import latency_for
+    from padlab.history import set_name
+    log = tmp_path / _log(tmp_path, "")
+    from padlab.logfile import read_log
+    meta = read_log(str(log)).meta
+    set_name(str(tmp_path), meta, "Sony DualSense")
+    assert latency_for(str(log), meta)["entry"]["name"] == "Sony DualSense"

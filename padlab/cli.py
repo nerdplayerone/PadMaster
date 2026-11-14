@@ -30,7 +30,9 @@ def latency_for(log_path: str, meta: dict) -> dict:
     from .history import load_settings
     from .latency import load, resolve
     choices = load_settings(os.path.dirname(os.path.abspath(log_path))).get("latency_map", {})
-    res = resolve(meta, choices if isinstance(choices, dict) else {})
+    from .history import load_names, model_key
+    typed = load_names(os.path.dirname(os.path.abspath(log_path))).get(model_key(meta), "")
+    res = resolve(meta, choices if isinstance(choices, dict) else {}, typed=typed)
     res["collected"] = load().get("collected", "")
     return res
 

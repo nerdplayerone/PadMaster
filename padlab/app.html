@@ -231,6 +231,7 @@ async function openReport(log){
 async function latencyAsk(log){
  const st=await api.latency_status(log);
  if(!st.ok||st.state!=="ask"||current!==log)return;
+ $("report").querySelectorAll(".latask").forEach(b=>b.remove());
  const box=document.createElement("div");box.className="latask";
  const top=st.suggest&&st.suggest[0];
  const opts=(list)=>list.map(c=>`<option value="${esc(c.url)}">${esc(c.name)}</option>`).join("");

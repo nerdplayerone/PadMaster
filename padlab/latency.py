@@ -76,7 +76,7 @@ def query_for(meta: dict) -> str:
     return str(meta.get("label") or meta.get("device") or "")
 
 
-def resolve(meta: dict, choices: dict) -> dict:
+def resolve(meta: dict, choices: dict, typed: str = "") -> dict:
     """Find the Gamepadla entry for this session.
 
     Returns {"state": "chosen"|"auto"|"ask"|"none", "entry": dict|None, "suggest": [...]}.
@@ -92,13 +92,16 @@ def resolve(meta: dict, choices: dict) -> dict:
             return {"state": "chosen", "entry": entry, "suggest": [], "key": key}
     # Match only what the owner typed. The name Windows reports can be wrong (for example,
     # many pads report as "Xbox One Controller"), so it is never used for an automatic match.
-    label = str(meta.get("label") or "")
+    label = str(typed or meta.get("label") or "")  # a History rename or the name typed at Start
     if not label:
         sug = candidates(str(meta.get("device") or ""))  # hints only: the owner must choose
         return {"state": "ask" if sug else "none", "entry": None, "suggest": sug, "key": key}
     sug = candidates(label)
     clear = len(sug) < 2 or sug[0]["score"] - sug[1]["score"] >= 0.05  # not two near-equal models
-    if sug and sug[0]["score"] >= AUTO_SCORE and clear:
+    # Automatic only when every typed word is in the Gamepadla name ("Vader 5S Pro" must not
+    # become "Vader 5 Pro" or "Vader 5s"). Otherwise the owner chooses.
+    all_words = bool(sug) and set(_norm(label).split()) <= set(_norm(sug[0]["name"]).split())
+    if sug and sug[0]["score"] >= AUTO_SCORE and clear and all_words:
         return {"state": "auto", "entry": by_url(sug[0]["url"]), "suggest": sug, "key": key}
     if sug and sug[0]["score"] >= ASK_SCORE:
         return {"state": "ask", "entry": None, "suggest": sug, "key": key}

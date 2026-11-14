@@ -25,6 +25,16 @@ def default_out_dir() -> str:
     return os.path.join(base, "PadLab")
 
 
+def latency_for(log_path: str, meta: dict) -> dict:
+    """Gamepadla latency entry for this session (or None), using the owner's saved choices."""
+    from .history import load_settings
+    from .latency import load, resolve
+    choices = load_settings(os.path.dirname(os.path.abspath(log_path))).get("latency_map", {})
+    res = resolve(meta, choices if isinstance(choices, dict) else {})
+    res["collected"] = load().get("collected", "")
+    return res
+
+
 def make_report(log_path: str, open_it: bool = True, quiet: bool = False) -> str:
     from .analysis import analyse
     from .logfile import read_log
@@ -36,8 +46,10 @@ def make_report(log_path: str, open_it: bool = True, quiet: bool = False) -> str
     rep = analyse(log)
     html_path = log_path.replace(".csv.gz", "").replace(".csv", "") + "_report.html"
     name = display_name(log_path, log.meta)
+    lat = latency_for(log_path, log.meta)
     with open(html_path, "w", encoding="utf-8") as fh:
-        fh.write(render(rep, os.path.basename(log_path), name=name))
+        fh.write(render(rep, os.path.basename(log_path), name=name, latency=lat["entry"],
+                        latency_date=lat["collected"]))
     if not quiet:
         print(f"Report: {html_path}")
     if open_it:

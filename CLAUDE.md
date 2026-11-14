@@ -80,7 +80,7 @@ Raw integers are kept on purpose. The inner deadzone check needs the exact small
 ## 4. Hard rules
 
 1. PadMaster only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
-2. No network access in the app. No telemetry. No auto-update.
+2. No network access in the app. No telemetry. No auto-update. (`tools/fetch_gamepadla.py` runs only on the developer PC before a release. The app never connects to Gamepadla.)
 3. No admin rights needed. No drivers.
 4. The analysis stays pure Python (standard library only). The .exe must stay small.
 5. Keep all tests passing. Add a test for every bug you fix.
@@ -246,8 +246,9 @@ No long logs in the message. Put long output in a file and give the file name.
 
 ## 8. Do not
 
-- Do not claim latency numbers.
-- Do not compare PadMaster results with Gamepadla numbers as if they used the same method.
+- Do not claim latency numbers as PadMaster's own results.
+- Gamepadla latency data (owner decision, 2026-11-14): show it only in its own box, "Hardware latency (data: Gamepadla.com)", with full credit, a link to the Gamepadla page, the collection date and the note that newer results can exist. Never mix it with PadMaster's checks, and never compare the two as if they used the same method. If Gamepadla asks for the data to be removed, remove it in the next release.
+- `tools/fetch_gamepadla.py` reads only pages that Gamepadla's robots.txt allows, at one page every 3 s.
 - Do not add third-party brand names, logos or controller product images to the app or report. The owner's own logo (`assets/logo.png`) is allowed.
 - Do not push, tag or make the repo public without the owner's approval.
 - Do not delete the owner's logs.

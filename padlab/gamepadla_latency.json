@@ -1,0 +1,10179 @@
+{
+"source": "Gamepadla.com",
+"source_url": "https://gamepadla.com",
+"collected": "2026-11-14",
+"controllers": [
+{
+"name": "8BitDo 64 Bluetooth Controller",
+"url": "https://gamepadla.com/8bitdo-64-bluetooth-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 8.31,
+"stick_ms": null,
+"polling_hz": 100.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.1,
+"stick_ms": null,
+"polling_hz": 100.0,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Arcade Controller",
+"url": "https://gamepadla.com/8bitdo-arcade-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 4.82,
+"stick_ms": null,
+"polling_hz": 124.99,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 7.09,
+"stick_ms": null,
+"polling_hz": 124.99,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 16.2,
+"stick_ms": null,
+"polling_hz": 124.99,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Arcade Controller for Xbox",
+"url": "https://gamepadla.com/8bitdo-arcade-controller-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.77,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.27,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.93,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 13.9,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "8bitDo Pro 2",
+"url": "https://gamepadla.com/8bitdo-pro-2.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": 22.0,
+"polling_hz": 93.83,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 26.8,
+"polling_hz": 95.57,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": 56.6,
+"polling_hz": 62.18,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.0,
+"stick_ms": null,
+"polling_hz": 94.46,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 13.2,
+"stick_ms": null,
+"polling_hz": 94.12,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 91.85,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 92.68,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 17.2,
+"stick_ms": null,
+"polling_hz": 95.11,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 19.6,
+"stick_ms": null,
+"polling_hz": 93.32,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 29.9,
+"stick_ms": null,
+"polling_hz": 47.69,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Pro 2 [HE]",
+"url": "https://gamepadla.com/8bitdo-pro-2-hall-effect.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.4,
+"stick_ms": 15.5,
+"polling_hz": 99.99,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.1,
+"stick_ms": 17.0,
+"polling_hz": 100.04,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 12.8,
+"stick_ms": 18.6,
+"polling_hz": 100.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 14.9,
+"stick_ms": 26.4,
+"polling_hz": 83.96,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 18.7,
+"stick_ms": 27.3,
+"polling_hz": 89.09,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 21.5,
+"stick_ms": 25.1,
+"polling_hz": 100.43,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 25.3,
+"stick_ms": 32.4,
+"polling_hz": 41.71,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Pro 2 Wired Controller",
+"url": "https://gamepadla.com/8bitdo-pro-2-wired-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.63,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 84.35,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Pro 2 Wired Controller for Xbox",
+"url": "https://gamepadla.com/8bitdo-pro-2-wired-controller-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.34,
+"stick_ms": null,
+"polling_hz": 249.83,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo pro 3",
+"url": "https://gamepadla.com/8bitdo-pro-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.85,
+"stick_ms": 11.4,
+"polling_hz": 249.88,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.56,
+"stick_ms": 13.7,
+"polling_hz": 200.53,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 9.2,
+"stick_ms": 14.8,
+"polling_hz": 224.47,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.9,
+"stick_ms": 28.1,
+"polling_hz": 97.86,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 17.5,
+"stick_ms": 29.5,
+"polling_hz": 121.14,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 53.5,
+"stick_ms": 73.5,
+"polling_hz": 70.38,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo SN30 Pro",
+"url": "https://gamepadla.com/8bitdo-sn30-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 95.15,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 123.53,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 74.02,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 62.5,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 66.67,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 60.57,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2 Bluetooth Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-2-bluetooth-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.31,
+"stick_ms": 16.2,
+"polling_hz": 218.33,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.1,
+"stick_ms": 29.7,
+"polling_hz": 98.96,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 14.4,
+"stick_ms": 29.0,
+"polling_hz": 89.83,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 18.1,
+"polling_hz": 208.07,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.36,
+"stick_ms": null,
+"polling_hz": 209.23,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2 Wireless Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-2-wireless-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.81,
+"stick_ms": 7.02,
+"polling_hz": 955.69,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.95,
+"stick_ms": 8.11,
+"polling_hz": 940.16,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 12.0,
+"stick_ms": 16.0,
+"polling_hz": 123.9,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2.4G",
+"url": "https://gamepadla.com/8bitdo-ultimate-2-4g.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.1,
+"stick_ms": 2.73,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.7,
+"stick_ms": 12.5,
+"polling_hz": 166.5,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 30.2,
+"stick_ms": null,
+"polling_hz": 66.57,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2C Bluetooth",
+"url": "https://gamepadla.com/8bitdo-ultimate-2c-bluetooth.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.7,
+"stick_ms": null,
+"polling_hz": 99.86,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 32.8,
+"stick_ms": null,
+"polling_hz": 41.67,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2C Wired Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-2c-wired-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Ultimate 2C Wireless Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-2c-wireless.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.12,
+"stick_ms": 1.92,
+"polling_hz": 942.51,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.12,
+"stick_ms": 4.1,
+"polling_hz": 959.69,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 15.2,
+"stick_ms": 8.61,
+"polling_hz": 143.86,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 3 for Xbox",
+"url": "https://gamepadla.com/8bitdo-ultimate-3-for-xbox.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.36,
+"stick_ms": 1.89,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.77,
+"stick_ms": 1.39,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.1,
+"stick_ms": 16.8,
+"polling_hz": 1000.0,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 3-mode Controller for Xbox",
+"url": "https://gamepadla.com/8bitdo-ultimate-3-mode-controller-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.49,
+"stick_ms": 12.0,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 16.5,
+"stick_ms": 21.4,
+"polling_hz": 66.67,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 18.4,
+"stick_ms": 19.2,
+"polling_hz": 247.52,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate 3C+",
+"url": "https://gamepadla.com/8bitdo-ultimate-3c.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.63,
+"stick_ms": 4.41,
+"polling_hz": 998.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.26,
+"stick_ms": 5.1,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.18,
+"stick_ms": 3.03,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.77,
+"stick_ms": 3.78,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 16.2,
+"stick_ms": 23.6,
+"polling_hz": 132.59,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 18.2,
+"stick_ms": 22.4,
+"polling_hz": 132.0,
+"primary": false
+}
+]
+},
+{
+"name": "8BitDo Ultimate 3E For Xbox",
+"url": "https://gamepadla.com/ultimate-3e-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.56,
+"stick_ms": 1.39,
+"polling_hz": null,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.73,
+"stick_ms": 1.99,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.11,
+"stick_ms": 3.27,
+"polling_hz": null,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.57,
+"stick_ms": 3.34,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.37,
+"stick_ms": 7.02,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.31,
+"stick_ms": 9.09,
+"polling_hz": 999.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 16.6,
+"stick_ms": 15.6,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 17.6,
+"stick_ms": 15.6,
+"polling_hz": 199.8,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 21.5,
+"stick_ms": 23.6,
+"polling_hz": 199.0,
+"primary": false
+}
+]
+},
+{
+"name": "8Bitdo Ultimate Bluetooth Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-bluetooth-controller.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 9.75,
+"stick_ms": 12.6,
+"polling_hz": 197.33,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 10.1,
+"stick_ms": 16.4,
+"polling_hz": 100.44,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.5,
+"stick_ms": 18.1,
+"polling_hz": 97.77,
+"primary": true
+}
+]
+},
+{
+"name": "8Bitdo Ultimate C 2.4G Wireless Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-c-2-4g-wireless-controller.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 242.72,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 102.04,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 100.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 99.9,
+"primary": false
+}
+]
+},
+{
+"name": "8Bitdo Ultimate C Wired Controller",
+"url": "https://gamepadla.com/8bitdo-ultimate-c-wired-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.67,
+"stick_ms": null,
+"polling_hz": 249.63,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate C Wired for Xbox",
+"url": "https://gamepadla.com/8bitdo-ultimate-c-wired-controller-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.83,
+"stick_ms": null,
+"polling_hz": 248.94,
+"primary": true
+}
+]
+},
+{
+"name": "8BitDo Ultimate Wired Controller for Xbox",
+"url": "https://gamepadla.com/8bitdo-ultimate-wired-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.2,
+"stick_ms": null,
+"polling_hz": 249.76,
+"primary": true
+}
+]
+},
+{
+"name": "AceGamer C16",
+"url": "https://gamepadla.com/acegamer-c16.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 7.69,
+"stick_ms": 54.8,
+"polling_hz": 124.74,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 10.5,
+"stick_ms": 58.6,
+"polling_hz": 241.06,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 16.9,
+"stick_ms": 63.9,
+"polling_hz": 128.17,
+"primary": false
+}
+]
+},
+{
+"name": "Acegamer Hypershadow D4",
+"url": "https://gamepadla.com/acegamer-hypershadow-d4.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.13,
+"stick_ms": 2.98,
+"polling_hz": 980.76,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.0,
+"stick_ms": 26.5,
+"polling_hz": 980.76,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 11.3,
+"stick_ms": 13.8,
+"polling_hz": 350.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.4,
+"stick_ms": 24.7,
+"polling_hz": 158.48,
+"primary": true
+}
+]
+},
+{
+"name": "Allone PS5 Controller",
+"url": "https://gamepadla.com/allone-ps5-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 13.3,
+"stick_ms": null,
+"polling_hz": 237.36,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 159.79,
+"primary": true
+}
+]
+},
+{
+"name": "Amazon Luna Controller",
+"url": "https://gamepadla.com/amazon-luna-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.71,
+"stick_ms": 10.4,
+"polling_hz": 198.61,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 25.9,
+"stick_ms": 28.1,
+"polling_hz": 49.67,
+"primary": true
+}
+]
+},
+{
+"name": "Anbernic RG G01",
+"url": "https://gamepadla.com/anbernic-rg-g01.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.68,
+"stick_ms": 18.2,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 19.4,
+"stick_ms": 62.9,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.7,
+"stick_ms": 91.9,
+"polling_hz": 100.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 30.3,
+"stick_ms": 110.0,
+"polling_hz": 100.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 31.2,
+"stick_ms": 102.0,
+"polling_hz": 100.0,
+"primary": false
+}
+]
+},
+{
+"name": "Anbernic RG P01",
+"url": "https://gamepadla.com/anbernic-rg-p01.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.41,
+"stick_ms": null,
+"polling_hz": 766.87,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.54,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.0,
+"stick_ms": null,
+"polling_hz": 177.37,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.2,
+"stick_ms": null,
+"polling_hz": 200.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 16.2,
+"stick_ms": null,
+"polling_hz": 158.3,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 23.4,
+"stick_ms": null,
+"polling_hz": 61.61,
+"primary": false
+}
+]
+},
+{
+"name": "Aolion K10",
+"url": "https://gamepadla.com/aolion-k10.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.7,
+"stick_ms": null,
+"polling_hz": 943.33,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.55,
+"stick_ms": null,
+"polling_hz": 200.46,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.7,
+"stick_ms": null,
+"polling_hz": 189.58,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 13.0,
+"stick_ms": null,
+"polling_hz": 179.58,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 21.8,
+"stick_ms": null,
+"polling_hz": 118.7,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.0,
+"stick_ms": null,
+"polling_hz": 107.51,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 21.5,
+"stick_ms": null,
+"polling_hz": 116.35,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 26.7,
+"stick_ms": null,
+"polling_hz": 125.85,
+"primary": false
+}
+]
+},
+{
+"name": "Aolion K20",
+"url": "https://gamepadla.com/aolion-k20.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 88.89,
+"primary": false
+}
+]
+},
+{
+"name": "Astro C40 TR Wireless",
+"url": "https://gamepadla.com/astro-c40-tr.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 3.28,
+"stick_ms": 3.07,
+"polling_hz": 250.13,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 14.9,
+"stick_ms": 16.0,
+"polling_hz": 124.97,
+"primary": true
+}
+]
+},
+{
+"name": "Asus ROG Raikiri II",
+"url": "https://gamepadla.com/rog-raikiri-ii.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.38,
+"stick_ms": 11.0,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.24,
+"stick_ms": 22.4,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.21,
+"stick_ms": 13.6,
+"polling_hz": 994.04,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.61,
+"stick_ms": 25.1,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.58,
+"stick_ms": 27.4,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.3,
+"stick_ms": 27.1,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.1,
+"stick_ms": 23.3,
+"polling_hz": 133.23,
+"primary": true
+}
+]
+},
+{
+"name": "Asus ROG Raikiri II Pro PC",
+"url": "https://gamepadla.com/raikiri-ii-pro-pc.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 1.09,
+"stick_ms": 1.7,
+"polling_hz": 7267.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 0.92,
+"stick_ms": 0.89,
+"polling_hz": 8000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Asus ROG Raikiri Pro",
+"url": "https://gamepadla.com/asus-rog-raikiri-pro.html",
+"results": [
+{
+"connection": "Dongle OC",
+"mode": "XInput",
+"button_ms": 5.04,
+"stick_ms": null,
+"polling_hz": 241.17,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.1,
+"stick_ms": null,
+"polling_hz": 119.39,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.35,
+"stick_ms": null,
+"polling_hz": 241.46,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 11.4,
+"stick_ms": null,
+"polling_hz": 104.13,
+"primary": true
+}
+]
+},
+{
+"name": "Azeron Cyborg II",
+"url": "https://gamepadla.com/azeron-cyborg-ii.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "🔘 3.21 🕹️ 6.20",
+"button_ms": 0.68,
+"stick_ms": 0.85,
+"polling_hz": 11.0,
+"primary": true
+}
+]
+},
+{
+"name": "Backbone One v2",
+"url": "https://gamepadla.com/backbone-one-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 8.79,
+"polling_hz": 232.0,
+"primary": true
+}
+]
+},
+{
+"name": "BEITONG Asura 2 Pro Plus",
+"url": "https://gamepadla.com/beitong-asura-2-pro-plus.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 14.7,
+"stick_ms": null,
+"polling_hz": 73.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 20.1,
+"stick_ms": null,
+"polling_hz": 80.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 19.4,
+"stick_ms": null,
+"polling_hz": 2000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 21.9,
+"stick_ms": null,
+"polling_hz": 2000.0,
+"primary": true
+}
+]
+},
+{
+"name": "BEITONG Asura 2 Pro Plus NearLink",
+"url": "https://gamepadla.com/beitong-asura-2-pro-plus-nearlink.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 9.27,
+"stick_ms": null,
+"polling_hz": 258.17,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 1983.07,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 15.1,
+"stick_ms": null,
+"polling_hz": 71.33,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 21.1,
+"stick_ms": null,
+"polling_hz": 77.06,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 22.2,
+"stick_ms": null,
+"polling_hz": 1991.63,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 22.9,
+"stick_ms": null,
+"polling_hz": 189.8,
+"primary": false
+}
+]
+},
+{
+"name": "BEITONG BTP-C3",
+"url": "https://gamepadla.com/beitong-btp-c3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.53,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+}
+]
+},
+{
+"name": "Beitong Kunpeng 20",
+"url": "https://gamepadla.com/beitong-kp20.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.82,
+"stick_ms": 11.3,
+"polling_hz": 997.5,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.3,
+"stick_ms": 55.9,
+"polling_hz": 995.99,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.8,
+"stick_ms": 25.1,
+"polling_hz": 179.0,
+"primary": true
+}
+]
+},
+{
+"name": "BEITONG Kunpeng 20 Elite",
+"url": "https://gamepadla.com/beitong-kunpeng-20e.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.5,
+"stick_ms": 2.01,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.86,
+"stick_ms": 6.86,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 12.2,
+"stick_ms": 7.84,
+"polling_hz": null,
+"primary": true
+}
+]
+},
+{
+"name": "BEITONG Kunpeng 40",
+"url": "https://gamepadla.com/beitong-kunpeng-40.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Beitong Kunpeng 40D",
+"url": "https://gamepadla.com/beitong-kunpeng-40d.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.48,
+"stick_ms": 1.57,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.45,
+"stick_ms": 2.68,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.51,
+"stick_ms": 6.2,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.68,
+"stick_ms": 9.53,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.5,
+"stick_ms": 11.1,
+"polling_hz": 200.2,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 13.8,
+"stick_ms": 11.9,
+"polling_hz": 200.92,
+"primary": true
+}
+]
+},
+{
+"name": "Beitong Kunpeng 50 v2",
+"url": "https://gamepadla.com/beitong-kunpeng-50.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 78.7,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 79.1,
+"polling_hz": 937.8,
+"primary": false
+}
+]
+},
+{
+"name": "BEITONG Kunpeng 70",
+"url": "https://gamepadla.com/beitong-kunpeng-70.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.55,
+"stick_ms": 12.4,
+"polling_hz": 2000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.43,
+"stick_ms": 14.9,
+"polling_hz": 2040.82,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 11.9,
+"stick_ms": 17.2,
+"polling_hz": 262.47,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 2.93,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Beitong Kunpeng 70 6D",
+"url": "https://gamepadla.com/beitong-kunpeng-70-6d.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.27,
+"stick_ms": 1.61,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.18,
+"stick_ms": 3.72,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 16.3,
+"stick_ms": 13.0,
+"polling_hz": null,
+"primary": true
+}
+]
+},
+{
+"name": "Beitong Pangu",
+"url": "https://gamepadla.com/beitong-pangu.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.43,
+"stick_ms": 5.48,
+"polling_hz": 1006.92,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.81,
+"stick_ms": 11.6,
+"polling_hz": 993.88,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 10.3,
+"stick_ms": 22.4,
+"polling_hz": 126.02,
+"primary": true
+}
+]
+},
+{
+"name": "Beitong Zeus 2",
+"url": "https://gamepadla.com/beitong-zeus-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 35.5,
+"polling_hz": 961.99,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.83,
+"stick_ms": null,
+"polling_hz": 813.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.21,
+"stick_ms": null,
+"polling_hz": 972.78,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 20.8,
+"stick_ms": null,
+"polling_hz": 185.49,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.2,
+"stick_ms": null,
+"polling_hz": 191.57,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 24.5,
+"stick_ms": null,
+"polling_hz": 294.99,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 24.7,
+"stick_ms": null,
+"polling_hz": 202.08,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 28.3,
+"stick_ms": null,
+"polling_hz": 302.69,
+"primary": true
+}
+]
+},
+{
+"name": "BINBOK Ultra Pro Controller",
+"url": "https://gamepadla.com/binbok-ultra-pro-controller-sw41.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 241.55,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 184.33,
+"primary": false
+}
+]
+},
+{
+"name": "Brook 8K Core Fighting Board",
+"url": "https://gamepadla.com/brook-8k-core-fighting-board.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 1.59,
+"stick_ms": null,
+"polling_hz": 8000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Brook Starray",
+"url": "https://gamepadla.com/brook-starray.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.29,
+"stick_ms": 29.5,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.5,
+"stick_ms": 35.3,
+"polling_hz": 240.38,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 35.1,
+"stick_ms": 63.0,
+"polling_hz": 130.09,
+"primary": true
+}
+]
+},
+{
+"name": "BSP Y04",
+"url": "https://gamepadla.com/bsp-y04.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.42,
+"stick_ms": 3.24,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.31,
+"stick_ms": 4.27,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.1,
+"stick_ms": 25.2,
+"polling_hz": 132.0,
+"primary": true
+}
+]
+},
+{
+"name": "Canyon CND-GPW3",
+"url": "https://gamepadla.com/canyon-cnd-gpw3.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Cosmic Byte Blitz",
+"url": "https://gamepadla.com/cosmic-byte-blitz.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 990.1,
+"primary": false
+}
+]
+},
+{
+"name": "Cosmic Byte Stellaris",
+"url": "https://gamepadla.com/cosmic-byte-stellaris.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 202.63,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 200.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 163.93,
+"primary": false
+}
+]
+},
+{
+"name": "Cosmox Haute42 C16",
+"url": "https://gamepadla.com/haute42-c16.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.59,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 1.59,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.72,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Datafrog S80",
+"url": "https://gamepadla.com/datafrog-s80.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 17.4,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 18.1,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "EasySMX 9013 Pro",
+"url": "https://gamepadla.com/easysmx-9013-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 13.5,
+"stick_ms": null,
+"polling_hz": 71.41,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 13.5,
+"stick_ms": null,
+"polling_hz": 71.49,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 21.1,
+"stick_ms": null,
+"polling_hz": 71.35,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 20.9,
+"stick_ms": null,
+"polling_hz": 71.43,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 29.9,
+"stick_ms": null,
+"polling_hz": 65.24,
+"primary": true
+}
+]
+},
+{
+"name": "EasySMX D05",
+"url": "https://gamepadla.com/easysmx-d05.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 88.89,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX D10",
+"url": "https://gamepadla.com/easysmx-d10.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.33,
+"stick_ms": 3.9,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.2,
+"stick_ms": 19.0,
+"polling_hz": 435.92,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 17.6,
+"stick_ms": 16.3,
+"polling_hz": 1001.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 17.9,
+"stick_ms": 80.1,
+"polling_hz": 100.33,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 18.2,
+"stick_ms": 85.9,
+"polling_hz": 227.84,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 46.2,
+"stick_ms": 24.0,
+"polling_hz": 500.0,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX Dune 8K",
+"url": "https://gamepadla.com/easysmx-dune-8k.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 2.18,
+"stick_ms": 8.22,
+"polling_hz": 3071.54,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.52,
+"stick_ms": 5.93,
+"polling_hz": 7254.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 26.3,
+"stick_ms": 31.6,
+"polling_hz": 159.99,
+"primary": true
+}
+]
+},
+{
+"name": "EasySMX S10",
+"url": "https://gamepadla.com/easysmx-s10.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.13,
+"stick_ms": 7.22,
+"polling_hz": 1005.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 13.1,
+"stick_ms": 40.1,
+"polling_hz": 321.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.5,
+"stick_ms": 47.2,
+"polling_hz": 160.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.6,
+"stick_ms": 46.1,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 28.0,
+"stick_ms": 55.5,
+"polling_hz": 160.0,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX X05",
+"url": "https://gamepadla.com/easysmx-x05.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.82,
+"stick_ms": null,
+"polling_hz": 917.79,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.0,
+"stick_ms": null,
+"polling_hz": 231.85,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 12.7,
+"stick_ms": null,
+"polling_hz": 450.84,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 13.9,
+"stick_ms": null,
+"polling_hz": 118.33,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.2,
+"stick_ms": null,
+"polling_hz": 194.84,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 118.29,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX X05 Pro",
+"url": "https://gamepadla.com/easysmx-x05-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.95,
+"stick_ms": 13.6,
+"polling_hz": 987.17,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.5,
+"stick_ms": 35.8,
+"polling_hz": 979.43,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.0,
+"stick_ms": 19.8,
+"polling_hz": 337.61,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 15.4,
+"stick_ms": 19.8,
+"polling_hz": 124.88,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 15.4,
+"stick_ms": 20.0,
+"polling_hz": 129.63,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 20.5,
+"stick_ms": 26.6,
+"polling_hz": 128.78,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 26.2,
+"stick_ms": 30.7,
+"polling_hz": 127.94,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX X10",
+"url": "https://gamepadla.com/easysmx-x10.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.89,
+"stick_ms": 14.5,
+"polling_hz": 931.27,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 8.09,
+"stick_ms": 22.5,
+"polling_hz": 250.2,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.8,
+"stick_ms": 29.3,
+"polling_hz": 242.53,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.7,
+"stick_ms": 29.3,
+"polling_hz": 328.73,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 20.6,
+"stick_ms": 35.2,
+"polling_hz": 129.96,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.3,
+"stick_ms": 40.3,
+"polling_hz": 120.07,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 25.8,
+"stick_ms": 39.9,
+"polling_hz": 131.08,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX X15",
+"url": "https://gamepadla.com/easysmx-x15.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.07,
+"stick_ms": null,
+"polling_hz": 615.31,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.67,
+"stick_ms": null,
+"polling_hz": 157.29,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 10.7,
+"stick_ms": null,
+"polling_hz": 138.69,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.1,
+"stick_ms": null,
+"polling_hz": 138.75,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.2,
+"stick_ms": null,
+"polling_hz": 92.23,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.3,
+"stick_ms": null,
+"polling_hz": 89.66,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 21.6,
+"stick_ms": null,
+"polling_hz": 90.67,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 25.6,
+"stick_ms": null,
+"polling_hz": 125.44,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 29.0,
+"stick_ms": null,
+"polling_hz": 97.97,
+"primary": false
+}
+]
+},
+{
+"name": "EasySMX X20",
+"url": "https://gamepadla.com/easysmx-x20.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.23,
+"stick_ms": 14.3,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.7,
+"stick_ms": 34.0,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.06,
+"stick_ms": null,
+"polling_hz": 978.47,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.8,
+"stick_ms": null,
+"polling_hz": 200.16,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.9,
+"stick_ms": null,
+"polling_hz": 967.12,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 14.4,
+"stick_ms": null,
+"polling_hz": 168.78,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 24.7,
+"stick_ms": null,
+"polling_hz": 105.59,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 24.4,
+"stick_ms": null,
+"polling_hz": 80.51,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 25.8,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Fantech EOS Pro II S",
+"url": "https://gamepadla.com/fantech-eos-pro-ii-s.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.89,
+"stick_ms": 8.58,
+"polling_hz": 919.96,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 17.5,
+"stick_ms": 47.9,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 28.4,
+"stick_ms": 52.0,
+"polling_hz": 114.63,
+"primary": true
+}
+]
+},
+{
+"name": "Fantech EOS Pro WGP15",
+"url": "https://gamepadla.com/fantech-eos-pro-wgp15.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.03,
+"stick_ms": null,
+"polling_hz": 824.89,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 11.4,
+"stick_ms": null,
+"polling_hz": 201.81,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 151.79,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.9,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 19.2,
+"stick_ms": null,
+"polling_hz": 157.78,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.3,
+"stick_ms": null,
+"polling_hz": 154.91,
+"primary": true
+}
+]
+},
+{
+"name": "Fantech Nova Pro WGP14v2",
+"url": "https://gamepadla.com/fantech-nova-pro-wgp14v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.64,
+"stick_ms": null,
+"polling_hz": 232.96,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 5.74,
+"stick_ms": null,
+"polling_hz": 228.48,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 8.44,
+"stick_ms": null,
+"polling_hz": 204.43,
+"primary": true
+}
+]
+},
+{
+"name": "Fantech Nova WGP14",
+"url": "https://gamepadla.com/fantech-nova-wgp14.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 221.73,
+"primary": false
+}
+]
+},
+{
+"name": "Fantech WGP13s",
+"url": "https://gamepadla.com/fantech-wgp13s.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Fantech Zenith Pro",
+"url": "https://gamepadla.com/fantech-zenith-pro-wgp18.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.48,
+"stick_ms": 8.41,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.3,
+"stick_ms": 32.3,
+"polling_hz": 1000.0,
+"primary": true
+}
+]
+},
+{
+"name": "FightingBox Mini",
+"url": "https://gamepadla.com/fightingbox-mini.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.56,
+"stick_ms": null,
+"polling_hz": null,
+"primary": true
+}
+]
+},
+{
+"name": "FireBird v2.4a",
+"url": "https://gamepadla.com/firebird-v2-4a.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.36,
+"stick_ms": 1.75,
+"polling_hz": 1000.04,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 2.37,
+"stick_ms": 1.68,
+"polling_hz": 1000.13,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.17,
+"stick_ms": 1.53,
+"polling_hz": 1000.09,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 2.26,
+"stick_ms": 1.63,
+"polling_hz": 1000.06,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi APEX 2",
+"url": "https://gamepadla.com/flydigi-apex-series-2.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 119.76,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 88.65,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Apex 3",
+"url": "https://gamepadla.com/flydigi-apex-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 100.6,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 93.81,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 106.21,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Apex 4",
+"url": "https://gamepadla.com/flydigi-apex-4.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.67,
+"stick_ms": 50.7,
+"polling_hz": 997.5,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.03,
+"stick_ms": 42.8,
+"polling_hz": 996.99,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.3,
+"stick_ms": 66.8,
+"polling_hz": 434.73,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.9,
+"stick_ms": 69.7,
+"polling_hz": 124.94,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.4,
+"stick_ms": 73.5,
+"polling_hz": 171.67,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Apex 4 Black Myth Wukong",
+"url": "https://gamepadla.com/flydigi-apex-4-black-myth-wukong.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.25,
+"stick_ms": 9.25,
+"polling_hz": 2000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.28,
+"stick_ms": 9.42,
+"polling_hz": 2004.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 8.33,
+"stick_ms": 10.2,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.5,
+"stick_ms": 13.0,
+"polling_hz": 2000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.5,
+"stick_ms": 18.0,
+"polling_hz": 427.72,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.2,
+"stick_ms": 24.4,
+"polling_hz": 161.92,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 24.9,
+"stick_ms": 27.3,
+"polling_hz": 499.5,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 10.1,
+"polling_hz": 2004.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 31.0,
+"polling_hz": 2004.01,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Apex 5",
+"url": "https://gamepadla.com/flydigi-apex-5.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.01,
+"stick_ms": 2.82,
+"polling_hz": 875.66,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.9,
+"stick_ms": 5.54,
+"polling_hz": 922.78,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 12.7,
+"stick_ms": 10.9,
+"polling_hz": 99.83,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.3,
+"stick_ms": 23.0,
+"polling_hz": 99.47,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 27.5,
+"stick_ms": 24.8,
+"polling_hz": 66.15,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 2.64,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Apex 6 Pro",
+"url": "https://gamepadla.com/flydigi-apex-6-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.32,
+"stick_ms": 2.06,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.66,
+"stick_ms": 3.47,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.0,
+"stick_ms": 12.8,
+"polling_hz": null,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Direwolf",
+"url": "https://gamepadla.com/flydigi-direwolf.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 123.76,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Direwolf 2",
+"url": "https://gamepadla.com/flydigi-direwolf-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.38,
+"stick_ms": null,
+"polling_hz": 474.68,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.43,
+"stick_ms": null,
+"polling_hz": 499.75,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.0,
+"stick_ms": null,
+"polling_hz": 330.73,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.1,
+"stick_ms": null,
+"polling_hz": 327.23,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 13.0,
+"stick_ms": null,
+"polling_hz": 236.35,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 17.4,
+"stick_ms": null,
+"polling_hz": 118.68,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 17.5,
+"stick_ms": null,
+"polling_hz": 112.35,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.0,
+"stick_ms": null,
+"polling_hz": 208.77,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 19.9,
+"stick_ms": null,
+"polling_hz": 77.89,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 21.7,
+"stick_ms": null,
+"polling_hz": 305.29,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 23.8,
+"stick_ms": null,
+"polling_hz": 151.11,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Direwolf 3",
+"url": "https://gamepadla.com/flydigi-direwolf-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.59,
+"stick_ms": null,
+"polling_hz": 999.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 4.93,
+"stick_ms": null,
+"polling_hz": 427.34,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.19,
+"stick_ms": null,
+"polling_hz": 998.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.26,
+"stick_ms": null,
+"polling_hz": 998.36,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 6.09,
+"stick_ms": null,
+"polling_hz": 359.62,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.25,
+"stick_ms": null,
+"polling_hz": 998.68,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 5.53,
+"stick_ms": null,
+"polling_hz": 338.75,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 7.44,
+"stick_ms": null,
+"polling_hz": 354.86,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 18.9,
+"stick_ms": null,
+"polling_hz": 360.86,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 21.2,
+"stick_ms": null,
+"polling_hz": 173.1,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 30.1,
+"stick_ms": null,
+"polling_hz": 130.28,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Direwolf 4",
+"url": "https://gamepadla.com/flydigi-direwolf-4.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.23,
+"stick_ms": 10.2,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.7,
+"stick_ms": 9.76,
+"polling_hz": 994.04,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.4,
+"stick_ms": 33.0,
+"polling_hz": 97.59,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 27.2,
+"stick_ms": 38.8,
+"polling_hz": 65.79,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Dune Fox",
+"url": "https://gamepadla.com/flydigi-dune-fox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.68,
+"stick_ms": null,
+"polling_hz": 499.62,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.3,
+"stick_ms": null,
+"polling_hz": 370.4,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Vader 3",
+"url": "https://gamepadla.com/flydigi-vader-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 10.3,
+"stick_ms": null,
+"polling_hz": 591.1,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Vader 3 Pro",
+"url": "https://gamepadla.com/flydigi-vader-3-pro.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 9.4,
+"stick_ms": 30.2,
+"polling_hz": 497.76,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.72,
+"stick_ms": 29.3,
+"polling_hz": 597.01,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 32.7,
+"stick_ms": 52.0,
+"polling_hz": 105.35,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Vader 4 Pro",
+"url": "https://gamepadla.com/flydigi-vader-4-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.43,
+"stick_ms": 16.2,
+"polling_hz": 924.84,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.62,
+"stick_ms": 19.2,
+"polling_hz": 996.55,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 16.4,
+"stick_ms": 22.9,
+"polling_hz": 429.76,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.0,
+"stick_ms": 26.3,
+"polling_hz": 124.97,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.2,
+"stick_ms": 28.8,
+"polling_hz": 167.73,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi vader 5 pro",
+"url": "https://gamepadla.com/flydigi-vader-5-pro.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.97,
+"stick_ms": 2.91,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.02,
+"stick_ms": 2.07,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.98,
+"stick_ms": 3.22,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.04,
+"stick_ms": 2.38,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.45,
+"stick_ms": 2.39,
+"polling_hz": 537.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.88,
+"stick_ms": 3.72,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 10.9,
+"stick_ms": 10.4,
+"polling_hz": 124.84,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 19.8,
+"stick_ms": 21.1,
+"polling_hz": 114.56,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 25.2,
+"stick_ms": 27.2,
+"polling_hz": 61.85,
+"primary": false
+}
+]
+},
+{
+"name": "Flydigi Vader 5 pro v2",
+"url": "https://gamepadla.com/flydigi-vader-5-pro-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.96,
+"stick_ms": 2.02,
+"polling_hz": 1000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Flydigi Vader 5s",
+"url": "https://gamepadla.com/flydigi-vader-5s.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.33,
+"stick_ms": 3.85,
+"polling_hz": 498.75,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.37,
+"stick_ms": 4.24,
+"polling_hz": 500.25,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.53,
+"stick_ms": 4.41,
+"polling_hz": 245.64,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.54,
+"stick_ms": 4.52,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.72,
+"stick_ms": 5.08,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.52,
+"stick_ms": 5.61,
+"polling_hz": 249.94,
+"primary": false
+}
+]
+},
+{
+"name": "Furycube M30 HE",
+"url": "https://gamepadla.com/furycube-m30-he.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "🔘 3.16",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 11.0,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir Cyclone 2",
+"url": "https://gamepadla.com/gamesir-cyclone-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.33,
+"stick_ms": 4.7,
+"polling_hz": 1002.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.4,
+"stick_ms": 6.51,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 2.32,
+"stick_ms": 4.7,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 2.34,
+"stick_ms": 6.78,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.29,
+"stick_ms": 4.44,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.31,
+"stick_ms": 6.65,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 6.01,
+"stick_ms": 10.3,
+"polling_hz": 399.2,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.29,
+"stick_ms": 13.0,
+"polling_hz": 1001.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.4,
+"stick_ms": 17.0,
+"polling_hz": 999.0,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir G4s",
+"url": "https://gamepadla.com/gamesir-g4s.html",
+"results": [
+{
+"connection": "Dongle OC",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 83.4,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 83.26,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 83.33,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir G7 HE",
+"url": "https://gamepadla.com/gamesir-g7-he.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.84,
+"stick_ms": 11.6,
+"polling_hz": 987.92,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.5,
+"stick_ms": 18.0,
+"polling_hz": 498.98,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.48,
+"stick_ms": 31.8,
+"polling_hz": 249.7,
+"primary": false
+}
+]
+},
+{
+"name": "Gamesir G7 Pro",
+"url": "https://gamepadla.com/gamesir-g7-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.43,
+"stick_ms": 2.7,
+"polling_hz": 1001.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.69,
+"stick_ms": 15.0,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 5.37,
+"stick_ms": 5.82,
+"polling_hz": 400.32,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir G7 Pro 8k",
+"url": "https://gamepadla.com/g7-pro-8k.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.36,
+"stick_ms": 2.46,
+"polling_hz": 7042.25,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.36,
+"stick_ms": 10.0,
+"polling_hz": 6666.67,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 3.34,
+"stick_ms": 8.54,
+"polling_hz": 798.72,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir G7 Pro 8K Aimlabs Edition",
+"url": "https://gamepadla.com/gamesir-g7-pro-8k.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.54,
+"stick_ms": 0.68,
+"polling_hz": 7905.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.39,
+"stick_ms": 0.69,
+"polling_hz": 7936.51,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 1.28,
+"stick_ms": 0.63,
+"polling_hz": 3906.25,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.13,
+"stick_ms": 1.74,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 1.96,
+"stick_ms": 1.34,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.47,
+"stick_ms": 3.56,
+"polling_hz": 7936.51,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.74,
+"stick_ms": 4.24,
+"polling_hz": 7930.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 3.91,
+"stick_ms": 3.95,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 3.26,
+"stick_ms": 3.67,
+"polling_hz": 3816.79,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 4.9,
+"stick_ms": 4.4,
+"polling_hz": 799.36,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 3.58,
+"stick_ms": 3.45,
+"polling_hz": 800.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 5.18,
+"stick_ms": 4.62,
+"polling_hz": 713.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.74,
+"stick_ms": 9.32,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir G7 Pro WUCHANG",
+"url": "https://gamepadla.com/gamesir-g7-pro-wuchang.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.26,
+"stick_ms": 4.99,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.91,
+"stick_ms": 9.86,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 5.62,
+"stick_ms": 10.2,
+"polling_hz": 447.03,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir G7 Pro Zenless Zone Zero",
+"url": "https://gamepadla.com/gamesir-g7-pro-zenless-zone-zero.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.29,
+"stick_ms": 3.62,
+"polling_hz": 1001.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.64,
+"stick_ms": 5.29,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.07,
+"stick_ms": 10.4,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.29,
+"stick_ms": 23.3,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir G7 SE",
+"url": "https://gamepadla.com/gamesir-g7-se.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.0,
+"stick_ms": 3.23,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.98,
+"stick_ms": 4.23,
+"polling_hz": 496.18,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.16,
+"stick_ms": 4.64,
+"polling_hz": 986.29,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.33,
+"stick_ms": 5.12,
+"polling_hz": 248.61,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir G8 Galileo",
+"url": "https://gamepadla.com/gamesir-g8-galileo.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 4.28,
+"stick_ms": 7.82,
+"polling_hz": 457.0,
+"primary": true
+}
+]
+},
+{
+"name": "Gamesir Nova",
+"url": "https://gamepadla.com/gamesir-nova.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.67,
+"stick_ms": null,
+"polling_hz": 504.93,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 9.46,
+"stick_ms": null,
+"polling_hz": 99.99,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.2,
+"stick_ms": null,
+"polling_hz": 99.99,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 16.5,
+"stick_ms": null,
+"polling_hz": 172.37,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Other",
+"button_ms": 15.7,
+"stick_ms": null,
+"polling_hz": 172.65,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 22.6,
+"stick_ms": null,
+"polling_hz": 193.23,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 22.0,
+"stick_ms": null,
+"polling_hz": 66.3,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 39.5,
+"stick_ms": null,
+"polling_hz": 119.39,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir Nova 2 Lite",
+"url": "https://gamepadla.com/gamesir-nova-2-lite.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.36,
+"stick_ms": 7.99,
+"polling_hz": 959.69,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.7,
+"stick_ms": 17.1,
+"polling_hz": 928.51,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 12.3,
+"stick_ms": 17.0,
+"polling_hz": 198.53,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 16.9,
+"stick_ms": 34.9,
+"polling_hz": 124.55,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir Nova Lite",
+"url": "https://gamepadla.com/gamesir-nova-lite.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.77,
+"stick_ms": null,
+"polling_hz": 947.4,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.81,
+"stick_ms": null,
+"polling_hz": 941.83,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 3.77,
+"stick_ms": null,
+"polling_hz": 946.8,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 3.82,
+"stick_ms": null,
+"polling_hz": 938.86,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 16.5,
+"stick_ms": null,
+"polling_hz": 116.15,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.5,
+"stick_ms": null,
+"polling_hz": 59.14,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 15.3,
+"stick_ms": null,
+"polling_hz": 59.14,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 15.6,
+"stick_ms": null,
+"polling_hz": 62.5,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 16.7,
+"stick_ms": null,
+"polling_hz": 120.66,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 15.8,
+"stick_ms": null,
+"polling_hz": 59.14,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 18.8,
+"stick_ms": null,
+"polling_hz": 119.47,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 18.3,
+"stick_ms": null,
+"polling_hz": 115.95,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.7,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir Stargazer",
+"url": "https://gamepadla.com/gamesir-stargazer.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.14,
+"stick_ms": 2.34,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.7,
+"stick_ms": 5.97,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 15.1,
+"stick_ms": 15.7,
+"polling_hz": 100.55,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir Super Nova",
+"url": "https://gamepadla.com/gamesir-nova-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.32,
+"stick_ms": null,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.44,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 8.2,
+"stick_ms": null,
+"polling_hz": 981.35,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.1,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 12.7,
+"stick_ms": null,
+"polling_hz": 999.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.5,
+"stick_ms": null,
+"polling_hz": 390.93,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 20.4,
+"stick_ms": null,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 23.6,
+"stick_ms": null,
+"polling_hz": 978.47,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 25.7,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 26.0,
+"stick_ms": null,
+"polling_hz": 129.84,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 26.9,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir T3s",
+"url": "https://gamepadla.com/gamesir-t3s.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 66.51,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 62.23,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir T4 Cyclone",
+"url": "https://gamepadla.com/gamesir-t4-cyclone.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.8,
+"stick_ms": 46.1,
+"polling_hz": 499.75,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.7,
+"stick_ms": 68.6,
+"polling_hz": 250.19,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.16,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.2,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.9,
+"stick_ms": null,
+"polling_hz": 135.5,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir T4 Cyclone Pro",
+"url": "https://gamepadla.com/gamesir-t4-cyclone-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.94,
+"stick_ms": null,
+"polling_hz": 495.78,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 12.8,
+"stick_ms": null,
+"polling_hz": 342.03,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.4,
+"stick_ms": null,
+"polling_hz": 228.59,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 14.1,
+"stick_ms": null,
+"polling_hz": 125.18,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 26.1,
+"stick_ms": null,
+"polling_hz": 124.16,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir T4 Kaleid",
+"url": "https://gamepadla.com/gamesir-t4-kaleid.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.61,
+"stick_ms": 8.49,
+"polling_hz": 1001.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.18,
+"stick_ms": 15.9,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.19,
+"stick_ms": 30.8,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 7.13,
+"stick_ms": 31.6,
+"polling_hz": 249.94,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.1,
+"stick_ms": 38.6,
+"polling_hz": 124.98,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 13.2,
+"stick_ms": 38.5,
+"polling_hz": 124.98,
+"primary": false
+}
+]
+},
+{
+"name": "Gamesir T4 pro",
+"url": "https://gamepadla.com/gamesir-t4-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.58,
+"stick_ms": 12.0,
+"polling_hz": 149.17,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.6,
+"stick_ms": 19.4,
+"polling_hz": 131.06,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 16.7,
+"stick_ms": 20.9,
+"polling_hz": 143.12,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.7,
+"stick_ms": 25.0,
+"polling_hz": 142.33,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir T7 Pro Floral",
+"url": "https://gamepadla.com/gamesir-t7-pro-floral.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.96,
+"stick_ms": null,
+"polling_hz": 249.88,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir Tarantula 8K",
+"url": "https://gamepadla.com/gamesir-tarantula-8k.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.04,
+"stick_ms": 0.49,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.12,
+"stick_ms": 0.56,
+"polling_hz": 4016.06,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.0,
+"stick_ms": 0.62,
+"polling_hz": 7936.51,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.85,
+"stick_ms": 1.36,
+"polling_hz": 1001.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.85,
+"stick_ms": 1.42,
+"polling_hz": 1001.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.01,
+"stick_ms": 4.63,
+"polling_hz": 250.06,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir Tarantula Pro",
+"url": "https://gamepadla.com/gamesir-t3-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.83,
+"stick_ms": 12.7,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.37,
+"stick_ms": 27.6,
+"polling_hz": 1002.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 19.2,
+"stick_ms": 25.4,
+"polling_hz": 162.13,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 19.6,
+"stick_ms": 36.4,
+"polling_hz": 162.47,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 31.7,
+"stick_ms": 29.9,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 33.9,
+"stick_ms": 42.8,
+"polling_hz": 1001.0,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir Tarantula Pro Wired Controller for Xbox",
+"url": "https://gamepadla.com/gamesir-tarantula-pro-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.97,
+"stick_ms": 2.33,
+"polling_hz": 1005.95,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir Tegenaria Lite",
+"url": "https://gamepadla.com/gamesir-tegenaria-lite.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.82,
+"stick_ms": 1.92,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.32,
+"stick_ms": 1.69,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 2.42,
+"stick_ms": 2.06,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 6.91,
+"stick_ms": 6.33,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "GameSir X5 Lite",
+"url": "https://gamepadla.com/gamesir-x5-lite.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 6.86,
+"stick_ms": 8.76,
+"polling_hz": 332.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 7.0,
+"stick_ms": 8.71,
+"polling_hz": 629.0,
+"primary": true
+}
+]
+},
+{
+"name": "GameSir X5s",
+"url": "https://gamepadla.com/gamesir-x5s.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 29.7,
+"stick_ms": 31.5,
+"polling_hz": 354.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 17.2,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 19.8,
+"stick_ms": null,
+"polling_hz": 252.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 25.8,
+"stick_ms": null,
+"polling_hz": 128.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 26.8,
+"stick_ms": null,
+"polling_hz": 276.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 30.9,
+"stick_ms": null,
+"polling_hz": 201.0,
+"primary": false
+}
+]
+},
+{
+"name": "Google Stadia Controller",
+"url": "https://gamepadla.com/google-stadia-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 2.99,
+"stick_ms": 9.17,
+"polling_hz": 124.96,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 27.8,
+"stick_ms": 28.1,
+"polling_hz": 124.34,
+"primary": true
+}
+]
+},
+{
+"name": "Gulikit Elves 2",
+"url": "https://gamepadla.com/gulikit-elves-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.85,
+"stick_ms": 4.2,
+"polling_hz": 992.2,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.52,
+"stick_ms": 5.13,
+"polling_hz": 712.42,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 6.2,
+"stick_ms": 7.43,
+"polling_hz": 526.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 7.49,
+"stick_ms": 8.05,
+"polling_hz": 124.96,
+"primary": false
+}
+]
+},
+{
+"name": "GuliKit Elves 2 Pro",
+"url": "https://gamepadla.com/gulikit-elves-2-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.34,
+"stick_ms": 22.4,
+"polling_hz": 893.66,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 15.0,
+"stick_ms": 35.9,
+"polling_hz": 124.98,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.2,
+"stick_ms": 55.1,
+"polling_hz": 87.29,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 35.8,
+"stick_ms": 56.8,
+"polling_hz": 79.46,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit ES",
+"url": "https://gamepadla.com/gulikit-es.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.98,
+"stick_ms": 4.01,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.76,
+"stick_ms": 4.73,
+"polling_hz": 969.93,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 4.0,
+"stick_ms": 4.44,
+"polling_hz": 799.36,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 5.94,
+"stick_ms": 6.6,
+"polling_hz": 400.0,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit ES Max",
+"url": "https://gamepadla.com/gulikit-es-max.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.98,
+"stick_ms": 2.45,
+"polling_hz": 993.05,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.88,
+"stick_ms": 2.75,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.44,
+"stick_ms": 4.84,
+"polling_hz": 962.46,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 4.19,
+"stick_ms": 5.02,
+"polling_hz": 796.81,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.26,
+"stick_ms": 5.74,
+"polling_hz": 900.9,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 5.75,
+"stick_ms": 5.17,
+"polling_hz": 788.64,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 9.61,
+"stick_ms": 9.92,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit ES Pro",
+"url": "https://gamepadla.com/gulikit-es-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.75,
+"stick_ms": 3.45,
+"polling_hz": 978.42,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.97,
+"stick_ms": 3.82,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.53,
+"stick_ms": 3.7,
+"polling_hz": 717.68,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 4.07,
+"stick_ms": 4.85,
+"polling_hz": 800.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 5.41,
+"stick_ms": 6.1,
+"polling_hz": 489.16,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 6.94,
+"stick_ms": 7.71,
+"polling_hz": 124.97,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit KingKong 2 Pro",
+"url": "https://gamepadla.com/gulikit-ns09.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 18.0,
+"stick_ms": 25.3,
+"polling_hz": 248.76,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 20.5,
+"stick_ms": 27.3,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 52.71,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 52.54,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 52.51,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 23.7,
+"stick_ms": null,
+"polling_hz": 42.12,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 27.1,
+"stick_ms": null,
+"polling_hz": 36.91,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 27.5,
+"stick_ms": null,
+"polling_hz": 36.41,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit KK3",
+"url": "https://gamepadla.com/gulikit-kk3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.95,
+"stick_ms": null,
+"polling_hz": 144.36,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 7.19,
+"stick_ms": null,
+"polling_hz": 170.18,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.2,
+"stick_ms": null,
+"polling_hz": 124.28,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 24.9,
+"stick_ms": null,
+"polling_hz": 88.17,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 26.0,
+"stick_ms": null,
+"polling_hz": 89.94,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 25.5,
+"stick_ms": null,
+"polling_hz": 95.26,
+"primary": false
+}
+]
+},
+{
+"name": "GuliKit KK3 MAX",
+"url": "https://gamepadla.com/gulikit-kk3-max-kingkong-3-ns39.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.4,
+"stick_ms": 33.9,
+"polling_hz": 992.06,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 18.3,
+"stick_ms": 49.8,
+"polling_hz": 249.19,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.3,
+"stick_ms": 48.0,
+"polling_hz": 124.95,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 18.3,
+"stick_ms": 51.3,
+"polling_hz": 265.18,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 32.8,
+"stick_ms": 63.7,
+"polling_hz": 104.01,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 35.4,
+"stick_ms": 53.1,
+"polling_hz": 884.46,
+"primary": true
+}
+]
+},
+{
+"name": "GuliKit KK3 Pro",
+"url": "https://gamepadla.com/gulikit-kk3-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.0,
+"stick_ms": 34.2,
+"polling_hz": 884.17,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 9.86,
+"stick_ms": 41.0,
+"polling_hz": 199.4,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 19.6,
+"stick_ms": 43.0,
+"polling_hz": 856.9,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 21.0,
+"stick_ms": 51.8,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 21.5,
+"stick_ms": 57.8,
+"polling_hz": 144.84,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 45.0,
+"stick_ms": 63.8,
+"polling_hz": 70.16,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit NS08",
+"url": "https://gamepadla.com/gulikit-ns08.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 47.4,
+"stick_ms": null,
+"polling_hz": 127.07,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 71.5,
+"stick_ms": null,
+"polling_hz": 48.01,
+"primary": true
+}
+]
+},
+{
+"name": "Gulikit TT Max",
+"url": "https://gamepadla.com/gulikit-tt-max.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.54,
+"stick_ms": 2.03,
+"polling_hz": 1001.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.51,
+"stick_ms": 3.54,
+"polling_hz": 981.35,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.2,
+"stick_ms": 4.25,
+"polling_hz": 790.51,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.33,
+"stick_ms": 2.3,
+"polling_hz": 993.05,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.46,
+"stick_ms": 3.24,
+"polling_hz": 928.51,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.22,
+"stick_ms": 2.41,
+"polling_hz": 799.36,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.24,
+"stick_ms": 2.85,
+"polling_hz": 970.87,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.03,
+"stick_ms": 4.31,
+"polling_hz": 706.71,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 5.04,
+"stick_ms": 4.2,
+"polling_hz": 799.36,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 6.76,
+"stick_ms": 7.67,
+"polling_hz": 626.57,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.6,
+"stick_ms": 11.5,
+"polling_hz": 124.94,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.1,
+"stick_ms": 11.8,
+"polling_hz": 124.97,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.0,
+"stick_ms": 13.2,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 12.5,
+"stick_ms": 12.0,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.6,
+"stick_ms": 18.2,
+"polling_hz": 199.4,
+"primary": false
+}
+]
+},
+{
+"name": "Gulikit TT Pro",
+"url": "https://gamepadla.com/gulikit-tt-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.55,
+"stick_ms": 1.93,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 3.04,
+"stick_ms": 2.24,
+"polling_hz": 798.72,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.59,
+"stick_ms": 3.97,
+"polling_hz": 984.25,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 4.32,
+"stick_ms": 4.05,
+"polling_hz": 800.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 12.5,
+"stick_ms": 11.8,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Haute42 COSMOX M Ultra Gen2",
+"url": "https://gamepadla.com/cosmox-m-ultra-gen2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 1.53,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Haute42 U16",
+"url": "https://gamepadla.com/haute42-u16.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.54,
+"stick_ms": null,
+"polling_hz": null,
+"primary": true
+}
+]
+},
+{
+"name": "Hexgaming Phantom",
+"url": "https://gamepadla.com/hexgaming-phantom.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 8.11,
+"stick_ms": 25.3,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 8.26,
+"stick_ms": 24.0,
+"polling_hz": 524.61,
+"primary": true
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 4.69,
+"stick_ms": null,
+"polling_hz": 989.48,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 5.43,
+"stick_ms": null,
+"polling_hz": 736.11,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 12.2,
+"stick_ms": null,
+"polling_hz": 249.96,
+"primary": false
+}
+]
+},
+{
+"name": "Hori Fighting Stick Alpha XS",
+"url": "https://gamepadla.com/hori-fighting-stick-alpha-xs.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.17,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 4.18,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 4.37,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 7.11,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "HORIPAD for Steam Wireless",
+"url": "https://gamepadla.com/horipad-for-steam-wireless.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.74,
+"stick_ms": 3.36,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 3.75,
+"stick_ms": 3.46,
+"polling_hz": 250.06,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.0,
+"stick_ms": 10.7,
+"polling_hz": 131.8,
+"primary": true
+}
+]
+},
+{
+"name": "Hyperkin Competitor",
+"url": "https://gamepadla.com/hyperkin-competitor.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.95,
+"stick_ms": 6.08,
+"polling_hz": 249.47,
+"primary": true
+}
+]
+},
+{
+"name": "Hyperstrike DS4",
+"url": "https://gamepadla.com/hyperstrike-8k-ds4.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.05,
+"stick_ms": 0.35,
+"polling_hz": 7656.2,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.15,
+"stick_ms": 0.49,
+"polling_hz": 3976.34,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 1.02,
+"stick_ms": 0.36,
+"polling_hz": 8000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 1.01,
+"stick_ms": 0.3,
+"polling_hz": 2586.49,
+"primary": false
+}
+]
+},
+{
+"name": "LeadJoy Blade Plus",
+"url": "https://gamepadla.com/leadjoy-blade-plus.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.03,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 13.8,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+}
+]
+},
+{
+"name": "Leadjoy Saber Plus",
+"url": "https://gamepadla.com/leadjoy-saber-plus.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.59,
+"stick_ms": 2.96,
+"polling_hz": 999.87,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.5,
+"stick_ms": 3.11,
+"polling_hz": 1000.15,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 3.51,
+"stick_ms": 4.0,
+"polling_hz": 250.51,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.11,
+"stick_ms": 6.42,
+"polling_hz": 999.35,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 5.16,
+"stick_ms": 6.15,
+"polling_hz": 1000.05,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 8.31,
+"stick_ms": 8.37,
+"polling_hz": 125.28,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 10.1,
+"stick_ms": 10.1,
+"polling_hz": 96.54,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.4,
+"stick_ms": 16.0,
+"polling_hz": 51.51,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 65.4,
+"stick_ms": 62.0,
+"polling_hz": 74.97,
+"primary": false
+}
+]
+},
+{
+"name": "Leadjoy Xeno Plus",
+"url": "https://gamepadla.com/leadjoy-xeno-plus.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.49,
+"stick_ms": 2.57,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.65,
+"stick_ms": 2.57,
+"polling_hz": 997.01,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 3.93,
+"stick_ms": 3.91,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.44,
+"stick_ms": 6.51,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 5.31,
+"stick_ms": 6.43,
+"polling_hz": 997.01,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 7.4,
+"stick_ms": 9.84,
+"polling_hz": 213.89,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 8.54,
+"stick_ms": 8.73,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Leadjoy Xeno pro",
+"url": "https://gamepadla.com/leadjoy-xeno-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.44,
+"stick_ms": 2.26,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.01,
+"stick_ms": 6.79,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 8.05,
+"stick_ms": 8.08,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "Lenovo S03",
+"url": "https://gamepadla.com/lenovo-s03.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.65,
+"stick_ms": null,
+"polling_hz": 964.96,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 16.0,
+"stick_ms": null,
+"polling_hz": 496.57,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.2,
+"stick_ms": null,
+"polling_hz": 111.15,
+"primary": true
+}
+]
+},
+{
+"name": "Logitech F310",
+"url": "https://gamepadla.com/logitech-f310.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.3,
+"stick_ms": null,
+"polling_hz": 234.68,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.39,
+"stick_ms": null,
+"polling_hz": 226.29,
+"primary": false
+}
+]
+},
+{
+"name": "Logitech MX Keys S",
+"url": "https://gamepadla.com/logitech-mx-keys-s.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "🔘 21.5",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 11.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "🔘 22.5",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 11.0,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike F1",
+"url": "https://gamepadla.com/machenike-f1.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 1.83,
+"stick_ms": 2.01,
+"polling_hz": 2808.99,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.17,
+"stick_ms": 1.32,
+"polling_hz": 3278.69,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 22.0,
+"stick_ms": 23.2,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike F1 Black",
+"url": "https://gamepadla.com/machenike-f1-black.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 1.79,
+"stick_ms": 3.22,
+"polling_hz": 4000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.23,
+"stick_ms": 2.19,
+"polling_hz": 4000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike G1 Pro",
+"url": "https://gamepadla.com/machenike-g1-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.94,
+"stick_ms": 4.62,
+"polling_hz": 995.79,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 11.7,
+"stick_ms": 18.2,
+"polling_hz": 175.83,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 12.1,
+"stick_ms": 18.4,
+"polling_hz": 205.15,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 13.3,
+"stick_ms": 26.3,
+"polling_hz": 986.56,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 15.5,
+"stick_ms": 27.2,
+"polling_hz": 154.94,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 17.3,
+"stick_ms": 23.6,
+"polling_hz": 124.97,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.0,
+"stick_ms": 26.1,
+"polling_hz": 155.88,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 20.8,
+"stick_ms": 27.3,
+"polling_hz": 107.66,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 21.7,
+"stick_ms": 27.5,
+"polling_hz": 154.89,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G3 V2",
+"url": "https://gamepadla.com/machenike-g3-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.99,
+"stick_ms": null,
+"polling_hz": 991.01,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 991.01,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 28.1,
+"stick_ms": null,
+"polling_hz": 125.31,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike G3 V2 Pro",
+"url": "https://gamepadla.com/machenike-g3-v2-pro.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 15.6,
+"stick_ms": 29.7,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.1,
+"stick_ms": 65.7,
+"polling_hz": 132.38,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 30.1,
+"stick_ms": 64.5,
+"polling_hz": 132.15,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G3s",
+"url": "https://gamepadla.com/machenike-g3s.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.97,
+"stick_ms": null,
+"polling_hz": 495.55,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 21.6,
+"stick_ms": null,
+"polling_hz": 125.78,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike G5 Pro",
+"url": "https://gamepadla.com/machenike-g5-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 11.0,
+"stick_ms": null,
+"polling_hz": 469.26,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.4,
+"stick_ms": null,
+"polling_hz": 227.73,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 19.5,
+"stick_ms": null,
+"polling_hz": 182.5,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 29.4,
+"stick_ms": null,
+"polling_hz": 66.69,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 29.5,
+"stick_ms": null,
+"polling_hz": 66.78,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G5 Pro Max",
+"url": "https://gamepadla.com/machenike-g5-pro-max.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 173.01,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 119.69,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 115.87,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G5 Pro Max SE",
+"url": "https://gamepadla.com/machenike-g5-pro-max-se.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.21,
+"stick_ms": null,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 5.61,
+"stick_ms": null,
+"polling_hz": 200.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 5.69,
+"stick_ms": null,
+"polling_hz": 200.01,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 17.3,
+"stick_ms": null,
+"polling_hz": 497.27,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.6,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.8,
+"stick_ms": null,
+"polling_hz": 124.99,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 25.3,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 41.0,
+"stick_ms": null,
+"polling_hz": 80.03,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike G5 Pro V2",
+"url": "https://gamepadla.com/machenike-g5-pro-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.41,
+"stick_ms": 9.55,
+"polling_hz": 796.62,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 8.34,
+"stick_ms": 17.8,
+"polling_hz": 124.88,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.1,
+"stick_ms": 31.2,
+"polling_hz": 986.21,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.9,
+"stick_ms": 27.4,
+"polling_hz": 121.41,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.1,
+"stick_ms": 28.5,
+"polling_hz": 141.18,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 21.1,
+"stick_ms": 31.7,
+"polling_hz": 102.48,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G6",
+"url": "https://gamepadla.com/machenike-g6.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 188.32,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 133.51,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 166.94,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 154.92,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 156.01,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 105.37,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 132.71,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 136.8,
+"primary": false
+}
+]
+},
+{
+"name": "Machenike G6 Pro",
+"url": "https://gamepadla.com/machenike-g6-pro-100.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.24,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": true
+}
+]
+},
+{
+"name": "Machenike G6 Pro V2",
+"url": "https://gamepadla.com/machenike-g6-pro-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.12,
+"stick_ms": 10.8,
+"polling_hz": 994.04,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.1,
+"stick_ms": 33.2,
+"polling_hz": 968.05,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 20.9,
+"stick_ms": 66.9,
+"polling_hz": 126.92,
+"primary": true
+}
+]
+},
+{
+"name": "Mad Catz EGO",
+"url": "https://gamepadla.com/mad-catz-ego.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 2.3,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 4.04,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 4.09,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.15,
+"stick_ms": null,
+"polling_hz": 200.0,
+"primary": true
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 13.2,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Mad Catz Street Fighter V Arcade FightStick Tournament Edition 2+",
+"url": "https://gamepadla.com/mad-catz-street-fighter-v-arcade-fightstick-tournament-edition-2.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 4.67,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 5.14,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 5.15,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 5.2,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 8.86,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Manba One v2",
+"url": "https://gamepadla.com/manba-one-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.11,
+"stick_ms": 7.51,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.2,
+"stick_ms": 45.2,
+"polling_hz": 199.6,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.9,
+"stick_ms": 38.5,
+"polling_hz": 153.85,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 19.0,
+"stick_ms": 37.2,
+"polling_hz": 154.08,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 22.4,
+"stick_ms": 39.6,
+"polling_hz": 124.84,
+"primary": false
+}
+]
+},
+{
+"name": "Marius Heier MH4-JDM05X",
+"url": "https://gamepadla.com/marius-heier-jdm-5x-board.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 0.96,
+"stick_ms": 0.51,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 1.43,
+"stick_ms": 1.63,
+"polling_hz": 4066.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 1.08,
+"stick_ms": 5.23,
+"polling_hz": 1886.79,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.2,
+"stick_ms": 6.88,
+"polling_hz": 824.4,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 6.66,
+"stick_ms": 10.9,
+"polling_hz": 206.02,
+"primary": false
+}
+]
+},
+{
+"name": "Marius Heier MH5-Digital / 5pin",
+"url": "https://gamepadla.com/mh5-digital-5pin.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 0.74,
+"stick_ms": 0.61,
+"polling_hz": 7874.02,
+"primary": true
+}
+]
+},
+{
+"name": "Marius Heier XSX Digital / 5pin",
+"url": "https://gamepadla.com/marius-heier-xbox-5pin.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 0.75,
+"stick_ms": 0.7,
+"polling_hz": 7936.51,
+"primary": true
+}
+]
+},
+{
+"name": "Microsoft GameSir K1 Kaleid for Xbox",
+"url": "https://gamepadla.com/gamesir-k1-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.32,
+"stick_ms": 7.62,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.8,
+"stick_ms": 14.2,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.98,
+"stick_ms": 27.2,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "Microsoft PowerA Fortnite SE Xbox Series X|S",
+"url": "https://gamepadla.com/powera-fortnite-se-xbox-series-xs.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "Microsoft Xbox 360 controller",
+"url": "https://gamepadla.com/xbox-360-controller.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 9.41,
+"stick_ms": 11.7,
+"polling_hz": 199.96,
+"primary": true
+}
+]
+},
+{
+"name": "Microsoft Xbox Elite Series 2 Controller",
+"url": "https://gamepadla.com/xbox-elite-series-2-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 9.13,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 13.2,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 14.5,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.93,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 10.9,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "Microsoft Xbox Elite Series 2 Core",
+"url": "https://gamepadla.com/xbox-elite-series-2-core.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.52,
+"stick_ms": 9.23,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.8,
+"stick_ms": 11.1,
+"polling_hz": 62.5,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 11.1,
+"stick_ms": 15.0,
+"polling_hz": 131.41,
+"primary": true
+}
+]
+},
+{
+"name": "Microsoft Xbox One Controller",
+"url": "https://gamepadla.com/xbox-one-controller.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.94,
+"stick_ms": null,
+"polling_hz": 125.3,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.54,
+"stick_ms": null,
+"polling_hz": 125.12,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 10.2,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.28,
+"stick_ms": null,
+"polling_hz": 124.81,
+"primary": false
+}
+]
+},
+{
+"name": "Microsoft Xbox Series Controller",
+"url": "https://gamepadla.com/xbox-core-controller.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.21,
+"stick_ms": 8.88,
+"polling_hz": 124.69,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.5,
+"stick_ms": 8.3,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.2,
+"stick_ms": 13.3,
+"polling_hz": 125.58,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 12.2,
+"stick_ms": 13.0,
+"polling_hz": 133.16,
+"primary": true
+}
+]
+},
+{
+"name": "Mobapad C2 Lite",
+"url": "https://gamepadla.com/mobapad-c2-lite.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 5.75,
+"stick_ms": 23.5,
+"polling_hz": null,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.03,
+"stick_ms": 21.4,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 8.58,
+"stick_ms": 29.8,
+"polling_hz": null,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 8.88,
+"stick_ms": 26.9,
+"polling_hz": null,
+"primary": false
+}
+]
+},
+{
+"name": "Mobapad Chitu 2",
+"url": "https://gamepadla.com/mobapad-chitu-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.14,
+"stick_ms": 16.7,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 9.02,
+"stick_ms": 14.5,
+"polling_hz": 800.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 16.6,
+"stick_ms": 46.8,
+"polling_hz": 124.97,
+"primary": false
+}
+]
+},
+{
+"name": "Mobapad Huben 2",
+"url": "https://gamepadla.com/mobapad-huben-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.31,
+"stick_ms": 13.5,
+"polling_hz": 999.0,
+"primary": true
+}
+]
+},
+{
+"name": "Mobapad Huben M9w",
+"url": "https://gamepadla.com/mobapad-huben-m9w.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.88,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "Mobapad N1 HD",
+"url": "https://gamepadla.com/mobapad-n1-hd.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.47,
+"stick_ms": 52.6,
+"polling_hz": 499.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.4,
+"stick_ms": 68.1,
+"polling_hz": 894.45,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 35.1,
+"stick_ms": 98.4,
+"polling_hz": 122.26,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 26.8,
+"stick_ms": null,
+"polling_hz": 65.82,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon Aether",
+"url": "https://gamepadla.com/bigbigwon-aether.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.82,
+"stick_ms": 14.2,
+"polling_hz": 998.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.87,
+"stick_ms": 15.1,
+"polling_hz": 995.89,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 7.05,
+"stick_ms": 18.1,
+"polling_hz": 124.56,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.2,
+"stick_ms": 22.6,
+"polling_hz": 857.04,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 10.2,
+"stick_ms": 20.9,
+"polling_hz": 176.21,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 12.3,
+"stick_ms": 22.3,
+"polling_hz": 118.9,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 11.7,
+"stick_ms": 21.6,
+"polling_hz": 99.35,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Blitz 2",
+"url": "https://gamepadla.com/bigbigwon-blitz-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.15,
+"stick_ms": 2.0,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.36,
+"stick_ms": 2.17,
+"polling_hz": 2000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.57,
+"stick_ms": 3.36,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.48,
+"stick_ms": 2.45,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 5.92,
+"stick_ms": 2.59,
+"polling_hz": 1592.36,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.94,
+"stick_ms": 3.61,
+"polling_hz": 1996.01,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.71,
+"stick_ms": 3.96,
+"polling_hz": 500.25,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 7.09,
+"stick_ms": 3.68,
+"polling_hz": 1582.28,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.16,
+"stick_ms": 3.49,
+"polling_hz": 250.06,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.66,
+"stick_ms": 5.08,
+"polling_hz": 250.06,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 10.0,
+"stick_ms": 7.33,
+"polling_hz": 123.08,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 11.5,
+"stick_ms": 8.64,
+"polling_hz": 123.08,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Blitz 2 (TMR)",
+"url": "https://gamepadla.com/bigbigwon-blitz-2-tmr.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.23,
+"stick_ms": 2.68,
+"polling_hz": 2000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 5.92,
+"stick_ms": 3.19,
+"polling_hz": 1569.86,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.88,
+"stick_ms": 4.35,
+"polling_hz": 1996.01,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 7.05,
+"stick_ms": 4.37,
+"polling_hz": 1584.79,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 9.96,
+"stick_ms": 8.5,
+"polling_hz": 123.08,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 11.5,
+"stick_ms": 10.7,
+"polling_hz": 123.08,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 15.0,
+"stick_ms": 16.6,
+"polling_hz": 124.17,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 18.1,
+"stick_ms": 17.1,
+"polling_hz": 82.79,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Gale Hall",
+"url": "https://gamepadla.com/bigbig-won-gale-hall.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.71,
+"stick_ms": 8.07,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 9.37,
+"stick_ms": 11.4,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.9,
+"stick_ms": 15.3,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 12.0,
+"stick_ms": 15.2,
+"polling_hz": 998.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 28.2,
+"stick_ms": 74.3,
+"polling_hz": 88.83,
+"primary": true
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Rainbow 2 Pro",
+"url": "https://gamepadla.com/rainbow-2-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.28,
+"stick_ms": 10.5,
+"polling_hz": 972.74,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 10.2,
+"stick_ms": 14.4,
+"polling_hz": 124.91,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 9.24,
+"stick_ms": 13.9,
+"polling_hz": 124.94,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 19.9,
+"stick_ms": 38.7,
+"polling_hz": 197.74,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 20.4,
+"stick_ms": 38.5,
+"polling_hz": 197.68,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 22.6,
+"stick_ms": 45.0,
+"polling_hz": 198.2,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 28.0,
+"stick_ms": 49.3,
+"polling_hz": 99.8,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 29.3,
+"stick_ms": 50.1,
+"polling_hz": 98.53,
+"primary": true
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Rainbow 2 SE",
+"url": "https://gamepadla.com/rainbow-2-se.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.75,
+"stick_ms": 5.31,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.98,
+"stick_ms": 5.5,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.12,
+"stick_ms": 6.82,
+"polling_hz": 250.06,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 8.93,
+"stick_ms": 8.4,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.4,
+"stick_ms": 12.5,
+"polling_hz": 998.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 12.0,
+"stick_ms": 11.7,
+"polling_hz": 999.0,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon BigBig Won Rainbow 3",
+"url": "https://gamepadla.com/bigbig-won-rainbow-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.95,
+"stick_ms": 4.08,
+"polling_hz": 2083.33,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.83,
+"stick_ms": 5.27,
+"polling_hz": 2257.34,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.42,
+"stick_ms": 8.78,
+"polling_hz": 2040.82,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 17.2,
+"stick_ms": 14.1,
+"polling_hz": 114.94,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 2.18,
+"polling_hz": 2050.0,
+"primary": false
+}
+]
+},
+{
+"name": "Mojhon Storm",
+"url": "https://gamepadla.com/mojhon-storm.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.18,
+"stick_ms": 2.19,
+"polling_hz": 2012.8,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 4.74,
+"stick_ms": 1.79,
+"polling_hz": 2000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.96,
+"stick_ms": 6.44,
+"polling_hz": 1914.62,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 8.08,
+"stick_ms": 6.94,
+"polling_hz": 2000.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 15.6,
+"stick_ms": 17.7,
+"polling_hz": 116.73,
+"primary": true
+}
+]
+},
+{
+"name": "Nacon Revolution 5 Pro",
+"url": "https://gamepadla.com/nacon-revolution-5-pro.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.39,
+"stick_ms": null,
+"polling_hz": 249.94,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.08,
+"stick_ms": null,
+"polling_hz": 249.87,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 9.17,
+"stick_ms": null,
+"polling_hz": 234.26,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 9.1,
+"stick_ms": null,
+"polling_hz": 231.54,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 10.4,
+"stick_ms": null,
+"polling_hz": 176.74,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.1,
+"stick_ms": null,
+"polling_hz": 154.6,
+"primary": false
+}
+]
+},
+{
+"name": "Nacon Revolution X Unlimited",
+"url": "https://gamepadla.com/nacon-revolution-x-unlimited.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.0,
+"stick_ms": 8.01,
+"polling_hz": 250.25,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 5.57,
+"stick_ms": 10.9,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.7,
+"stick_ms": 18.4,
+"polling_hz": 199.96,
+"primary": true
+}
+]
+},
+{
+"name": "Nintendo GameCube Controller",
+"url": "https://gamepadla.com/nintendo-gamecube-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.46,
+"stick_ms": 12.2,
+"polling_hz": 142.53,
+"primary": true
+}
+]
+},
+{
+"name": "Nintendo GameCube Controller Super Smash Bros",
+"url": "https://gamepadla.com/gamecube-controller-super-smash-bros.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.08,
+"stick_ms": 7.48,
+"polling_hz": 655.31,
+"primary": true
+}
+]
+},
+{
+"name": "Nintendo Switch 2 Pro Controller",
+"url": "https://gamepadla.com/nintendo-switch-2-pro-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.97,
+"stick_ms": 13.1,
+"polling_hz": 248.45,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 7.37,
+"stick_ms": null,
+"polling_hz": 249.94,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.4,
+"stick_ms": null,
+"polling_hz": 62.86,
+"primary": false
+}
+]
+},
+{
+"name": "Nintendo Switch Joy-Con",
+"url": "https://gamepadla.com/nintendo-switch-joy-con.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 14.5,
+"stick_ms": null,
+"polling_hz": 66.78,
+"primary": true
+}
+]
+},
+{
+"name": "Nintendo Switch Pro Controller",
+"url": "https://gamepadla.com/nintendo-switch-pro-controller.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 16.8,
+"stick_ms": 21.1,
+"polling_hz": 65.89,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 21.8,
+"stick_ms": 22.2,
+"polling_hz": 73.64,
+"primary": true
+}
+]
+},
+{
+"name": "NYXI Master P1",
+"url": "https://gamepadla.com/nyxi-master-p1.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.69,
+"stick_ms": null,
+"polling_hz": 495.37,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 8.72,
+"stick_ms": null,
+"polling_hz": 100.12,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.4,
+"stick_ms": null,
+"polling_hz": 193.72,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 13.3,
+"stick_ms": null,
+"polling_hz": 136.99,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 23.7,
+"stick_ms": null,
+"polling_hz": 51.17,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 28.8,
+"stick_ms": null,
+"polling_hz": 57.99,
+"primary": true
+}
+]
+},
+{
+"name": "Palmlab M.001",
+"url": "https://gamepadla.com/palmlab-m-001.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.85,
+"stick_ms": null,
+"polling_hz": 496.52,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.42,
+"stick_ms": null,
+"polling_hz": 200.24,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.5,
+"stick_ms": null,
+"polling_hz": 144.95,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 161.06,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 31.2,
+"stick_ms": null,
+"polling_hz": 102.76,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 31.1,
+"stick_ms": null,
+"polling_hz": 74.79,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 39.6,
+"stick_ms": null,
+"polling_hz": 73.44,
+"primary": true
+}
+]
+},
+{
+"name": "PB Tails Crush 550",
+"url": "https://gamepadla.com/pb-tails-crush-550.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.7,
+"stick_ms": null,
+"polling_hz": 998.78,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 15.8,
+"stick_ms": null,
+"polling_hz": 145.87,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 16.4,
+"stick_ms": null,
+"polling_hz": 996.13,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 17.8,
+"stick_ms": null,
+"polling_hz": 138.66,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.0,
+"stick_ms": null,
+"polling_hz": 124.99,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 34.6,
+"stick_ms": null,
+"polling_hz": 111.65,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 34.5,
+"stick_ms": null,
+"polling_hz": 77.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 33.6,
+"stick_ms": null,
+"polling_hz": 81.95,
+"primary": false
+}
+]
+},
+{
+"name": "PB Tails Crush Defender Controller",
+"url": "https://gamepadla.com/crush-defender-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.99,
+"stick_ms": 8.33,
+"polling_hz": 917.83,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 11.4,
+"stick_ms": 10.5,
+"polling_hz": 125.37,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 15.7,
+"stick_ms": 14.7,
+"polling_hz": 140.99,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 16.8,
+"stick_ms": 18.2,
+"polling_hz": 135.1,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 20.5,
+"stick_ms": 19.0,
+"polling_hz": 131.8,
+"primary": false
+}
+]
+},
+{
+"name": "PowerA Battle Dragon",
+"url": "https://gamepadla.com/powera-battle-dragon.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.34,
+"stick_ms": 4.58,
+"polling_hz": 992.06,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.17,
+"stick_ms": 6.13,
+"polling_hz": 500.75,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.4,
+"stick_ms": 16.0,
+"polling_hz": 88.85,
+"primary": true
+}
+]
+},
+{
+"name": "PowerA FUSION Pro Wireless Controller for Xbox",
+"url": "https://gamepadla.com/powera-fusion-pro-wireless-controller-for-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.82,
+"stick_ms": null,
+"polling_hz": 229.92,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.85,
+"stick_ms": null,
+"polling_hz": 233.06,
+"primary": true
+}
+]
+},
+{
+"name": "PowerA OPS V3 Pro",
+"url": "https://gamepadla.com/powera-ops-v3-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.85,
+"stick_ms": 5.04,
+"polling_hz": 975.61,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.95,
+"stick_ms": 17.8,
+"polling_hz": 493.34,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 13.1,
+"stick_ms": 19.1,
+"polling_hz": 89.24,
+"primary": true
+}
+]
+},
+{
+"name": "PXN P5",
+"url": "https://gamepadla.com/pxn-p5.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.3,
+"stick_ms": 8.66,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.8,
+"stick_ms": 60.8,
+"polling_hz": 980.39,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 12.7,
+"stick_ms": 45.4,
+"polling_hz": 144.45,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 14.7,
+"stick_ms": 47.5,
+"polling_hz": 125.42,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 18.1,
+"stick_ms": 25.0,
+"polling_hz": 156.72,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.8,
+"stick_ms": 52.9,
+"polling_hz": 124.98,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 21.0,
+"stick_ms": 26.3,
+"polling_hz": 154.87,
+"primary": false
+}
+]
+},
+{
+"name": "PXN P5 8K",
+"url": "https://gamepadla.com/pxn-p5-8k.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.63,
+"stick_ms": 4.34,
+"polling_hz": 7689.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.42,
+"stick_ms": 5.01,
+"polling_hz": 7874.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 1.58,
+"stick_ms": 4.19,
+"polling_hz": 1696.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 1.36,
+"stick_ms": 4.91,
+"polling_hz": 1602.56,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.07,
+"stick_ms": 5.73,
+"polling_hz": 8000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 2.89,
+"stick_ms": 6.49,
+"polling_hz": 7936.51,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 7.3,
+"stick_ms": 10.2,
+"polling_hz": 250.06,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 21.2,
+"stick_ms": 26.7,
+"polling_hz": 159.87,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 26.3,
+"stick_ms": 29.1,
+"polling_hz": 159.95,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 32.9,
+"stick_ms": 36.5,
+"polling_hz": 84.0,
+"primary": false
+}
+]
+},
+{
+"name": "QRD Spark N5",
+"url": "https://gamepadla.com/qrd-spark-n5.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "Razer Panthera",
+"url": "https://gamepadla.com/razer-panthera.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 1.94,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.07,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.64,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.68,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.84,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.03,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 2.61,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.69,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 2.77,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 5.74,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 5.77,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Razer Raiju",
+"url": "https://gamepadla.com/razer-raiju.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 2.76,
+"stick_ms": null,
+"polling_hz": 485.0,
+"primary": true
+},
+{
+"connection": "Cable OC",
+"mode": "Other",
+"button_ms": 2.83,
+"stick_ms": null,
+"polling_hz": 493.0,
+"primary": false
+}
+]
+},
+{
+"name": "Razer Raiju V3 Pro",
+"url": "https://gamepadla.com/razer-raiju-v3-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.45,
+"stick_ms": 5.47,
+"polling_hz": 1879.7,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.51,
+"stick_ms": 24.6,
+"polling_hz": 411.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 11.9,
+"stick_ms": 46.9,
+"polling_hz": 218.34,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 41.6,
+"stick_ms": 78.2,
+"polling_hz": 204.12,
+"primary": false
+}
+]
+},
+{
+"name": "Razer Tartarus V2",
+"url": "https://gamepadla.com/razer-tartarus-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "🔘 14.4",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 11.0,
+"primary": true
+}
+]
+},
+{
+"name": "Razer Wolverine V3 Pro",
+"url": "https://gamepadla.com/razer-wolverine-v3-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.79,
+"stick_ms": 13.7,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 10.6,
+"stick_ms": 32.9,
+"polling_hz": 249.0,
+"primary": true
+}
+]
+},
+{
+"name": "Razer Wolverine V3 Pro 8K PC",
+"url": "https://gamepadla.com/razer-wolverine-v3-pro-8k-pc.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 1.87,
+"stick_ms": 2.75,
+"polling_hz": 4034.89,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 1.87,
+"stick_ms": 2.33,
+"polling_hz": 5564.33,
+"primary": true
+}
+]
+},
+{
+"name": "Razer Wolverine V3 TE 8K",
+"url": "https://gamepadla.com/razer-wolverine-v3-tournament-edition-8k-pc.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.21,
+"stick_ms": 6.45,
+"polling_hz": 6451.61,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 2.21,
+"stick_ms": 7.65,
+"polling_hz": 4950.5,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 3.41,
+"stick_ms": 4.47,
+"polling_hz": 8000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Razer Wolverine V3 Tournament Edition",
+"url": "https://gamepadla.com/razer-wolverine-v3-tournament-edition.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.77,
+"stick_ms": 22.7,
+"polling_hz": 902.66,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.11,
+"stick_ms": 11.4,
+"polling_hz": 248.08,
+"primary": true
+}
+]
+},
+{
+"name": "Razer Wolverine V4 Pro",
+"url": "https://gamepadla.com/razer-wolverine-v4-pro.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 1.76,
+"stick_ms": 1.15,
+"polling_hz": 7092.2,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.23,
+"stick_ms": 0.41,
+"polling_hz": 7462.69,
+"primary": true
+}
+]
+},
+{
+"name": "Retro Fighters BattlerGC Pro",
+"url": "https://gamepadla.com/battlergc-pro.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 17.0,
+"stick_ms": 11.1,
+"polling_hz": 144.87,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 18.6,
+"stick_ms": 16.0,
+"polling_hz": 119.13,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 28.5,
+"stick_ms": 21.9,
+"polling_hz": 75.36,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 27.4,
+"stick_ms": 23.2,
+"polling_hz": 74.66,
+"primary": false
+}
+]
+},
+{
+"name": "Rexus Asta GX150",
+"url": "https://gamepadla.com/rexus-asta-gx150.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.0,
+"primary": false
+}
+]
+},
+{
+"name": "Rexus Daxa Borion AX8",
+"url": "https://gamepadla.com/rexus-daxa-borion-ax8.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 980.39,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 132.98,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 132.98,
+"primary": false
+}
+]
+},
+{
+"name": "Ryunix G80",
+"url": "https://gamepadla.com/ryunix-g80.html",
+"results": [
+{
+"connection": "Dongle OC",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.16,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.16,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 125.16,
+"primary": false
+}
+]
+},
+{
+"name": "SCUF Envision Pro",
+"url": "https://gamepadla.com/scuf-envision-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 5.49,
+"polling_hz": 479.85,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.7,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.19,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+}
+]
+},
+{
+"name": "Scuf Omega",
+"url": "https://gamepadla.com/scuf-omega.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.11,
+"stick_ms": 3.73,
+"polling_hz": 1002.78,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 4.44,
+"stick_ms": 4.74,
+"polling_hz": 968.21,
+"primary": true
+}
+]
+},
+{
+"name": "SCUF Valor Pro Wired",
+"url": "https://gamepadla.com/scuf-valor-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.95,
+"stick_ms": 6.17,
+"polling_hz": 996.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 11.1,
+"stick_ms": 25.6,
+"polling_hz": 247.0,
+"primary": false
+}
+]
+},
+{
+"name": "Scuf Valor Pro Wired TMR",
+"url": "https://gamepadla.com/scuf-valor-pro-wired-tmr.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.84,
+"stick_ms": 4.48,
+"polling_hz": 999.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 21.1,
+"polling_hz": 250.25,
+"primary": false
+}
+]
+},
+{
+"name": "SMOS CS1 Chroma",
+"url": "https://gamepadla.com/cs1-chroma.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.24,
+"stick_ms": 6.94,
+"polling_hz": 150.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.1,
+"stick_ms": 12.5,
+"polling_hz": 150.0,
+"primary": true
+}
+]
+},
+{
+"name": "Sony DualSense",
+"url": "https://gamepadla.com/sony-dualsense.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 3.93,
+"stick_ms": 2.85,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "Sony",
+"button_ms": 5.46,
+"stick_ms": 4.37,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.02,
+"stick_ms": 5.37,
+"polling_hz": 980.39,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 5.96,
+"stick_ms": 5.01,
+"polling_hz": 798.72,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 6.56,
+"stick_ms": 6.52,
+"polling_hz": 974.66,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 8.27,
+"stick_ms": 7.41,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 11.3,
+"stick_ms": 8.19,
+"polling_hz": 250.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 7.81,
+"stick_ms": 12.6,
+"polling_hz": 249.92,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 9.03,
+"stick_ms": 13.6,
+"polling_hz": 542.42,
+"primary": true
+}
+]
+},
+{
+"name": "Sony DualSense Edge",
+"url": "https://gamepadla.com/sony-dualsense-edge.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 3.46,
+"stick_ms": 3.46,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 3.28,
+"stick_ms": 4.79,
+"polling_hz": 986.19,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 5.41,
+"stick_ms": 7.29,
+"polling_hz": 655.74,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 6.65,
+"stick_ms": 6.76,
+"polling_hz": 689.0,
+"primary": true
+}
+]
+},
+{
+"name": "Sony Dualshock 2",
+"url": "https://gamepadla.com/sony-dualshock-2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 16.2,
+"stick_ms": 18.2,
+"polling_hz": 146.89,
+"primary": true
+}
+]
+},
+{
+"name": "Sony Dualshock 3",
+"url": "https://gamepadla.com/sony-dualshock-3.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 11.4,
+"stick_ms": 13.3,
+"polling_hz": 89.08,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 12.9,
+"stick_ms": 14.9,
+"polling_hz": 84.02,
+"primary": true
+}
+]
+},
+{
+"name": "Sony Dualshock 4",
+"url": "https://gamepadla.com/sony-dualshock-4.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 4.38,
+"stick_ms": 3.84,
+"polling_hz": 728.33,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.9,
+"stick_ms": 10.7,
+"polling_hz": 249.94,
+"primary": true
+}
+]
+},
+{
+"name": "Sony Dualshock 4 v2",
+"url": "https://gamepadla.com/sony-dualshock-4-v2.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 10.7,
+"stick_ms": 10.1,
+"polling_hz": 249.94,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 6.33,
+"stick_ms": null,
+"polling_hz": 717.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 15.1,
+"stick_ms": null,
+"polling_hz": 253.0,
+"primary": false
+}
+]
+},
+{
+"name": "Teensy 4.0 XInput Controller",
+"url": "https://gamepadla.com/teensy-4-0-xinput-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 0.21,
+"stick_ms": 0.74,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 0.21,
+"stick_ms": 0.75,
+"polling_hz": 7940.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.2,
+"stick_ms": 0.78,
+"polling_hz": 8000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Thrustmaster ESWAP X2",
+"url": "https://gamepadla.com/thrustmaster-eswap-x2.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 3.08,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 3.6,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.42,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+}
+]
+},
+{
+"name": "Thrustmaster ESWAP XR PRO",
+"url": "https://gamepadla.com/thrustmaster-eswap-xr-pro.html",
+"results": [
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 3.83,
+"stick_ms": null,
+"polling_hz": 551.75,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 4.31,
+"stick_ms": null,
+"polling_hz": 448.99,
+"primary": false
+},
+{
+"connection": "Cable OC",
+"mode": "XInput",
+"button_ms": 5.3,
+"stick_ms": null,
+"polling_hz": 500.26,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.94,
+"stick_ms": null,
+"polling_hz": 249.85,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.43,
+"stick_ms": null,
+"polling_hz": 250.04,
+"primary": false
+}
+]
+},
+{
+"name": "ThundeRobot G25",
+"url": "https://gamepadla.com/thunderobot-g25.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 165.56,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 182.32,
+"primary": false
+}
+]
+},
+{
+"name": "ThundeRobot G45 Pro",
+"url": "https://gamepadla.com/thunderobot-g45-pro.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 3.99,
+"stick_ms": null,
+"polling_hz": 507.73,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 501.57,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 20.1,
+"stick_ms": null,
+"polling_hz": 91.38,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 22.6,
+"stick_ms": null,
+"polling_hz": 97.32,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 27.0,
+"stick_ms": null,
+"polling_hz": 99.86,
+"primary": false
+}
+]
+},
+{
+"name": "Thunderobot G50S",
+"url": "https://gamepadla.com/thunderobot-g50s.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.83,
+"stick_ms": null,
+"polling_hz": 791.99,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 6.04,
+"stick_ms": null,
+"polling_hz": 786.83,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Other",
+"button_ms": 10.2,
+"stick_ms": null,
+"polling_hz": 120.4,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.9,
+"stick_ms": null,
+"polling_hz": 123.16,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 13.1,
+"stick_ms": null,
+"polling_hz": 99.25,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.3,
+"stick_ms": null,
+"polling_hz": 190.41,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.1,
+"stick_ms": null,
+"polling_hz": 99.96,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 21.9,
+"stick_ms": null,
+"polling_hz": 99.8,
+"primary": false
+}
+]
+},
+{
+"name": "Thunderobot G80",
+"url": "https://gamepadla.com/thunderobot-g80.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.64,
+"stick_ms": null,
+"polling_hz": 998.94,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.26,
+"stick_ms": null,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Thunderobot G80 Ultra",
+"url": "https://gamepadla.com/thunderobot-g80-ultra.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.23,
+"stick_ms": 12.1,
+"polling_hz": 993.05,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.5,
+"stick_ms": 39.2,
+"polling_hz": 497.27,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 21.2,
+"stick_ms": 24.0,
+"polling_hz": 123.35,
+"primary": true
+}
+]
+},
+{
+"name": "Trust GXT 541 Muta",
+"url": "https://gamepadla.com/trust-gxt-541-muta.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Other",
+"button_ms": 6.87,
+"stick_ms": null,
+"polling_hz": 100.19,
+"primary": true
+}
+]
+},
+{
+"name": "Turtle Beach Recon Cloud",
+"url": "https://gamepadla.com/turtle-beach-recon-cloud.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.18,
+"stick_ms": null,
+"polling_hz": 237.02,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 11.0,
+"stick_ms": null,
+"polling_hz": 174.24,
+"primary": true
+}
+]
+},
+{
+"name": "Turtle Beach Stealth Pivot",
+"url": "https://gamepadla.com/turtle-beach-stealth-pivot.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 4.43,
+"stick_ms": 32.5,
+"polling_hz": 245.34,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 7.17,
+"stick_ms": 36.0,
+"polling_hz": 227.79,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 14.7,
+"stick_ms": 44.1,
+"polling_hz": 83.33,
+"primary": true
+}
+]
+},
+{
+"name": "Turtle Beach Victrix Pro BFG",
+"url": "https://gamepadla.com/victrix-pro-bfg.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 4.83,
+"stick_ms": 18.4,
+"polling_hz": 124.97,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.89,
+"stick_ms": 18.5,
+"polling_hz": 124.15,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 6.78,
+"stick_ms": 17.9,
+"polling_hz": 124.97,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.95,
+"stick_ms": 20.9,
+"polling_hz": 124.15,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 8.82,
+"stick_ms": 20.5,
+"polling_hz": 122.94,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 9.67,
+"stick_ms": 21.5,
+"polling_hz": 120.69,
+"primary": false
+}
+]
+},
+{
+"name": "Turtle Beach Victrix Pro BFG Reloaded",
+"url": "https://gamepadla.com/victrix-pro-bfg-reloaded.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 9.83,
+"stick_ms": 17.2,
+"polling_hz": 124.97,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 15.2,
+"stick_ms": 26.2,
+"polling_hz": 122.1,
+"primary": true
+}
+]
+},
+{
+"name": "Turtle Beach Victrix Pro BFG Reloaded Xbox",
+"url": "https://gamepadla.com/victrix-pro-bfg-reloaded-xbox.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 5.35,
+"stick_ms": 15.7,
+"polling_hz": 125.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 15.5,
+"stick_ms": 24.4,
+"polling_hz": 125.0,
+"primary": true
+}
+]
+},
+{
+"name": "Valve Steam Controller 2.0",
+"url": "https://gamepadla.com/steam-controller.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 6.6,
+"stick_ms": 4.07,
+"polling_hz": 256.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Steam",
+"button_ms": 4.12,
+"stick_ms": 5.08,
+"polling_hz": 241.49,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Steam",
+"button_ms": 6.25,
+"stick_ms": 7.75,
+"polling_hz": 258.46,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 9.14,
+"stick_ms": 7.35,
+"polling_hz": 271.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 9.76,
+"stick_ms": 8.04,
+"polling_hz": 129.0,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Steam",
+"button_ms": 7.26,
+"stick_ms": 10.2,
+"polling_hz": 134.23,
+"primary": true
+}
+]
+},
+{
+"name": "Vilcorn Z03",
+"url": "https://gamepadla.com/vilcorn-z03.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 22.4,
+"stick_ms": null,
+"polling_hz": 190.9,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 26.0,
+"stick_ms": null,
+"polling_hz": 190.79,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 28.8,
+"stick_ms": null,
+"polling_hz": 699.17,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 42.3,
+"stick_ms": null,
+"polling_hz": 64.97,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 48.1,
+"stick_ms": null,
+"polling_hz": 62.61,
+"primary": false
+}
+]
+},
+{
+"name": "Vilcorn Z04",
+"url": "https://gamepadla.com/vilcorn-z04.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 28.1,
+"stick_ms": null,
+"polling_hz": 799.58,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 28.2,
+"stick_ms": null,
+"polling_hz": 796.4,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 29.3,
+"stick_ms": null,
+"polling_hz": 681.68,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 30.1,
+"stick_ms": null,
+"polling_hz": 98.01,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Sony",
+"button_ms": 30.6,
+"stick_ms": null,
+"polling_hz": 98.75,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 35.8,
+"stick_ms": null,
+"polling_hz": 66.19,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 39.0,
+"stick_ms": null,
+"polling_hz": 112.24,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 56.6,
+"stick_ms": null,
+"polling_hz": 52.95,
+"primary": true
+}
+]
+},
+{
+"name": "Void GENESIS",
+"url": "https://gamepadla.com/void-genesis.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 2.14,
+"stick_ms": 1.7,
+"polling_hz": 1763.61,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 2.0,
+"stick_ms": 1.47,
+"polling_hz": 1819.09,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.01,
+"stick_ms": 0.5,
+"polling_hz": 2839.84,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Sony",
+"button_ms": 2.08,
+"stick_ms": 1.52,
+"polling_hz": 1859.53,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 0.92,
+"stick_ms": 0.53,
+"polling_hz": 2963.71,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 0.9,
+"stick_ms": 0.49,
+"polling_hz": 2927.14,
+"primary": false
+}
+]
+},
+{
+"name": "Void PS4 FireBird",
+"url": "https://gamepadla.com/void-ps4-firebird.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 1.97,
+"stick_ms": 3.06,
+"polling_hz": 1000.02,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 1.91,
+"stick_ms": 2.86,
+"polling_hz": 1000.09,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 3.45,
+"stick_ms": 4.4,
+"polling_hz": 250.0,
+"primary": false
+}
+]
+},
+{
+"name": "Xiaomi Mi Game Controller Bluetooth",
+"url": "https://gamepadla.com/xiaomi-mi-game-controller-bluetooth.html",
+"results": [
+{
+"connection": "Bluetooth",
+"mode": "Other",
+"button_ms": null,
+"stick_ms": null,
+"polling_hz": 49.93,
+"primary": false
+}
+]
+},
+{
+"name": "ZD Classic Legend",
+"url": "https://gamepadla.com/zd-classic-legend.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.52,
+"stick_ms": 10.7,
+"polling_hz": 997.01,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.6,
+"stick_ms": 30.9,
+"polling_hz": 486.62,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 14.6,
+"stick_ms": 27.7,
+"polling_hz": 407.17,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 20.1,
+"stick_ms": 44.7,
+"polling_hz": 97.75,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 19.3,
+"stick_ms": 48.0,
+"polling_hz": 124.92,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 23.7,
+"stick_ms": 63.5,
+"polling_hz": 74.27,
+"primary": false
+}
+]
+},
+{
+"name": "ZD Gaming Super Legend Excellence 8K",
+"url": "https://gamepadla.com/zd-gaming-super-legend-excellence-8k.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.53,
+"stick_ms": 0.57,
+"polling_hz": 8000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.54,
+"stick_ms": 0.75,
+"polling_hz": 8000.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.07,
+"stick_ms": 9.19,
+"polling_hz": 305.0,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 8.04,
+"stick_ms": 9.97,
+"polling_hz": 982.32,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 7.29,
+"stick_ms": 12.6,
+"polling_hz": 268.31,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 10.7,
+"stick_ms": 11.0,
+"polling_hz": 124.92,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 12.1,
+"stick_ms": 12.7,
+"polling_hz": 66.75,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 15.9,
+"stick_ms": 18.6,
+"polling_hz": 100.0,
+"primary": false
+}
+]
+},
+{
+"name": "Zd O+",
+"url": "https://gamepadla.com/zd-o.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.73,
+"stick_ms": null,
+"polling_hz": 990.1,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.4,
+"stick_ms": null,
+"polling_hz": 255.1,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.2,
+"stick_ms": null,
+"polling_hz": 145.24,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 25.3,
+"stick_ms": null,
+"polling_hz": 250.0,
+"primary": true
+}
+]
+},
+{
+"name": "ZD O+ Excellence",
+"url": "https://gamepadla.com/zd-o-excellence.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": null,
+"stick_ms": 9.94,
+"polling_hz": 800.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 9.0,
+"stick_ms": null,
+"polling_hz": 801.92,
+"primary": true
+},
+{
+"connection": "Dongle OC",
+"mode": "XInput",
+"button_ms": 13.5,
+"stick_ms": null,
+"polling_hz": 263.09,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 14.9,
+"stick_ms": null,
+"polling_hz": 261.92,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 15.3,
+"stick_ms": null,
+"polling_hz": 406.67,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 17.6,
+"stick_ms": null,
+"polling_hz": 100.13,
+"primary": false
+},
+{
+"connection": "Dongle",
+"mode": "DInput",
+"button_ms": 24.0,
+"stick_ms": null,
+"polling_hz": 124.13,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 25.6,
+"stick_ms": null,
+"polling_hz": 163.4,
+"primary": true
+}
+]
+},
+{
+"name": "ZD S Super Legend",
+"url": "https://gamepadla.com/zd-s-super-legend.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 11.5,
+"stick_ms": null,
+"polling_hz": 500.0,
+"primary": true
+}
+]
+},
+{
+"name": "ZD Ultimate Legend",
+"url": "https://gamepadla.com/zd-ultimate-legend.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.43,
+"stick_ms": 1.44,
+"polling_hz": 7786.0,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 11.2,
+"stick_ms": 9.64,
+"polling_hz": 330.0,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 11.0,
+"stick_ms": 22.0,
+"polling_hz": 210.48,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "Switch",
+"button_ms": 14.5,
+"stick_ms": 21.6,
+"polling_hz": 97.92,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 13.7,
+"stick_ms": 18.7,
+"polling_hz": 70.71,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "Switch",
+"button_ms": 18.9,
+"stick_ms": 21.4,
+"polling_hz": 99.81,
+"primary": false
+}
+]
+},
+{
+"name": "ZD Y-Wing Pro",
+"url": "https://gamepadla.com/zd-y-shadow-wing.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 8.28,
+"stick_ms": 17.2,
+"polling_hz": 991.08,
+"primary": true
+},
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 12.8,
+"stick_ms": 38.5,
+"polling_hz": 220.02,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "XInput",
+"button_ms": 13.5,
+"stick_ms": 34.3,
+"polling_hz": 390.02,
+"primary": true
+},
+{
+"connection": "Bluetooth",
+"mode": "Switch",
+"button_ms": 18.7,
+"stick_ms": 62.1,
+"polling_hz": 99.4,
+"primary": false
+}
+]
+},
+{
+"name": "ZIKE Z331",
+"url": "https://gamepadla.com/zike-z331.html",
+"results": [
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 7.09,
+"stick_ms": 29.9,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "Sony",
+"button_ms": 7.06,
+"stick_ms": 36.8,
+"polling_hz": 1000.0,
+"primary": false
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 6.99,
+"stick_ms": 38.1,
+"polling_hz": 1000.0,
+"primary": false
+}
+]
+},
+{
+"name": "Zuiki Evotop",
+"url": "https://gamepadla.com/zuiki-evotop.html",
+"results": [
+{
+"connection": "Dongle",
+"mode": "XInput",
+"button_ms": 3.72,
+"stick_ms": 5.48,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "XInput",
+"button_ms": 2.94,
+"stick_ms": 4.54,
+"polling_hz": 1000.0,
+"primary": true
+},
+{
+"connection": "Cable",
+"mode": "DInput",
+"button_ms": 12.8,
+"stick_ms": 14.9,
+"polling_hz": 124.84,
+"primary": false
+},
+{
+"connection": "Bluetooth",
+"mode": "DInput",
+"button_ms": 38.4,
+"stick_ms": 44.5,
+"polling_hz": 47.1,
+"primary": true
+}
+]
+}
+]
+}

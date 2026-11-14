@@ -44,6 +44,11 @@ select{flex:1;background:var(--panel-2);border:1px solid var(--line-2);border-ra
 .links{display:flex;flex-direction:column;gap:8px}
 .links .btn{text-align:left}
 .check{display:flex;align-items:center;gap:8px;color:var(--text-2);font-size:13px;cursor:pointer}
+.latask{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;border:1px solid var(--line-2);border-radius:8px;background:var(--panel-2);padding:12px 14px;margin-bottom:12px}
+.latask .lq{display:flex;flex-direction:column;gap:2px;font-size:13px}
+.latask .la{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.latask .ls{background:var(--bg);border:1px solid var(--line-2);border-radius:6px;padding:7px 10px;color:var(--text);font:inherit;width:190px}
+.latask select{flex:none;max-width:260px}
 .channels{margin-top:auto;position:relative;border-radius:10px;padding:1px;
  background:linear-gradient(135deg,#f5f5f7 0%,#6b6b73 30%,#d9d9de 55%,#4a4a52 80%,#c9c9cf 100%)}
 .channels .in{border-radius:9px;background:radial-gradient(120% 90% at 0% 0%,#26262b 0%,#141416 60%);padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -70,6 +75,9 @@ nav button,nav .btn{flex:none}
 nav .note{font-size:12px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .view{flex:1;min-height:0;overflow:auto}
 .view.hidden{display:none}
+#report:not(.hidden){display:flex;flex-direction:column}
+#report iframe{flex:1;height:auto;min-height:0}
+.latask{flex:none}
 #history{padding:20px}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;
@@ -217,6 +225,30 @@ async function openReport(log){
  f.onload=()=>{try{f.contentDocument.addEventListener("click",ev=>{const a=ev.target.closest("a[href]");
   if(a&&/^https?:/i.test(a.getAttribute("href"))){ev.preventDefault();api.open_link(a.getAttribute("href"));}});}catch(e){}};
  $("report").innerHTML="";$("report").appendChild(f);$("browser").style.display="";
+ latencyAsk(log);
+}
+
+async function latencyAsk(log){
+ const st=await api.latency_status(log);
+ if(!st.ok||st.state!=="ask"||current!==log)return;
+ const box=document.createElement("div");box.className="latask";
+ const top=st.suggest&&st.suggest[0];
+ const opts=(list)=>list.map(c=>`<option value="${esc(c.url)}">${esc(c.name)}</option>`).join("");
+ box.innerHTML=`<div class="lq"><strong>Hardware latency from Gamepadla.com</strong>
+  <span>${top?`Is <b>${esc(st.controller)}</b> the <b>${esc(top.name)}</b>?`:`No close match for <b>${esc(st.controller)}</b>.`}</span></div>
+  <div class="la">${top?`<button class="btn yes">Yes</button>`:""}
+  <input class="ls" placeholder="Search Gamepadla models" aria-label="Search Gamepadla models">
+  <select class="lsel" aria-label="Choose another model"><option value="">Choose another...</option>${opts(st.suggest||[])}</select>
+  <button class="btn no">No latency data</button></div>`;
+ $("report").prepend(box);
+ const choose=async url=>{box.innerHTML='<div class="lq">Saving...</div>';const r=await api.latency_choose(log,url);
+  if(!r.ok){toast(r.message);box.remove();return;}openReport(log);};
+ if(top)box.querySelector(".yes").onclick=()=>choose(top.url);
+ box.querySelector(".no").onclick=()=>choose("none");
+ box.querySelector(".lsel").onchange=ev=>{if(ev.target.value)choose(ev.target.value);};
+ let tmr=null;box.querySelector(".ls").oninput=ev=>{clearTimeout(tmr);tmr=setTimeout(async()=>{
+  const list=await api.latency_search(ev.target.value);
+  box.querySelector(".lsel").innerHTML=`<option value="">Choose (${list.length})...</option>`+opts(list);},250);};
 }
 let currentPath=null, initData={};
 

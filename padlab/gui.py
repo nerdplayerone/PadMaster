@@ -55,7 +55,16 @@ def report_is_stale(report: str, log_path: str) -> bool:
     if f'name="padlab-analysis" content="{ANALYSIS_VERSION}"' not in head:
         return True
     meta = read_log(log_path).meta
-    return f'name="padlab-name" content="{_html.escape(display_name(log_path, meta))}"' not in head
+    if f'name="padlab-name" content="{_html.escape(display_name(log_path, meta))}"' not in head:
+        return True
+    from .cli import latency_for
+    url = (latency_for(log_path, meta)["entry"] or {}).get("url", "")
+    return f'name="padlab-latency" content="{_html.escape(url)}"' not in head
+
+
+def _is_gamepadla_url(url: str) -> bool:
+    from .latency import by_url
+    return url.rstrip("/") == "https://gamepadla.com" or by_url(url) is not None
 
 
 class Api:
@@ -192,6 +201,39 @@ class Api:
         except Exception as exc:
             return {"ok": False, "message": f"The report failed: {exc}"}
 
+    def latency_status(self, log_file: str) -> dict:
+        """Gamepadla match for this session: chosen, auto, ask or none, with suggestions."""
+        from .cli import latency_for
+        from .history import display_name
+        from .logfile import read_log
+        log_path = os.path.join(self._out_dir, os.path.basename(log_file))
+        if not os.path.isfile(log_path):
+            return {"ok": False}
+        meta = read_log(log_path).meta
+        res = latency_for(log_path, meta)
+        return {"ok": True, "state": res["state"], "controller": display_name(log_path, meta),
+                "match": (res["entry"] or {}).get("name", ""), "suggest": res["suggest"]}
+
+    def latency_search(self, text: str) -> list[dict]:
+        from .latency import candidates
+        return candidates(str(text)[:80], limit=12)
+
+    def latency_choose(self, log_file: str, url: str) -> dict:
+        """Save the owner's choice for this controller: a Gamepadla page URL, or 'none'."""
+        from .history import load_settings, model_key, save_setting
+        from .latency import NONE, by_url
+        from .logfile import read_log
+        log_path = os.path.join(self._out_dir, os.path.basename(log_file))
+        if not os.path.isfile(log_path):
+            return {"ok": False, "message": "The log file is missing."}
+        if url != NONE and not by_url(url):
+            return {"ok": False, "message": "That controller is not in the Gamepadla data."}
+        choices = load_settings(self._out_dir).get("latency_map", {})
+        choices = choices if isinstance(choices, dict) else {}
+        choices[model_key(read_log(log_path).meta)] = url
+        save_setting(self._out_dir, "latency_map", choices)
+        return self.report_html(log_file)
+
     def rename(self, log_file: str, name: str) -> dict:
         """Name the controller model of this session. All its sessions get the name."""
         from .cli import make_report
@@ -226,8 +268,10 @@ class Api:
             os.startfile(self._out_dir)  # noqa: S606 (opens File Explorer)
 
     def open_link(self, url: str) -> bool:
-        """Open one of the owner's channels in the normal web browser. No other address is opened."""
-        if not is_channel_url(str(url)):
+        """Open an allowed address in the normal web browser: the owner's channels, or a
+        Gamepadla.com page from the bundled data. No other address is opened."""
+        url = str(url)
+        if not (is_channel_url(url) or _is_gamepadla_url(url)):
             return False
         import webbrowser
         webbrowser.open(url)

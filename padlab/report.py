@@ -71,6 +71,9 @@ svg text{fill:var(--text-secondary);font-size:11px;font-family:inherit}
 .legend span.sw{width:16px;height:10px;border-radius:2px;display:inline-block}
 details{margin-top:8px} summary{cursor:pointer;color:var(--text-secondary);font-size:14px}
 .foot{margin-top:40px;font-size:12px;color:var(--text-muted)}
+.gpl-head{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;margin-bottom:10px}
+.gpl a{color:var(--text)}
+.gpl-small{font-size:12px;color:var(--text-muted);margin:12px 0 0;line-height:1.5}
 .promo{margin-top:40px;margin-bottom:-24px;display:flex;gap:18px;align-items:center;padding:18px 20px;border-radius:12px;border:1px solid var(--line);
  background:radial-gradient(120% 120% at 0% 0%,rgba(255,255,255,.07),transparent 60%)}
 .promo img{width:64px;height:64px;flex:none}
@@ -224,7 +227,34 @@ def _logo_tag() -> str:
     return f'<img class="logo" alt="" width="56" height="56" src="{uri}">' if uri else ""
 
 
-def render(r: Report, log_name: str = "", name: str | None = None) -> str:
+def _latency_box(entry: dict, collected: str) -> str:
+    """Gamepadla.com hardware latency, in its own box. PadMaster did not measure these numbers."""
+    def ms(v):
+        return f"{v:.2f} ms" if isinstance(v, (int, float)) else "-"
+
+    def hz(v):
+        return f"{v:,.0f} Hz" if isinstance(v, (int, float)) else "-"
+
+    rows = [x for x in entry.get("results", []) if x.get("primary")] or entry.get("results", [])
+    body = "".join(
+        f"<tr><td>{e(x.get('connection', ''))}</td><td>{e(x.get('mode', ''))}</td>"
+        f"<td class='num'>{ms(x.get('button_ms'))}</td><td class='num'>{ms(x.get('stick_ms'))}</td>"
+        f"<td class='num'>{hz(x.get('polling_hz'))}</td></tr>" for x in rows)
+    url = e(entry.get("url", ""))
+    return ("<h2>Hardware latency (data: Gamepadla.com)</h2><div class='card gpl'>"
+            f"<div class='gpl-head'><strong>{e(entry.get('name', ''))}</strong> "
+            f"<a href='{url}' target='_blank' rel='noopener'>See the full results on Gamepadla.com &#x2197;</a></div>"
+            "<table><thead><tr><th>Connection</th><th>Mode</th><th>Button latency</th><th>Stick latency</th>"
+            f"<th>Polling rate</th></tr></thead><tbody>{body}</tbody></table>"
+            "<p class='gpl-small'>All numbers in this box were measured by <a href='https://gamepadla.com' "
+            "target='_blank' rel='noopener'>Gamepadla.com</a> with hardware testers. Full credit to Gamepadla. "
+            "PadMaster did not measure them, and they use a different method from PadMaster's own checks, so do not "
+            f"compare them directly. Data collected {e(collected or 'on an unknown date')}. "
+            "Gamepadla may have newer results. The match is by controller name, so check that it is your model.</p></div>")
+
+
+def render(r: Report, log_name: str = "", name: str | None = None, latency: dict | None = None,
+           latency_date: str = "") -> str:
     m = r.meta
     model = m.get("device", "Unknown controller")
     title = name or model
@@ -237,6 +267,7 @@ def render(r: Report, log_name: str = "", name: str | None = None) -> str:
            f'<meta name="viewport" content="width=device-width,initial-scale=1">'
            f'<meta name="padlab-analysis" content="{ANALYSIS_VERSION}">'
            f'<meta name="padlab-name" content="{e(title)}">'
+           f'<meta name="padlab-latency" content="{e((latency or {}).get("url", ""))}">'
            f'<title>PadMaster report: {e(title)}</title><style>{CSS}{SCROLLBAR_CSS}</style></head>'
            f'<body><div class="viz-root">']
 
@@ -275,6 +306,8 @@ def render(r: Report, log_name: str = "", name: str | None = None) -> str:
     out.append("</tbody></table></div>")
 
     # Sticks
+    if latency:
+        out.append(_latency_box(latency, latency_date))
     out.append("<h2>Sticks</h2><div class='grid2'>")
     for side, label in (("l", "Left stick"), ("r", "Right stick")):
         st = r.sticks.get(side, {})

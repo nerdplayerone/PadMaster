@@ -22,4 +22,4 @@ packages = ["padlab"]
 testpaths = ["tests"]
 
 [tool.setuptools.package-data]
-padlab = ["logo_128.png", "app.html"]
+padlab = ["logo_128.png", "app.html", "gamepadla_latency.json"]

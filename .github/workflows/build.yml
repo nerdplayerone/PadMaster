@@ -31,9 +31,9 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt pyinstaller
       # App build: opens the window, no console.
-      - run: pyinstaller --onefile --windowed --name PadMaster --icon assets/padlab.ico --add-data "padlab/logo_128.png:padlab" --add-data "padlab/app.html:padlab" run_padlab.py
+      - run: pyinstaller --onefile --windowed --name PadMaster --icon assets/padlab.ico --add-data "padlab/logo_128.png:padlab" --add-data "padlab/app.html:padlab" --add-data "padlab/gamepadla_latency.json:padlab" run_padlab.py
       # Console build: for debugging (padlab log, check, list).
-      - run: pyinstaller --onefile --console --name PadMaster-console --icon assets/padlab.ico --add-data "padlab/logo_128.png:padlab" --add-data "padlab/app.html:padlab" run_padlab.py
+      - run: pyinstaller --onefile --console --name PadMaster-console --icon assets/padlab.ico --add-data "padlab/logo_128.png:padlab" --add-data "padlab/app.html:padlab" --add-data "padlab/gamepadla_latency.json:padlab" run_padlab.py
       - uses: actions/upload-artifact@v4
         with:
           name: PadMaster-windows

@@ -87,7 +87,10 @@ def main(argv: list[str] | None = None) -> int:
     path = run(args.out, pad_index=args.pad, seconds=args.seconds, connection=args.connection)
     make_report(path, open_it=not args.no_open)
     if getattr(sys, "frozen", False):
-        input("\nPress Enter to close this window.")
+        try:
+            input("\nPress Enter to close this window.")
+        except EOFError:
+            pass  # no console input (for example, started from a script)
     return 0
 
 

@@ -7,3 +7,4 @@ dist/
 *.csv.gz
 *_report.html
 !docs/sample_report.html
+.venv/

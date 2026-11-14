@@ -41,9 +41,9 @@ The OK / Watch / Problem limits are PadLab defaults (judgement calls), not indus
 
 ### Option A: the .exe
 
-1. Download `PadLab.exe` from [Releases](../../releases).
+1. Download `PadMaster.exe` from [Releases](../../releases).
 2. Connect your controller.
-3. Start `PadLab.exe`. A console window opens.
+3. Start `PadMaster.exe`. A console window opens.
 4. Put the controller down for 10 seconds (hands-off drift check).
 5. Play your game. PadLab keeps logging in the background.
 6. Go back to the PadLab window and press **Ctrl+C**. The report opens in your browser.
@@ -82,7 +82,14 @@ python -m pytest
 python tools/make_sample.py       # makes docs/sample_report.html from synthetic data
 ```
 
-To make a release: push a tag such as `v0.1.0`. GitHub Actions builds `PadLab.exe` and attaches it to the release.
+To make a release: push a tag such as `v0.1.0`. GitHub Actions builds `PadMaster.exe` and attaches it to the release.
+
+## Made by
+
+PadMaster is made by the owner of these channels:
+
+- [@iamyourgamingnerd](https://www.youtube.com/@iamyourgamingnerd)
+- [@pressstartbynerd](https://www.youtube.com/@pressstartbynerd)
 
 ## Licence
 

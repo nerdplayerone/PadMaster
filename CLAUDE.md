@@ -50,7 +50,7 @@ tests/
   test_analysis.py checks that analysis finds the known faults, and no false alarms
   test_logger_smoke.py  runs the logger loop against a FAKE pygame
 tools/make_sample.py     makes docs/sample_report.html
-.github/workflows/build.yml  tests on Ubuntu, builds PadLab.exe on Windows, attaches to release on v* tags
+.github/workflows/build.yml  tests on Ubuntu, builds PadMaster.exe on Windows, attaches to release on v* tags
 run_padlab.py      PyInstaller entry point
 ```
 
@@ -79,7 +79,7 @@ Raw integers are kept on purpose. The inner deadzone check needs the exact small
 5. Keep all tests passing. Add a test for every bug you fix.
 6. OK / Watch / Problem limits live only in `THRESHOLDS` in `analysis.py`. The report must keep saying they are defaults, not industry standards.
 7. Never commit real logs or reports (`*.csv.gz`, `*_report.html`). They can contain long play sessions. `.gitignore` already blocks them.
-8. Do not add a dependency without asking the owner first. `pygame-ce` is the only runtime dependency. `tkinter` (part of Python) is allowed for the GUI.
+8. Do not add a dependency without asking the owner first. Runtime dependencies: `pygame-ce` and `pywebview` (approved by the owner on 2026-11-14, for the app window and the report inside the app).
 9. Make small commits with clear messages. Do not push to GitHub until the owner says so.
 
 ## 5. Work order
@@ -168,14 +168,17 @@ If input stops while the game has focus:
 
 Requirements (in this order of importance):
 
-1. A small window built with `tkinter` (ships with Python, no new dependency).
+1. The app window is a local page (`padlab/app.html`) shown with `pywebview` (Edge WebView2). It loads nothing from the internet. The report opens inside the app (owner request, 2026-11-14). The HTML report file is still saved next to each log.
+1b. **History:** a list of every session in the logs folder (`padlab/history.py`), with CSV export. `history.json` is only a cache; the logs are the source of truth.
+1c. **Controller name:** before Start, the owner types or selects which physical pad this is ("Which controller is this?"). It defaults to the last name used. The logger writes it to the metadata as `label`. Sessions with a name group by that name; sessions without one group by model GUID. Renaming a session renames every session in its group (owner request, 2026-11-14). The owner also selects the connection (Wired, Dongle, Bluetooth; default: the last one). It is stored as `connection` in the metadata and shown in History, the report and Compare. PadMaster can't detect it itself.
 2. **Start / Stop** button. Players must not need Ctrl+C.
 3. A **10-second countdown** at the start: "Put the controller down." Then "Logging. Play your game."
 4. **Live counters:** time logged, inputs, disconnects. The input counter shows the owner that background logging works.
 5. A **controller dropdown** (from `list_devices`), with a refresh button.
 6. **Open last report** and **Open logs folder** buttons.
 7. **Always-on-top** option, off by default.
-8. Dark theme, sans-serif font (Segoe UI on Windows).
+8. Black and silver theme to match the owner logo, sans-serif font (Segoe UI on Windows). The report uses the same theme (light only for print).
+9. Window and taskbar icon: the owner logo (`assets/padlab.ico`, set with `iconbitmap`). Bundle the .ico in the .exe with `--add-data`.
 
 Architecture (recommendation and reason):
 
@@ -205,7 +208,7 @@ The guided run reuses the same log format and analysis, plus a prompt track (`ki
 ### Phase 6: release
 
 1. The owner makes the GitHub repo **private** first.
-2. Push. Check that the GitHub Actions run is green and that `PadLab.exe` is in the run artefacts.
+2. Push. Check that the GitHub Actions run is green and that `PadMaster.exe` is in the run artefacts.
 3. The owner downloads the .exe and repeats the Phase 2c test with it (not with Python).
 4. Check Windows SmartScreen and Defender. An unsigned PyInstaller one-file .exe can show a warning (inference). Write what the owner sees in the README, with the steps to run it. Do not tell users to turn off their antivirus.
 5. Update the README: remove "not tested on real hardware" only for the pads in `docs/hardware_results.md`. Keep a list of tested pads.
@@ -218,6 +221,7 @@ The guided run reuses the same log format and analysis, plus a prompt track (`ki
 - Keep `analysis.py` free of pygame imports, so tests run without a controller.
 - Each new check in `analysis.py` needs: a `THRESHOLDS` entry, a `Finding` with a plain-English `detail` text, a synthetic test with a known fault, and a test that a clean log gives no false alarm.
 - The report stays one self-contained HTML file (no CDN, no web fonts, no JavaScript needed to read it). SVG `<title>` elements give hover values.
+- Scroll bars: every scroll bar (app window, report, any new page) uses `SCROLLBAR_CSS` from `padlab/theme.py` (owner request, 2026-11-14). Do not style scroll bars anywhere else. A test checks this.
 - Report colours: use the CSS variables already in `report.py`. Status always shows an icon and a word, never colour alone.
 - Run `python -m pytest -q` and `python tools/make_sample.py` before each commit. Look at the sample report after any report change.
 
@@ -237,6 +241,6 @@ No long logs in the message. Put long output in a file and give the file name.
 
 - Do not claim latency numbers.
 - Do not compare PadLab results with Gamepadla numbers as if they used the same method.
-- Do not add brand names, logos or controller product images to the app or report.
+- Do not add third-party brand names, logos or controller product images to the app or report. The owner's own logo (`assets/logo.png`) is allowed.
 - Do not push, tag or make the repo public without the owner's approval.
 - Do not delete the owner's logs.

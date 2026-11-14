@@ -36,6 +36,7 @@ CONTROLLER_BUTTONS = {
 POLL_SLEEP_S = 0.0005  # about 1 kHz loop. Sets the timing precision of the log.
 FLUSH_EVERY_S = 1.0
 STATUS_EVERY_S = 5.0
+LOOP_RATE_WINDOW_S = 10.0  # measure loop passes per second over the first 10 s
 
 
 def _import_pygame():
@@ -82,6 +83,21 @@ class _Pad:
         self.controller = controller.Controller(index) if self.mapped else None
         self.hat = (0, 0)
 
+    def axis_snapshot(self) -> list[tuple[str, int]]:
+        """Current raw value of each axis.
+
+        SDL sends axis events only when a value changes. A stick that does not move
+        at the start gives no rows, so the analysis can't see the hands-off window.
+        These rows give the start value.
+        """
+        if self.mapped:
+            return [(name, int(self.controller.get_axis(i))) for i, name in CONTROLLER_AXES.items()]
+        guess = {0: "lx", 1: "ly", 2: "rx", 3: "ry"}
+        return [
+            (guess.get(i, f"j{i}"), int(round(self.joystick.get_axis(i) * 32767)))
+            for i in range(self.joystick.get_numaxes())
+        ]
+
     def describe(self) -> dict:
         return {
             "device": self.name,
@@ -107,15 +123,173 @@ def _hat_rows(old: tuple[int, int], new: tuple[int, int]) -> list[tuple[str, int
     return rows
 
 
-def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
-    """Log until Ctrl+C (or ``seconds``). Returns the log file path."""
+CHECK_AXIS_MIN_INTERVAL_S = 0.1  # at most 10 lines per second per axis
+CHECK_AXIS_MIN_CHANGE = 0.02     # print only changes of 2% or more
+
+
+def _axis_fraction(name: str, raw: int) -> float:
+    """Raw SDL value to a fraction: sticks -1..1, triggers 0..1."""
+    return max(-1.0, min(1.0, raw / 32767.0))
+
+
+def check(
+    pad_index: int = 0,
+    seconds: float | None = None,
+    out=print,
+    clock=time.perf_counter,
+) -> int:
+    """Print each input as it happens, to confirm the button and axis names.
+
+    Writes no log file. Stops on Ctrl+C (or after ``seconds``). Returns the number
+    of lines printed.
+    """
     pygame, controller = _import_pygame()
     pygame.init()
     controller.init()
     pygame.joystick.init()
 
-    print(f"PadLab {__version__}. Waiting for a controller...")
+    out(f"PadMaster {__version__}. Waiting for a controller...")
     while pygame.joystick.get_count() <= pad_index:
+        pygame.event.pump()
+        time.sleep(0.25)
+
+    pad = _Pad(pygame, controller, pad_index)
+    out(f"Checking: {pad.name}  ({'controller' if pad.mapped else 'joystick'} mode)")
+    if not pad.mapped:
+        out("  Note: SDL has no mapping for this pad. Stick and trigger names are guesses.")
+    out("  Press each button once. Move each stick in a full circle.")
+    out("  Press Ctrl+C to stop.\n")
+
+    printed = {}   # axis name -> (time, value) of the last printed line
+    pending = {}   # axis name -> newest value not printed yet
+    lines = 0
+    connected = True
+    t0 = clock()
+
+    def emit(text: str) -> None:
+        nonlocal lines
+        out(text)
+        lines += 1
+
+    def axis_in(name: str, value: float) -> None:
+        pending[name] = value
+
+    try:
+        while True:
+            events = pygame.event.get()
+            for ev in events:
+                inst = getattr(ev, "instance_id", None)
+                if inst != pad.instance_id:
+                    # SDL also sends JOYDEVICEADDED at start for a pad that is
+                    # already connected. Report it only after a "lost" line.
+                    if ev.type == pygame.JOYDEVICEADDED and not connected:
+                        for i in range(pygame.joystick.get_count()):
+                            if pygame.joystick.Joystick(i).get_guid() == pad.guid:
+                                pad = _Pad(pygame, controller, i)
+                                emit("controller connected")
+                                connected = True
+                                break
+                    continue
+                if ev.type == pygame.CONTROLLERAXISMOTION and pad.mapped:
+                    name = CONTROLLER_AXES.get(ev.axis)
+                    if name:
+                        axis_in(name, _axis_fraction(name, ev.value))
+                elif ev.type in (pygame.CONTROLLERBUTTONDOWN, pygame.CONTROLLERBUTTONUP) and pad.mapped:
+                    name = CONTROLLER_BUTTONS.get(ev.button, f"btn{ev.button}")
+                    emit(f"button {name} {'down' if ev.type == pygame.CONTROLLERBUTTONDOWN else 'up'}")
+                elif ev.type == pygame.JOYAXISMOTION and not pad.mapped:
+                    name = {0: "lx", 1: "ly", 2: "rx", 3: "ry"}.get(ev.axis, f"j{ev.axis}")
+                    axis_in(name, max(-1.0, min(1.0, float(ev.value))))
+                elif ev.type in (pygame.JOYBUTTONDOWN, pygame.JOYBUTTONUP) and not pad.mapped:
+                    emit(f"button jb{ev.button} {'down' if ev.type == pygame.JOYBUTTONDOWN else 'up'}")
+                elif ev.type == pygame.JOYHATMOTION and not pad.mapped and ev.hat == 0:
+                    for name, val in _hat_rows(pad.hat, tuple(ev.value)):
+                        emit(f"button {name} {'down' if val else 'up'}")
+                    pad.hat = tuple(ev.value)
+                elif ev.type == pygame.JOYDEVICEREMOVED:
+                    emit("controller lost")
+                    connected = False
+
+            now = clock()
+            for name, value in list(pending.items()):
+                last_t, last_v = printed.get(name, (None, None))
+                if last_v is not None and abs(value - last_v) < CHECK_AXIS_MIN_CHANGE:
+                    del pending[name]
+                    continue
+                if last_t is not None and now - last_t < CHECK_AXIS_MIN_INTERVAL_S:
+                    continue  # keep it pending; print it when the interval has passed
+                emit(f"axis {name} {value:.2f}")
+                printed[name] = (now, value)
+                del pending[name]
+
+            if seconds is not None and now - t0 >= seconds:
+                break
+            time.sleep(POLL_SLEEP_S)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        pygame.quit()
+        out("\nStopped.")
+    return lines
+
+
+IPC_STATUS_EVERY_S = 1.0
+
+
+def stdin_stop_watcher(flag: dict, stream=None) -> None:
+    """Background thread: set ``flag["stop"]`` on a 'stop' line or at end of input."""
+    import threading
+
+    def watch():
+        src = stream if stream is not None else sys.stdin
+        try:
+            for line in src:
+                if line.strip().lower() == "stop":
+                    break
+        except (OSError, ValueError):
+            pass
+        flag["stop"] = True
+
+    threading.Thread(target=watch, daemon=True).start()
+
+
+def emit(obj: dict) -> None:
+    """Write one JSON status line for the app window."""
+    import json
+    sys.stdout.write(json.dumps(obj) + "\n")
+    sys.stdout.flush()
+
+
+CONNECTIONS = ("Wired", "Dongle", "Bluetooth")
+
+
+def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
+        ipc: bool = False, stop_flag: dict | None = None, label: str = "",
+        connection: str = "") -> str:
+    """Log until Ctrl+C, a stop request, or ``seconds``. Returns the log file path.
+
+    IPC mode (used by the app window): no text for people on stdout. One JSON status
+    line per second instead, for example
+    {"state": "logging", "t": 12.0, "inputs": 345, "disconnects": 0}.
+    Returns "" if stopped before a controller was found.
+    """
+    say = (lambda *a, **k: None) if ipc else print
+    if stop_flag is None:
+        stop_flag = {"stop": False}
+        if ipc:
+            stdin_stop_watcher(stop_flag)
+    pygame, controller = _import_pygame()
+    pygame.init()
+    controller.init()
+    pygame.joystick.init()
+
+    say(f"PadMaster {__version__}. Waiting for a controller...")
+    while pygame.joystick.get_count() <= pad_index:
+        if ipc:
+            emit({"state": "waiting"})
+        if stop_flag["stop"]:
+            pygame.quit()
+            return ""
         pygame.event.pump()
         time.sleep(0.25)
 
@@ -132,27 +306,44 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
         "sdl": ".".join(str(v) for v in pygame.get_sdl_version()),
         **pad.describe(),
     }
+    label = " ".join(str(label or "").split())[:60]
+    if label:
+        meta["label"] = label  # the name the owner gave this physical pad
+    if connection in CONNECTIONS:
+        meta["connection"] = connection  # selected by the owner; PadMaster can't detect it
     writer = LogWriter(path, meta)
 
-    print(f"Logging: {pad.name}  ({meta['mode']} mode)")
+    say(f"Logging: {pad.name}  ({meta['mode']} mode)")
     if not pad.mapped:
-        print("  Note: SDL has no mapping for this pad. Stick and trigger names are guesses.")
-    print(f"  Log file: {path}")
-    print("\n  1. Put the controller down for 10 seconds (hands-off drift check).")
-    print("  2. Play your game. PadLab keeps logging in the background.")
-    print("  3. Come back to this window and press Ctrl+C to stop and make the report.\n")
+        say("  Note: SDL has no mapping for this pad. Stick and trigger names are guesses.")
+    say(f"  Log file: {path}")
+    say("\n  1. Put the controller down for 10 seconds (hands-off drift check).")
+    say("  2. Play your game. PadMaster keeps logging in the background.")
+    say("  3. Come back to this window and press Ctrl+C to stop and make the report.\n")
 
+    pygame.event.pump()
     t0 = time.perf_counter()
-    last_flush = last_status = t0
+    for name, value in pad.axis_snapshot():
+        writer.write(0.0, "a", name, value)
+    last_flush = last_status = last_ipc = t0
+    if ipc:
+        emit({"state": "logging", "t": 0.0, "inputs": 0, "disconnects": 0,
+              "connected": True, "device": pad.name, "log": path})
     n_events = 0
     disconnects = 0
     connected = True
+    loop_passes = 0
+    loop_rate_done = False
 
     try:
         while True:
             events = pygame.event.get()
             now = time.perf_counter()
             t_ms = (now - t0) * 1000.0
+            loop_passes += 1
+            if not loop_rate_done and now - t0 >= LOOP_RATE_WINDOW_S:
+                writer.meta({"loop_hz": round(loop_passes / (now - t0), 1)})
+                loop_rate_done = True
 
             for ev in events:
                 inst = getattr(ev, "instance_id", None)
@@ -182,7 +373,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
                     writer.write(t_ms, "c", "pad", 0)
                     disconnects += 1
                     connected = False
-                    print(f"  [{t_ms / 1000:8.1f}s] Controller lost.")
+                    say(f"  [{t_ms / 1000:8.1f}s] Controller lost.")
                 elif ev.type == pygame.JOYDEVICEADDED and not connected:
                     # Re-open the first device with the same GUID.
                     for i in range(pygame.joystick.get_count()):
@@ -190,7 +381,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
                             pad = _Pad(pygame, controller, i)
                             writer.write(t_ms, "c", "pad", 1)
                             connected = True
-                            print(f"  [{t_ms / 1000:8.1f}s] Controller back.")
+                            say(f"  [{t_ms / 1000:8.1f}s] Controller back.")
                             break
 
             if now - last_flush >= FLUSH_EVERY_S:
@@ -198,8 +389,14 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
                 last_flush = now
             if now - last_status >= STATUS_EVERY_S:
                 mins = (now - t0) / 60
-                print(f"  {mins:6.1f} min   {n_events:9d} inputs   {disconnects} disconnects", end="\r")
+                say(f"  {mins:6.1f} min   {n_events:9d} inputs   {disconnects} disconnects", end="\r")
                 last_status = now
+            if ipc and now - last_ipc >= IPC_STATUS_EVERY_S:
+                emit({"state": "logging", "t": round(now - t0, 1), "inputs": n_events,
+                      "disconnects": disconnects, "connected": connected})
+                last_ipc = now
+            if stop_flag["stop"]:
+                break
             if seconds is not None and now - t0 >= seconds:
                 break
             time.sleep(POLL_SLEEP_S)
@@ -210,6 +407,6 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None) -> str:
         writer.meta({"ended_ms": round(ended_ms, 3)})
         writer.close()
         pygame.quit()
-        print("\nStopped.")
+        say("\nStopped.")
 
     return path

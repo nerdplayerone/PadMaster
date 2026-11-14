@@ -1,4 +1,4 @@
-"""Turn a PadLab log into measurements and findings.
+"""Turn a PadMaster log into measurements and findings.
 
 Pure Python (no numpy), so the Windows build stays small.
 
@@ -23,6 +23,10 @@ from .logfile import (
     Log,
 )
 
+# Increase when a check or a threshold changes. Old reports and the history cache are
+# then made again from the logs.
+ANALYSIS_VERSION = 6  # raise when checks or report layout change: old reports are made again
+
 THRESHOLDS = {
     # Sticks
     "rest_radius": 0.25,          # a stick under this magnitude may be "at rest"
@@ -38,6 +42,21 @@ THRESHOLDS = {
     "outer_min_covered": 12,
     "outer_ok": 0.97, "outer_watch": 0.90,
     "min_stick_samples": 200,
+    # Stick resolution (steps from centre, bits)
+    "resolution_min_gaps": 50,     # neighbouring value pairs needed on an axis
+    "resolution_max_gap": 2048,    # larger gaps are unvisited ranges, not steps
+    "bits_ok": 10.0, "bits_watch": 8.0,
+    "bits_cap": 12.0,              # above this the value can come from driver smoothing: show "12+ bits"
+    # Circularity
+    "circle_min_covered": 30,     # of the 36 directions
+    "circle_full_tilt": 0.85,     # a direction counts only if the stick got this far
+    "circle_ok": 0.05, "circle_watch": 0.10,
+    # Noise at rest (hands-off window)
+    "noise_ok": 0.005, "noise_watch": 0.02,
+    "noise_window_ms": 10000,
+    # Update rate and interval spread
+    "timing_min_intervals": 500,
+    "spread_ok_ms": 1.5, "spread_watch_ms": 4.0,
     # Stutter
     "stream_mag": 0.2,
     "stutter_min_gap_ms": 40,
@@ -87,6 +106,7 @@ class Report:
     dpad: dict = field(default_factory=dict)
     chords: dict = field(default_factory=dict)
     connection: dict = field(default_factory=dict)
+    timing: dict = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------- helpers
@@ -291,6 +311,100 @@ def analyse_stick(log: Log, side: str) -> dict:
                     stutters.append({"t": s[i][0], "gap_ms": dt, "jump": jump})
     res["stutters"] = stutters
     res["motion_min"] = motion_ms / 60000
+    # Intervals during steady movement (pauses removed), for the update-rate check.
+    res["move_intervals"] = [d for d in dts if d <= 3 * med] if dts else []
+
+    res.update(_stick_resolution(s))
+    res.update(_circularity(res["reach"]))
+    res.update(_rest_noise(s, res["handsoff"]))
+    return res
+
+
+def _stick_resolution(s) -> dict:
+    """Step size from the raw values: the most common gap between neighbouring values.
+
+    In a long session the stick passes through most positions, so neighbouring values
+    in the sorted list are one step apart. Steps from centre = 32767 / step.
+    """
+    th = THRESHOLDS
+    out: dict = {}
+    for idx, axis in ((1, "x"), (2, "y")):
+        vals = sorted({smp[idx] for smp in s})
+        gaps = [b - a for a, b in zip(vals, vals[1:]) if 0 < b - a <= th["resolution_max_gap"]]
+        # Need values over at least half the full range. Count gaps, not values: a coarse
+        # stick has few values, and that is the fault this check must find.
+        if len(vals) < 2 or vals[-1] - vals[0] < AXIS_MAX or len(gaps) < th["resolution_min_gaps"]:
+            out[f"step_{axis}"] = float("nan")
+            continue
+        counts: dict[int, int] = {}
+        for g in gaps:
+            counts[g] = counts.get(g, 0) + 1
+        top = max(counts.values())
+        # Several sizes near the top count (rounding gives e.g. 64 and 65): take their mean.
+        near = [g for g, c in counts.items() if c >= 0.5 * top]
+        out[f"step_{axis}"] = sum(g * counts[g] for g in near) / sum(counts[g] for g in near)
+    steps = [v for v in (out["step_x"], out["step_y"]) if not math.isnan(v)]
+    if steps:
+        worst = max(steps)
+        out["steps_from_centre"] = AXIS_MAX / worst
+        out["bits"] = math.log2(65536 / worst)
+    else:
+        out["steps_from_centre"] = out["bits"] = float("nan")
+    return out
+
+
+def _circularity(reach: list) -> dict:
+    """Mean distance of the outer edge from a circle, as a share of its mean radius.
+
+    Only directions where the stick was pushed to full tilt count. In normal play a
+    stick is often pushed only part way, and that is not a fault of the stick.
+    """
+    covered = [r for r in reach if r is not None and r >= THRESHOLDS["circle_full_tilt"]]
+    if len(covered) < THRESHOLDS["circle_min_covered"]:
+        return {"circle_error": float("nan")}
+    mean = sum(covered) / len(covered)
+    return {"circle_error": sum(abs(r - mean) for r in covered) / len(covered) / mean}
+
+
+def _rest_noise(s, handsoff: dict | None) -> dict:
+    """Largest movement of the reported value while nobody touched the stick (hands-off window)."""
+    if not handsoff:
+        return {"rest_noise": float("nan"), "rest_changes_per_s": float("nan")}
+    # Use only the instructed 10 s, and leave out the last second before the window ends
+    # (the player picks up the controller then).
+    t0 = handsoff["t"]
+    t1 = min(t0 + THRESHOLDS["noise_window_ms"], t0 + handsoff["dur"] - 1000)
+    if t1 - t0 < 3000:
+        return {"rest_noise": float("nan"), "rest_changes_per_s": float("nan")}
+    xs = [norm(x) for t, x, _ in s if t0 <= t < t1]
+    ys = [norm(y) for t, _, y in s if t0 <= t < t1]
+    if not xs:
+        return {"rest_noise": float("nan"), "rest_changes_per_s": float("nan")}
+    noise = max(max(xs) - min(xs), max(ys) - min(ys))
+    return {"rest_noise": noise, "rest_changes_per_s": (len(xs) - 1) / ((t1 - t0) / 1000)}
+
+
+def analyse_timing(log: Log, sticks: dict) -> dict:
+    """Update rate and interval spread seen by PadMaster while a stick moves steadily.
+
+    This is the rate at which PadMaster receives new stick values. It is not the USB polling
+    rate measured by other tools, and it is not input latency.
+    """
+    th = THRESHOLDS
+    iv = [d for s in sticks.values() for d in s.get("move_intervals", [])]
+    res: dict = {"intervals": len(iv), "loop_hz": log.meta.get("loop_hz")}
+    if len(iv) < th["timing_min_intervals"]:
+        res["enough"] = False
+        return res
+    res["enough"] = True
+    med = percentile(iv, 0.5)
+    mean = sum(iv) / len(iv)
+    res["median_ms"] = med
+    res["rate_hz"] = 1000 / med if med > 0 else float("nan")
+    res["spread_ms"] = math.sqrt(sum((d - mean) ** 2 for d in iv) / len(iv))
+    res["p10_ms"], res["p90_ms"] = percentile(iv, 0.1), percentile(iv, 0.9)
+    lh = res["loop_hz"]
+    res["at_limit"] = bool(lh) and res["rate_hz"] > lh / 2
     return res
 
 
@@ -548,6 +662,26 @@ def build_findings(r: Report) -> None:
        str(c["disconnects"]),
        "The controller was lost and came back." if c["disconnects"] else "No disconnects in this session.")
 
+    tm = r.timing
+    not_latency = ("This is how often PadMaster gets new stick values on this PC. It is not input latency, and "
+                   "it does not use the same method as other test sites.")
+    if not tm.get("enough"):
+        _f(F, "update_rate", "Update rate seen by PadMaster", NODATA, "-",
+           "Not enough steady stick movement to measure it. " + not_latency)
+        _f(F, "update_spread", "Update interval spread", NODATA, "-", "Not enough steady stick movement.")
+    else:
+        limit = (f" PadMaster checks for input about {tm['loop_hz']:.0f} times per second, so rates above about "
+                 f"{tm['loop_hz'] / 2:.0f} Hz can't be measured exactly." if tm.get("loop_hz") else "")
+        _f(F, "update_rate", "Update rate seen by PadMaster", INFO,
+           f"{tm['rate_hz']:.0f} Hz ({tm['median_ms']:.1f} ms)",
+           f"Median time between new stick values while a stick moved. {not_latency}{limit}"
+           + (" This result is at that limit." if tm["at_limit"] else ""))
+        _f(F, "update_spread", "Update interval spread",
+           grade(tm["spread_ms"], th["spread_ok_ms"], th["spread_watch_ms"]), f"{tm['spread_ms']:.1f} ms",
+           f"How much the time between updates changes (standard deviation). 10% of intervals were below "
+           f"{tm['p10_ms']:.1f} ms and 10% above {tm['p90_ms']:.1f} ms. A large spread means uneven updates, "
+           "which you can feel as less smooth aim. Wireless connections often have a larger spread.")
+
     for side, label in (("l", "Left stick"), ("r", "Right stick")):
         s = r.sticks.get(side, {})
         if not s.get("enough"):
@@ -593,6 +727,40 @@ def build_findings(r: Report) -> None:
                grade(s["outer_avg"], th["outer_ok"], th["outer_watch"], higher_is_better=True), pct(s["outer_avg"]),
                f"Average maximum value at full tilt, over {s['reach_covered']} of {th['outer_sectors']} directions. "
                f"Weakest direction: {pct(s['outer_min'])}.")
+        # Circularity
+        if math.isnan(s["circle_error"]):
+            _f(F, f"{side}_circle", f"{label}: circularity error", NODATA, "-",
+               f"Needs full-tilt movement in at least {th['circle_min_covered']} of {th['outer_sectors']} "
+               f"directions. This session has {s['reach_covered']}. Turn the stick in full circles to test it.")
+        else:
+            _f(F, f"{side}_circle", f"{label}: circularity error",
+               grade(s["circle_error"], th["circle_ok"], th["circle_watch"]), pct(s["circle_error"]),
+               "How far the outer edge is from a perfect circle, as a share of its average size. "
+               "A high value means the stick reaches further in some directions than in others.")
+        # Resolution
+        if math.isnan(s["bits"]):
+            _f(F, f"{side}_resolution", f"{label}: resolution", NODATA, "-",
+               "Not enough different stick positions in this session to find the step size.")
+        else:
+            fine = s["bits"] >= th["bits_cap"]
+            _f(F, f"{side}_resolution", f"{label}: resolution",
+               grade(s["bits"], th["bits_ok"], th["bits_watch"], higher_is_better=True),
+               f"{th['bits_cap']:.0f}+ bits" if fine else f"{s['bits']:.1f} bits ({s['steps_from_centre']:,.0f} steps)",
+               "Number of steps the pad reports from the centre to the edge, from the most common gap "
+               "between values. More steps give smoother aim. "
+               + (f"Above {th['bits_cap']:.0f} bits PadMaster can't tell real steps from driver smoothing, so it "
+                  "shows only that the steps are fine." if fine else
+                  "If the driver smooths or rescales the values, the real resolution can be lower than shown."))
+        # Noise at rest
+        if math.isnan(s["rest_noise"]):
+            _f(F, f"{side}_noise", f"{label}: noise at rest", NODATA, "-",
+               "Needs the hands-off check: put the controller down for 10 seconds at the start.")
+        else:
+            _f(F, f"{side}_noise", f"{label}: noise at rest",
+               grade(s["rest_noise"], th["noise_ok"], th["noise_watch"]), pct(s["rest_noise"]),
+               f"How much the value moved while nobody touched the stick (hands-off check). "
+               f"{s['rest_changes_per_s']:.1f} value changes per second. "
+               + ("The pad reported no change at all. A driver deadzone can hide noise." if s["rest_noise"] == 0 else ""))
         # Stutter
         if s["motion_min"] >= 0.5:
             rate = len(s["stutters"]) / s["motion_min"]
@@ -676,6 +844,7 @@ def analyse(log: Log) -> Report:
     r.dpad = analyse_dpad(log)
     r.chords = analyse_chords(log)
     r.connection = analyse_connection(log)
+    r.timing = analyse_timing(log, r.sticks)
     _drop_flicker_doubles(r)
     build_findings(r)
     return r
@@ -685,4 +854,79 @@ def summary_counts(findings: Iterable[Finding]) -> dict[str, int]:
     out = {OK: 0, WATCH: 0, PROBLEM: 0, NODATA: 0, INFO: 0}
     for f in findings:
         out[f.status] = out.get(f.status, 0) + 1
+    return out
+
+
+# ---------------------------------------------------------------- comparison values
+
+# Numbers for the Compare view. "better": which way is better. "ok"/"watch": THRESHOLDS
+# keys for the limit lines (None = information only). "pct": stored as a fraction,
+# shown as a percentage.
+METRICS = [
+    {"key": "update_rate_hz", "label": "Update rate seen by PadMaster", "unit": "Hz", "better": "high", "ok": None, "watch": None, "pct": False},
+    {"key": "update_spread_ms", "label": "Update interval spread", "unit": "ms", "better": "low", "ok": "spread_ok_ms", "watch": "spread_watch_ms", "pct": False},
+    {"key": "l_drift", "label": "Left stick: drift at rest", "unit": "%", "better": "low", "ok": "drift_ok", "watch": "drift_watch", "pct": True},
+    {"key": "r_drift", "label": "Right stick: drift at rest", "unit": "%", "better": "low", "ok": "drift_ok", "watch": "drift_watch", "pct": True},
+    {"key": "l_noise", "label": "Left stick: noise at rest", "unit": "%", "better": "low", "ok": "noise_ok", "watch": "noise_watch", "pct": True},
+    {"key": "r_noise", "label": "Right stick: noise at rest", "unit": "%", "better": "low", "ok": "noise_ok", "watch": "noise_watch", "pct": True},
+    {"key": "l_inner", "label": "Left stick: centre deadzone", "unit": "%", "better": "low", "ok": "inner_dz_ok", "watch": "inner_dz_watch", "pct": True},
+    {"key": "r_inner", "label": "Right stick: centre deadzone", "unit": "%", "better": "low", "ok": "inner_dz_ok", "watch": "inner_dz_watch", "pct": True},
+    {"key": "l_axial", "label": "Left stick: cross-shaped deadzone", "unit": "%", "better": "low", "ok": "axial_ok", "watch": "axial_watch", "pct": True},
+    {"key": "r_axial", "label": "Right stick: cross-shaped deadzone", "unit": "%", "better": "low", "ok": "axial_ok", "watch": "axial_watch", "pct": True},
+    {"key": "l_outer", "label": "Left stick: outer reach", "unit": "%", "better": "high", "ok": "outer_ok", "watch": "outer_watch", "pct": True},
+    {"key": "r_outer", "label": "Right stick: outer reach", "unit": "%", "better": "high", "ok": "outer_ok", "watch": "outer_watch", "pct": True},
+    {"key": "l_circle", "label": "Left stick: circularity error", "unit": "%", "better": "low", "ok": "circle_ok", "watch": "circle_watch", "pct": True},
+    {"key": "r_circle", "label": "Right stick: circularity error", "unit": "%", "better": "low", "ok": "circle_ok", "watch": "circle_watch", "pct": True},
+    {"key": "l_bits", "label": "Left stick: resolution", "unit": "bits", "better": "high", "ok": "bits_ok", "watch": "bits_watch", "pct": False},
+    {"key": "r_bits", "label": "Right stick: resolution", "unit": "bits", "better": "high", "ok": "bits_ok", "watch": "bits_watch", "pct": False},
+    {"key": "lt_start", "label": "Left trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
+    {"key": "rt_start", "label": "Right trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
+    {"key": "doubles", "label": "Double inputs", "unit": "count", "better": "low", "ok": "double_watch", "watch": "double_problem", "pct": False},
+    {"key": "dpad_flicker", "label": "D-pad: diagonal flicker", "unit": "%", "better": "low", "ok": "flicker_ok_pct", "watch": "flicker_watch_pct", "pct": False},
+    {"key": "disconnects", "label": "Disconnects", "unit": "count", "better": "low", "ok": None, "watch": None, "pct": False},
+]
+
+
+def metric_values(r: Report) -> dict[str, float | None]:
+    """One number per METRICS entry for this session. None when there is no result."""
+    def ok(v):
+        return None if v is None or (isinstance(v, float) and math.isnan(v)) else round(float(v), 5)
+
+    out: dict[str, float | None] = {}
+    tm = r.timing
+    out["update_rate_hz"] = ok(tm.get("rate_hz")) if tm.get("enough") else None
+    out["update_spread_ms"] = ok(tm.get("spread_ms")) if tm.get("enough") else None
+    for side in ("l", "r"):
+        s = r.sticks.get(side, {})
+        if not s.get("enough"):
+            for k in ("drift", "noise", "inner", "axial", "outer", "circle", "bits"):
+                out[f"{side}_{k}"] = None
+            continue
+        ho = s.get("handsoff")
+        out[f"{side}_drift"] = 0.0 if s.get("rest_all_zero") else ok(ho["max_mag"] if ho else s.get("rest_worst"))
+        out[f"{side}_noise"] = ok(s.get("rest_noise"))
+        out[f"{side}_inner"] = ok(s.get("inner_dz"))
+        out[f"{side}_axial"] = ok(s.get("axial_band"))
+        out[f"{side}_outer"] = ok(s.get("outer_avg"))
+        out[f"{side}_circle"] = ok(s.get("circle_error"))
+        bits = s.get("bits")
+        out[f"{side}_bits"] = ok(min(bits, THRESHOLDS["bits_cap"])) if bits is not None and not math.isnan(bits) else None
+    for name in ("lt", "rt"):
+        t = r.triggers.get(name, {})
+        out[f"{name}_start"] = ok(t.get("start")) if t.get("enough") and not t.get("digital") else None
+    out["doubles"] = float(r.buttons.get("double_total", 0))
+    fp = r.dpad.get("flicker_pct")
+    out["dpad_flicker"] = ok(fp) if r.dpad.get("diag_entries") else None
+    out["disconnects"] = float(r.connection.get("disconnects", 0))
+    return out
+
+
+def metric_definitions() -> list[dict]:
+    """METRICS with the limit values filled in from THRESHOLDS (for the Compare view)."""
+    out = []
+    for m in METRICS:
+        d = dict(m)
+        d["ok_value"] = THRESHOLDS[m["ok"]] if m["ok"] else None
+        d["watch_value"] = THRESHOLDS[m["watch"]] if m["watch"] else None
+        out.append(d)
     return out

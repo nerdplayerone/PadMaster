@@ -7,7 +7,8 @@ import math
 from datetime import datetime
 
 from . import __version__
-from .analysis import INFO, NODATA, OK, PROBLEM, THRESHOLDS, WATCH, Report, clock, summary_counts
+from .theme import SCROLLBAR_CSS
+from .analysis import ANALYSIS_VERSION, INFO, NODATA, OK, PROBLEM, THRESHOLDS, WATCH, Report, clock, summary_counts
 
 STATUS = {
     OK: ("✓", "OK"),
@@ -18,31 +19,34 @@ STATUS = {
 }
 
 CSS = """
-.viz-root{color-scheme:light;
- --surface-0:#f4f3f0;--surface-1:#fcfcfb;--line:#dddcd7;--grid:#e8e7e3;
- --text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#7a7974;
- --series-1:#2a78d6;
- --q1:#cde2fb;--q2:#9ec5f4;--q3:#6da7ec;--q4:#3987e5;--q5:#256abf;--q6:#184f95;--q7:#0d366b;
- --good:#0ca30c;--warning:#fab219;--critical:#d03b3b;--info:#2a78d6;--nodata:#9a9993;}
-@media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;
- --surface-0:#111110;--surface-1:#1a1a19;--line:#33332f;--grid:#2a2a27;
- --text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#8f8e86;
- --series-1:#3987e5;
- --q1:#104281;--q2:#184f95;--q3:#256abf;--q4:#2a78d6;--q5:#5598e7;--q6:#86b6ef;--q7:#cde2fb;
- --info:#3987e5;--nodata:#6b6a64;}}
+.viz-root{color-scheme:dark;
+ --surface-0:#0b0b0c;--surface-1:#141416;--surface-2:#1b1b1e;--line:#2e2e33;--grid:#222226;
+ --text-primary:#f2f2f5;--text-secondary:#b9b9c2;--text-muted:#85858f;
+ --silver:#d9d9de;--series-1:#c9ced8;
+ --q1:#1e2430;--q2:#2b3445;--q3:#3f4c63;--q4:#5b6b86;--q5:#8291ab;--q6:#b1bccf;--q7:#e3e8f1;
+ --good:#5fbf3a;--warning:#f0a531;--critical:#e5484d;--info:#9aa6bd;--nodata:#6b6a72;}
+@media print{.viz-root{color-scheme:light;
+ --surface-0:#ffffff;--surface-1:#f6f6f7;--surface-2:#efeff1;--line:#d4d4d8;--grid:#e6e6e9;
+ --text-primary:#0b0b0c;--text-secondary:#45454c;--text-muted:#6d6d75;--silver:#2a2a2e;--series-1:#3a4a66;
+ --q1:#e3e8f1;--q2:#b1bccf;--q3:#8291ab;--q4:#5b6b86;--q5:#3f4c63;--q6:#2b3445;--q7:#1e2430;
+ --good:#2e8b12;--warning:#b87400;--critical:#c4262c;--info:#4b5a75;--nodata:#8a8990;}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--surface-0)}
-.viz-root{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+.viz-root{font-family:"Segoe UI",Inter,system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
  background:var(--surface-0);color:var(--text-primary);padding:28px;max-width:1180px;margin:0 auto;line-height:1.45}
+.head{display:flex;align-items:center;gap:16px;margin:0 0 8px;padding-bottom:14px;border-bottom:1px solid var(--line)}.head h1{margin:0}
+.kicker{font-size:12px;letter-spacing:.16em;color:var(--text-muted);text-transform:uppercase}
+.logo{border-radius:8px;flex:none}
 h1{font-size:28px;margin:0 0 4px;letter-spacing:-.01em}
-h2{font-size:18px;margin:36px 0 12px}
+h2{font-size:13px;margin:36px 0 12px;letter-spacing:.14em;text-transform:uppercase;color:var(--silver);font-weight:600}
 h3{font-size:15px;margin:0 0 8px}
 .sub{color:var(--text-secondary);font-size:14px}
-.card{background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:6px;padding:18px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
 .tiles{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
-.tile{background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:130px}
-.tile .n{font-size:30px;font-weight:700}
+.tile{background:var(--surface-1);border:1px solid var(--line);border-top:3px solid var(--nodata);border-radius:0;padding:12px 16px;min-width:140px}
+.tile.t-problem{border-top-color:var(--critical)}.tile.t-watch{border-top-color:var(--warning)}.tile.t-ok{border-top-color:var(--good)}.tile.t-info{border-top-color:var(--info)}
+.tile .n{font-size:32px;font-weight:600;font-variant-numeric:tabular-nums}
 .tile .l{font-size:13px;color:var(--text-secondary)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:left;color:var(--text-secondary);font-weight:600;border-bottom:1px solid var(--line);padding:8px 8px}
@@ -60,10 +64,23 @@ svg text{fill:var(--text-secondary);font-size:11px;font-family:inherit}
 .cap{font-size:12px;color:var(--text-muted);margin-top:6px}
 .q0{fill:transparent}.q1{fill:var(--q1)}.q2{fill:var(--q2)}.q3{fill:var(--q3)}.q4{fill:var(--q4)}
 .q5{fill:var(--q5)}.q6{fill:var(--q6)}.q7{fill:var(--q7)}
-.legend{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:4px;line-height:1.2;}
+.legend .lt{white-space:nowrap}
+.legend .ls{flex-basis:100%;white-space:nowrap}
+.legend{font-size:12px;color:var(--text-muted);margin-top:6px}
 .legend span.sw{width:16px;height:10px;border-radius:2px;display:inline-block}
 details{margin-top:8px} summary{cursor:pointer;color:var(--text-secondary);font-size:14px}
 .foot{margin-top:40px;font-size:12px;color:var(--text-muted)}
+.promo{margin-top:40px;margin-bottom:-24px;display:flex;gap:18px;align-items:center;padding:18px 20px;border-radius:12px;border:1px solid var(--line);
+ background:radial-gradient(120% 120% at 0% 0%,rgba(255,255,255,.07),transparent 60%)}
+.promo img{width:64px;height:64px;flex:none}
+.promo .ph{font-size:18px;font-weight:700}
+.promo .ps{color:var(--text-muted);margin:4px 0 10px}
+.promo .pl{display:flex;flex-wrap:wrap;gap:8px}
+.promo .pl a{font-weight:700;text-decoration:none;color:#0b0b0c;padding:8px 14px;border-radius:6px;
+ background:linear-gradient(180deg,#f5f5f7,#c4c4ca);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.promo .pl a:hover{filter:brightness(1.08)}
+@media print{.promo .pl a{color:#000;border:1px solid #000;background:none}}
 """
 
 
@@ -111,9 +128,9 @@ def heatmap_svg(grid: list[list[int]], rest_points: list[tuple[float, float]]) -
     parts.append(f'<text x="{cx}" y="{pad - 6}" text-anchor="middle">up</text>')
     parts.append(f'<text x="{pad + size - 2}" y="{pad + size + 14}" text-anchor="end">right →</text>')
     parts.append("</svg>")
-    legend = ('<div class="legend">fewer '
+    legend = ('<div class="legend"><span class="lt">fewer</span>'
               + "".join(f'<span class="sw" style="background:var(--q{i})"></span>' for i in range(1, 8))
-              + " more samples (log scale)</div>")
+              + '<span class="lt">more samples</span><span class="ls">Log scale.</span></div>')
     return "".join(parts) + legend
 
 
@@ -182,8 +199,35 @@ def hist_svg(bins: list[int]) -> str:
 
 # ---------------------------------------------------------------- page
 
-def render(r: Report, log_name: str = "") -> str:
+def _logo_uri() -> str:
+    """Owner logo as a base64 data URI. Empty if the file is missing."""
+    import base64
+    import os
+    import sys
+    here = getattr(sys, "_MEIPASS", None)
+    path = os.path.join(here, "padlab", "logo_128.png") if here else os.path.join(os.path.dirname(__file__), "logo_128.png")
+    try:
+        with open(path, "rb") as fh:
+            data = base64.b64encode(fh.read()).decode("ascii")
+    except OSError:
+        return ""
+    return f"data:image/png;base64,{data}"
+
+
+def logo_data_uri() -> str:
+    """Owner logo as a data: URI, or "" if the file is missing."""
+    return _logo_uri()
+
+
+def _logo_tag() -> str:
+    uri = _logo_uri()
+    return f'<img class="logo" alt="" width="56" height="56" src="{uri}">' if uri else ""
+
+
+def render(r: Report, log_name: str = "", name: str | None = None) -> str:
     m = r.meta
+    model = m.get("device", "Unknown controller")
+    title = name or model
     s = r.session
     counts = summary_counts(r.findings)
     order = {PROBLEM: 0, WATCH: 1, OK: 2, INFO: 3, NODATA: 4}
@@ -191,11 +235,17 @@ def render(r: Report, log_name: str = "") -> str:
 
     out = [f'<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">'
            f'<meta name="viewport" content="width=device-width,initial-scale=1">'
-           f'<title>PadLab report: {e(m.get("device", "controller"))}</title><style>{CSS}</style></head>'
+           f'<meta name="padlab-analysis" content="{ANALYSIS_VERSION}">'
+           f'<meta name="padlab-name" content="{e(title)}">'
+           f'<title>PadMaster report: {e(title)}</title><style>{CSS}{SCROLLBAR_CSS}</style></head>'
            f'<body><div class="viz-root">']
 
-    out.append(f'<h1>{e(m.get("device", "Unknown controller"))}</h1>')
-    out.append(f'<div class="sub">PadLab report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
+    out.append(f'<div class="head">{_logo_tag()}<div><div class="kicker">PadMaster report</div>'
+               f'<h1>{e(title)}</h1></div></div>')
+    if title != model:
+        out.append(f'<div class="sub">Controller model: {e(model)}</div>')
+    out.append(f'<div class="sub">Connection: {e(m.get("connection") or "not recorded")}</div>')
+    out.append(f'<div class="sub">PadMaster report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
                f'{s["active_min"]} active min · {s["inputs"]:,} inputs · {e(m.get("mode", "?"))} mode</div>')
     if m.get("mode") == "joystick":
         out.append('<div class="warn">SDL has no mapping for this controller, so stick names are guesses and '
@@ -205,7 +255,7 @@ def render(r: Report, log_name: str = "") -> str:
 
     out.append('<div class="tiles">')
     for st, label in ((PROBLEM, "Problems"), (WATCH, "Watch"), (OK, "OK"), (NODATA, "No data")):
-        out.append(f'<div class="tile"><div class="n">{counts.get(st, 0)}</div><div class="l">{badge(st)}</div></div>')
+        out.append(f'<div class="tile t-{st}"><div class="n">{counts.get(st, 0)}</div><div class="l">{badge(st)}</div></div>')
     out.append("</div>")
 
     out.append('<h2>Results</h2><div class="card"><table><thead><tr><th>Status</th><th>Check</th><th>Result</th>'
@@ -301,16 +351,21 @@ def render(r: Report, log_name: str = "") -> str:
     out.append("</div>")
 
     out.append("<h2>How to read this</h2><div class='card' style='font-size:14px'><ul>"
-               "<li>PadLab only reads the controller while you play. It does not know what you meant to press, so each "
+               "<li>PadMaster only reads the controller while you play. It does not know what you meant to press, so each "
                "check looks for patterns that a hand does not make, or uses moments when you did not touch a stick.</li>"
-               "<li>OK / Watch / Problem limits are PadLab defaults (judgement calls), not industry standards. "
+               "<li>OK / Watch / Problem limits are PadMaster defaults (judgement calls), not industry standards. "
                "You can change them in <code>THRESHOLDS</code> in <code>analysis.py</code>.</li>"
-               "<li>Timing is limited by the logger loop (about 1 ms) and by Windows. PadLab can't measure true input "
+               "<li>Timing is limited by the logger loop (about 1 ms) and by Windows. PadMaster can't measure true input "
                "latency. That needs hardware.</li>"
-               "<li>Steam Input, DS4Windows and similar tools can change what PadLab sees. Turn them off for a clean test.</li>"
+               "<li>Steam Input, DS4Windows and similar tools can change what PadMaster sees. Turn them off for a clean test.</li>"
                "<li>Compare controllers only with the same player, game and connection.</li></ul></div>")
 
-    out.append(f'<div class="foot">PadLab {e(__version__)} · log {e(log_name)} · logger {e(m.get("padlab", "?"))} · '
+    from .branding import CHANNELS
+    out.append('<div class="promo">' + _logo_tag() + '<div class="pt"><div class="ph">Made by a controller reviewer</div>'
+               '<div class="ps">PadMaster is free. See the full controller reviews and tests on video:</div>'
+               '<div class="pl">' + "".join(f'<a href="{e(u)}" target="_blank" rel="noopener">&#9654; {e(n)}</a>' for n, u in CHANNELS)
+               + "</div></div></div>")
+    out.append(f'<div class="foot">PadMaster {e(__version__)} · log {e(log_name)} · logger {e(m.get("padlab", "?"))} · '
                f'SDL {e(m.get("sdl", "?"))} · generated {datetime.now().strftime("%Y-%m-%d %H:%M")}</div>')
     out.append("</div></body></html>")
     return "".join(out)

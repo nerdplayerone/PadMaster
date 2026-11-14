@@ -1,8 +1,11 @@
 """Command line entry point.
 
-    padlab                 start logging (Ctrl+C to stop), then write and open the report
+    padlab                 open the app window
+    padlab log             start logging in this console (Ctrl+C to stop), then write and open the report
+    padlab log --ipc       logging for the app window (JSON status lines, 'stop' on stdin)
     padlab report LOG      make a report from an existing log
     padlab list            list connected controllers
+    padlab check           show each input live, to confirm the mapping
 """
 
 from __future__ import annotations
@@ -22,17 +25,21 @@ def default_out_dir() -> str:
     return os.path.join(base, "PadLab")
 
 
-def make_report(log_path: str, open_it: bool = True) -> str:
+def make_report(log_path: str, open_it: bool = True, quiet: bool = False) -> str:
     from .analysis import analyse
     from .logfile import read_log
     from .report import render
 
+    from .history import display_name
+
     log = read_log(log_path)
     rep = analyse(log)
     html_path = log_path.replace(".csv.gz", "").replace(".csv", "") + "_report.html"
+    name = display_name(log_path, log.meta)
     with open(html_path, "w", encoding="utf-8") as fh:
-        fh.write(render(rep, os.path.basename(log_path)))
-    print(f"Report: {html_path}")
+        fh.write(render(rep, os.path.basename(log_path), name=name))
+    if not quiet:
+        print(f"Report: {html_path}")
     if open_it:
         webbrowser.open("file:///" + os.path.abspath(html_path).replace("\\", "/"))
     return html_path
@@ -40,22 +47,37 @@ def make_report(log_path: str, open_it: bool = True) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="padlab", description="Log a controller while you play, then get a report.")
-    p.add_argument("--version", action="version", version=f"PadLab {__version__}")
+    p.add_argument("--version", action="version", version=f"PadMaster {__version__}")
     sub = p.add_subparsers(dest="cmd")
 
-    lg = sub.add_parser("log", help="start logging (default)")
+    lg = sub.add_parser("log", help="start logging in this console")
     lg.add_argument("--pad", type=int, default=0, help="controller index (see 'padlab list')")
     lg.add_argument("--out", default=default_out_dir(), help="folder for logs and reports")
     lg.add_argument("--seconds", type=float, default=None, help="stop after this many seconds")
     lg.add_argument("--no-open", action="store_true", help="do not open the report")
+    lg.add_argument("--name", default="", help="your name for this controller, for example 'Xbox pad A'")
+    lg.add_argument("--connection", default="", choices=["", "Wired", "Dongle", "Bluetooth"],
+                    help="how the controller is connected")
+    lg.add_argument("--ipc", action="store_true", help="for the app window: JSON status lines, stop with a 'stop' line")
 
     rp = sub.add_parser("report", help="make a report from a log file")
     rp.add_argument("log")
     rp.add_argument("--no-open", action="store_true")
 
-    sub.add_parser("list", help="list connected controllers")
+    ls = sub.add_parser("list", help="list connected controllers")
+    ls.add_argument("--json", action="store_true", help="print the list as JSON (for the app window)")
+    gu = sub.add_parser("gui", help="open the app window (default)")
+    gu.add_argument("--out", default=default_out_dir(), help="folder for logs and reports")
+
+    ck = sub.add_parser("check", help="show each input live, to confirm the mapping")
+    ck.add_argument("--pad", type=int, default=0, help="controller index (see 'padlab list')")
 
     args = p.parse_args(argv)
+
+    if args.cmd == "check":
+        from .logger import check
+        check(pad_index=args.pad)
+        return 0
 
     if args.cmd == "report":
         make_report(args.log, open_it=not args.no_open)
@@ -63,18 +85,41 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "list":
         from .logger import list_devices
         devs = list_devices()
+        if args.json:
+            import json
+            print(json.dumps(devs))
+            return 0
         if not devs:
             print("No controllers found.")
         for d in devs:
             print(f"[{d['index']}] {d['name']}  {'mapped' if d['mapped'] else 'NOT mapped'}  {d['guid']}")
         return 0
 
-    # Default: log.
-    if args.cmd is None:
-        args = p.parse_args(["log"] + (argv if argv is not None else sys.argv[1:]))
-    from .logger import run
-    path = run(args.out, pad_index=args.pad, seconds=args.seconds)
+    if args.cmd in (None, "gui"):
+        from .gui import main as gui_main
+        return gui_main(getattr(args, "out", None) or default_out_dir())
+
+    from .logger import emit, run
+    path = run(args.out, pad_index=args.pad, seconds=args.seconds, ipc=args.ipc, label=args.name, connection=args.connection)
+    if args.ipc:
+        if not path:
+            emit({"state": "done", "report": "", "log": ""})
+            return 0
+        try:
+            report = make_report(path, open_it=False, quiet=True)
+            from .history import update_index
+            update_index(args.out)
+            emit({"state": "done", "report": report, "log": path})
+        except Exception as exc:  # report the error to the app window
+            emit({"state": "error", "message": f"The report failed: {exc}", "log": path})
+            return 1
+        return 0
     make_report(path, open_it=not args.no_open)
+    try:
+        from .history import update_index
+        update_index(args.out)
+    except Exception:
+        pass
     if getattr(sys, "frozen", False):
         input("\nPress Enter to close this window.")
     return 0

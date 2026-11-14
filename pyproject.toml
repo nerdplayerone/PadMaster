@@ -9,7 +9,7 @@ description = "Log a game controller in the background while you play, then get 
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
-dependencies = ["pygame-ce>=2.4"]
+dependencies = ["pygame-ce>=2.5.8,<2.6", "pywebview>=6.2,<7"]
 
 [project.scripts]
 padlab = "padlab.cli:main"
@@ -19,3 +19,6 @@ packages = ["padlab"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+padlab = ["logo_128.png", "app.html"]

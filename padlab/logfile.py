@@ -1,6 +1,6 @@
 """Log file format.
 
-A PadLab log is a gzip-compressed CSV file.
+A PadMaster log is a gzip-compressed CSV file.
 
 * Lines that start with ``#`` hold JSON metadata (device name, mode, start time).
 * Each data row is ``t_ms,kind,name,value``:

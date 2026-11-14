@@ -227,11 +227,11 @@ def render(r: Report, log_name: str = "") -> str:
 
     out = [f'<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8">'
            f'<meta name="viewport" content="width=device-width,initial-scale=1">'
-           f'<title>PadLab report: {e(m.get("device", "controller"))}</title><style>{CSS}</style></head>'
+           f'<title>PadMaster report: {e(m.get("device", "controller"))}</title><style>{CSS}</style></head>'
            f'<body><div class="viz-root">']
 
     out.append(f'<h1>{e(m.get("device", "Unknown controller"))}</h1>')
-    out.append(f'<div class="sub">PadLab report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
+    out.append(f'<div class="sub">PadMaster report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
                f'{s["active_min"]} active min · {s["inputs"]:,} inputs · {e(m.get("mode", "?"))} mode</div>')
     ids = s.get("ids") or {}
     dev_bits = []
@@ -388,16 +388,16 @@ def render(r: Report, log_name: str = "") -> str:
     out.append("</div>")
 
     out.append("<h2>How to read this</h2><div class='card' style='font-size:14px'><ul>"
-               "<li>PadLab only reads the controller while you play. It does not know what you meant to press, so each "
+               "<li>PadMaster only reads the controller while you play. It does not know what you meant to press, so each "
                "check looks for patterns that a hand does not make, or uses moments when you did not touch a stick.</li>"
-               "<li>OK / Watch / Problem limits are PadLab defaults (judgement calls), not industry standards. "
+               "<li>OK / Watch / Problem limits are PadMaster defaults (judgement calls), not industry standards. "
                "You can change them in <code>THRESHOLDS</code> in <code>analysis.py</code>.</li>"
-               "<li>Timing is limited by the logger loop (about 1 ms) and by Windows. PadLab can't measure true input "
+               "<li>Timing is limited by the logger loop (about 1 ms) and by Windows. PadMaster can't measure true input "
                "latency. That needs hardware.</li>"
-               "<li>Steam Input, DS4Windows and similar tools can change what PadLab sees. Turn them off for a clean test.</li>"
+               "<li>Steam Input, DS4Windows and similar tools can change what PadMaster sees. Turn them off for a clean test.</li>"
                "<li>Compare controllers only with the same player, game and connection.</li></ul></div>")
 
-    out.append(f'<div class="foot">PadLab {e(__version__)} · log {e(log_name)} · logger {e(m.get("padlab", "?"))} · '
+    out.append(f'<div class="foot">PadMaster {e(__version__)} · log {e(log_name)} · logger {e(m.get("padlab", "?"))} · '
                f'SDL {e(m.get("sdl", "?"))} · generated {datetime.now().strftime("%Y-%m-%d %H:%M")}</div>')
     out.append("</div></body></html>")
     return "".join(out)

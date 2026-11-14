@@ -1,4 +1,4 @@
-"""PadLab window (tkinter, part of Python: no new dependency).
+"""PadMaster window (tkinter, part of Python: no new dependency).
 
 The window does not read the controller itself. It starts the logger as a separate
 process (``padlab log --ipc``) and reads one JSON status line per second from it.
@@ -39,7 +39,7 @@ FONT = "Segoe UI"
 # ---------------------------------------------------------------- helpers (tested without a window)
 
 def base_command() -> list[str]:
-    """How to start PadLab again as a child process (Python or the frozen .exe)."""
+    """How to start PadMaster again as a child process (Python or the frozen .exe)."""
     if getattr(sys, "frozen", False):
         return [sys.executable]
     return [sys.executable, "-m", "padlab"]
@@ -130,7 +130,7 @@ class App:
         self.state = "idle"
         self.closing = False
 
-        root.title(f"PadLab {__version__}")
+        root.title(f"PadMaster {__version__}")
         root.configure(bg=BG)
         root.minsize(440, 470)
         root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -168,7 +168,7 @@ class App:
         f.pack(fill="both", expand=True)
         f.columnconfigure(1, weight=1)
 
-        ttk.Label(f, text="PadLab", style="Title.TLabel").grid(row=0, column=0, columnspan=3, sticky="w")
+        ttk.Label(f, text="PadMaster", style="Title.TLabel").grid(row=0, column=0, columnspan=3, sticky="w")
         ttk.Label(f, text="Logs your controller while you play. Then it makes a report.",
                   style="Muted.TLabel").grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
@@ -401,7 +401,7 @@ class App:
     def on_close(self) -> None:
         if self.proc and self.proc.poll() is None:
             from tkinter import messagebox
-            if not messagebox.askyesno("PadLab", "PadLab is logging. Stop now and make the report?"):
+            if not messagebox.askyesno("PadMaster", "PadMaster is logging. Stop now and make the report?"):
                 return
             self.closing = True
             self.stop()

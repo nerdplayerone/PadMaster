@@ -160,7 +160,7 @@ def check(
     controller.init()
     pygame.joystick.init()
 
-    out(f"PadLab {__version__}. Waiting for a controller...")
+    out(f"PadMaster {__version__}. Waiting for a controller...")
     while pygame.joystick.get_count() <= pad_index:
         pygame.event.pump()
         time.sleep(0.25)
@@ -285,7 +285,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connecti
     controller.init()
     pygame.joystick.init()
 
-    print(f"PadLab {__version__}. Waiting for a controller...")
+    print(f"PadMaster {__version__}. Waiting for a controller...")
     if ipc:
         emit_status({"state": "waiting"})
     while pygame.joystick.get_count() <= pad_index:
@@ -298,7 +298,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connecti
     pad = _Pad(pygame, controller, pad_index)
     os.makedirs(out_dir, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    path = os.path.join(out_dir, f"padlab_{stamp}.csv.gz")
+    path = os.path.join(out_dir, f"padmaster_{stamp}.csv.gz")
 
     meta = {
         "padlab": __version__,
@@ -317,7 +317,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connecti
         print("  Note: SDL has no mapping for this pad. Stick and trigger names are guesses.")
     print(f"  Log file: {path}")
     print("\n  1. Put the controller down for 10 seconds (hands-off drift check).")
-    print("  2. Play your game. PadLab keeps logging in the background.")
+    print("  2. Play your game. PadMaster keeps logging in the background.")
     print("  3. Come back to this window and press Ctrl+C to stop and make the report.\n")
     if ipc:
         emit_status({"state": "logging", "t": 0.0, "inputs": 0, "disconnects": 0, "connected": True,

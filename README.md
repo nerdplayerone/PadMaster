@@ -1,6 +1,6 @@
-# PadLab
+# PadMaster
 
-PadLab logs your game controller in the background **while you play**. When you stop, it makes a report that shows hidden deadzones, drift, D-pad flicker, double inputs and wireless stutter.
+PadMaster logs your game controller in the background **while you play**. When you stop, it makes a report that shows hidden deadzones, drift, D-pad flicker, double inputs and wireless stutter.
 
 You don't need to do test routines. Play as normal, then read the report.
 
@@ -36,27 +36,27 @@ The report also lists the **time of each event**, so you can find it in your gam
 ## What it can't do
 
 - **True input latency.** That needs hardware that presses the buttons. See [Gamepadla](https://gamepadla.com) for that.
-- **Know what you meant to press.** PadLab only looks for patterns that a hand doesn't make. For hit-rate tests you need a guided test (planned).
+- **Know what you meant to press.** PadMaster only looks for patterns that a hand doesn't make. For hit-rate tests you need a guided test (planned).
 - **Precise timing below about 1 ms.** The logger loop runs at about 1 kHz.
 - **Gyro and touchpad.** Not logged in this version.
 
-The OK / Watch / Problem limits are PadLab defaults (judgement calls), not industry standards. You can change them in `THRESHOLDS` in `padlab/analysis.py`.
+The OK / Watch / Problem limits are PadMaster defaults (judgement calls), not industry standards. You can change them in `THRESHOLDS` in `padlab/analysis.py`.
 
 ## Use it (Windows)
 
 ### Option A: the .exe
 
-1. Download `PadLab.exe` from [Releases](../../releases).
+1. Download `PadMaster.exe` from [Releases](../../releases).
 2. Connect your controller.
-3. Start `PadLab.exe`. The PadLab window opens.
+3. Start `PadMaster.exe`. The PadMaster window opens.
 4. Select your controller. Select the connection type (optional).
 5. Click **Start**. Put the controller down for 10 seconds. The window counts down.
-6. Play your game. PadLab keeps logging in the background. The "Inputs" number goes up while you play.
-7. Go back to the PadLab window and click **Stop and make report**. The report opens in your browser.
+6. Play your game. PadMaster keeps logging in the background. The "Inputs" number goes up while you play.
+7. Go back to the PadMaster window and click **Stop and make report**. The report opens in your browser.
 
-Logs and reports go to `Documents\PadLab`. Use **Open logs folder** to see them.
+Logs and reports go to `Documents\PadMaster`. Use **Open logs folder** to see them.
 
-`PadLab-console.exe` is the same program for testing. It shows a console window and works with the commands in Option B (for example `PadLab-console.exe log`).
+`PadMaster-console.exe` is the same program for testing. It shows a console window and works with the commands in Option B (for example `PadMaster-console.exe log`).
 
 ### Option B: Python
 
@@ -72,14 +72,14 @@ python -m padlab report FILE.csv.gz
 
 ## For a clean test
 
-- Turn off Steam Input, DS4Windows, DSX and similar tools. They change what PadLab sees.
+- Turn off Steam Input, DS4Windows, DSX and similar tools. They change what PadMaster sees.
 - Use the same game, player and connection when you compare two controllers.
 - Play for at least 10 minutes. Some checks need more data.
 - To test wireless stutter, do one session per setup: dongle at the back of the PC, dongle on a USB extension, Bluetooth, wired.
 
 ## How it works
 
-- PadLab uses SDL2 through [pygame-ce](https://github.com/pygame-community/pygame-ce). It sets `SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1`, so it gets controller input while the game has focus.
+- PadMaster uses SDL2 through [pygame-ce](https://github.com/pygame-community/pygame-ce). It sets `SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1`, so it gets controller input while the game has focus.
 - It uses the SDL GameController mapping, so all mapped pads use the same names (A, B, LB, D-pad up, and so on). For unmapped pads it guesses the stick axes and does not test triggers.
 - It only **reads** the controller. It doesn't send input and doesn't touch the game process. The anti-cheat risk is low, but test it in an offline game first.
 - The log is a gzip CSV file with raw values (`t_ms,kind,name,value`). See `padlab/logfile.py`.
@@ -92,7 +92,7 @@ python -m pytest
 python tools/make_sample.py       # makes docs/sample_report.html from synthetic data
 ```
 
-To make a release: push a tag such as `v0.1.0`. GitHub Actions builds `PadLab.exe` and attaches it to the release.
+To make a release: push a tag such as `v0.1.0`. GitHub Actions builds `PadMaster.exe` and attaches it to the release.
 
 ## Licence
 

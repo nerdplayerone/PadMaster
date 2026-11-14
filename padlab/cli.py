@@ -22,7 +22,7 @@ def default_out_dir() -> str:
     base = os.path.join(os.path.expanduser("~"), "Documents")
     if not os.path.isdir(base):
         base = os.path.expanduser("~")
-    return os.path.join(base, "PadLab")
+    return os.path.join(base, "PadMaster")
 
 
 def make_report(log_path: str, open_it: bool = True) -> str:
@@ -91,7 +91,7 @@ def run_ipc(args) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="padlab", description="Log a controller while you play, then get a report.")
-    p.add_argument("--version", action="version", version=f"PadLab {__version__}")
+    p.add_argument("--version", action="version", version=f"PadMaster {__version__}")
     sub = p.add_subparsers(dest="cmd")
 
     lg = sub.add_parser("log", help="start logging (default)")
@@ -110,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     ls = sub.add_parser("list", help="list connected controllers")
     ls.add_argument("--json", action="store_true", help=argparse.SUPPRESS)  # used by the GUI
 
-    sub.add_parser("gui", help="open the PadLab window")
+    sub.add_parser("gui", help="open the PadMaster window")
 
     ck = sub.add_parser("check", help="show each input live, to confirm the mapping")
     ck.add_argument("--pad", type=int, default=0, help="controller index (see 'padlab list')")

@@ -1,4 +1,4 @@
-"""Turn a PadLab log into measurements and findings.
+"""Turn a PadMaster log into measurements and findings.
 
 Pure Python (no numpy), so the Windows build stays small.
 

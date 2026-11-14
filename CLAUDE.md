@@ -1,10 +1,12 @@
-# CLAUDE.md: PadLab project instructions
+# CLAUDE.md: PadMaster project instructions
 
-Read this file fully before you change anything. It tells you what PadLab is, what works, what is not tested, and the order of work.
+> Name: the app was called PadLab until v0.1.0. The Python package and the commands stay `padlab` (`python -m padlab`). Old logs are named `padlab_*.csv.gz` and still work.
 
-## 1. What PadLab is
+Read this file fully before you change anything. It tells you what PadMaster is, what works, what is not tested, and the order of work.
 
-PadLab is a Windows tool that logs a game controller **in the background while the owner plays a game**. When the session stops, PadLab makes an HTML report that shows controller faults that players complain about:
+## 1. What PadMaster is
+
+PadMaster is a Windows tool that logs a game controller **in the background while the owner plays a game**. When the session stops, PadMaster makes an HTML report that shows controller faults that players complain about:
 
 - hidden centre deadzones and cross-shaped (axial) deadzones on the sticks
 - stick drift at rest, and a "safe in-game deadzone" value
@@ -18,7 +20,7 @@ PadLab is a Windows tool that logs a game controller **in the background while t
 
 The owner makes controller review videos. The report must be **accurate, readable on camera, and honest about its limits**. The event-time list in the report lets the owner find each fault in his gameplay recording.
 
-PadLab does **not** measure true input latency. That needs hardware. Do not add any feature that claims to measure it.
+PadMaster does **not** measure true input latency. That needs hardware. Do not add any feature that claims to measure it.
 
 ## 2. How the owner works (read this)
 
@@ -51,7 +53,7 @@ tests/
   test_analysis.py checks that analysis finds the known faults, and no false alarms
   test_logger_smoke.py  runs the logger loop against a FAKE pygame
 tools/make_sample.py     makes docs/sample_report.html
-.github/workflows/build.yml  tests on Ubuntu, builds PadLab.exe on Windows, attaches to release on v* tags
+.github/workflows/build.yml  tests on Ubuntu, builds PadMaster.exe on Windows, attaches to release on v* tags
 run_padlab.py      PyInstaller entry point
 ```
 
@@ -73,7 +75,7 @@ Raw integers are kept on purpose. The inner deadzone check needs the exact small
 
 ## 4. Hard rules
 
-1. PadLab only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
+1. PadMaster only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
 2. No network access in the app. No telemetry. No auto-update.
 3. No admin rights needed. No drivers.
 4. The analysis stays pure Python (standard library only). The .exe must stay small.
@@ -206,7 +208,7 @@ The guided run reuses the same log format and analysis, plus a prompt track (`ki
 ### Phase 6: release
 
 1. The owner makes the GitHub repo **private** first.
-2. Push. Check that the GitHub Actions run is green and that `PadLab.exe` is in the run artefacts.
+2. Push. Check that the GitHub Actions run is green and that `PadMaster.exe` is in the run artefacts.
 3. The owner downloads the .exe and repeats the Phase 2c test with it (not with Python).
 4. Check Windows SmartScreen and Defender. An unsigned PyInstaller one-file .exe can show a warning (inference). Write what the owner sees in the README, with the steps to run it. Do not tell users to turn off their antivirus.
 5. Update the README: remove "not tested on real hardware" only for the pads in `docs/hardware_results.md`. Keep a list of tested pads.
@@ -237,7 +239,7 @@ No long logs in the message. Put long output in a file and give the file name.
 ## 8. Do not
 
 - Do not claim latency numbers.
-- Do not compare PadLab results with Gamepadla numbers as if they used the same method.
+- Do not compare PadMaster results with Gamepadla numbers as if they used the same method.
 - Do not add brand names, logos or controller product images to the app or report.
 - Do not push, tag or make the repo public without the owner's approval.
 - Do not delete the owner's logs.

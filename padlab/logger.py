@@ -9,8 +9,11 @@ the game process.
 
 from __future__ import annotations
 
+import builtins
+import json
 import os
 import sys
+import threading
 import time
 from datetime import datetime
 
@@ -36,6 +39,7 @@ CONTROLLER_BUTTONS = {
 POLL_SLEEP_S = 0.0005  # about 1 kHz loop. Sets the timing precision of the log.
 FLUSH_EVERY_S = 1.0
 STATUS_EVERY_S = 5.0
+IPC_STATUS_EVERY_S = 1.0  # status lines for the GUI
 LOOP_RATE_WINDOW_S = 10.0  # measure loop passes per second over the first 10 s
 
 
@@ -241,15 +245,53 @@ def check(
     return lines
 
 
-def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connection: str | None = None) -> str:
-    """Log until Ctrl+C (or ``seconds``). Returns the log file path."""
+def emit_status(obj: dict) -> None:
+    """Write one JSON status line on stdout, for the GUI (``--ipc`` mode)."""
+    out = sys.stdout
+    if out is None:
+        return
+    out.write(json.dumps(obj) + "\n")
+    out.flush()
+
+
+def stdin_stop_watcher(stop: threading.Event) -> threading.Thread:
+    """Set ``stop`` when a 'stop' line comes on stdin, or when stdin closes (the GUI has gone)."""
+    def watch() -> None:
+        try:
+            for line in sys.stdin:
+                if line.strip().lower() == "stop":
+                    break
+        except Exception:
+            pass
+        stop.set()
+
+    th = threading.Thread(target=watch, daemon=True)
+    th.start()
+    return th
+
+
+def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connection: str | None = None,
+        ipc: bool = False, stop: threading.Event | None = None) -> str | None:
+    """Log until Ctrl+C, ``seconds`` or ``stop``. Returns the log file path.
+
+    Returns None if ``stop`` is set before a controller is found. With ``ipc`` the
+    logger writes JSON status lines (for the GUI) in place of the console text.
+    """
+    print = (lambda *a, **k: None) if ipc else builtins.print  # noqa: A001
+    if stop is None:
+        stop = threading.Event()
     pygame, controller = _import_pygame()
     pygame.init()
     controller.init()
     pygame.joystick.init()
 
     print(f"PadLab {__version__}. Waiting for a controller...")
+    if ipc:
+        emit_status({"state": "waiting"})
     while pygame.joystick.get_count() <= pad_index:
+        if stop.is_set():
+            pygame.quit()
+            return None
         pygame.event.pump()
         time.sleep(0.25)
 
@@ -277,6 +319,9 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connecti
     print("\n  1. Put the controller down for 10 seconds (hands-off drift check).")
     print("  2. Play your game. PadLab keeps logging in the background.")
     print("  3. Come back to this window and press Ctrl+C to stop and make the report.\n")
+    if ipc:
+        emit_status({"state": "logging", "t": 0.0, "inputs": 0, "disconnects": 0, "connected": True,
+                     "device": pad.name, "mapped": pad.mapped, "log": path})
 
     pygame.event.pump()
     t0 = time.perf_counter()
@@ -341,11 +386,17 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None, connecti
             if now - last_flush >= FLUSH_EVERY_S:
                 writer.flush()
                 last_flush = now
-            if now - last_status >= STATUS_EVERY_S:
-                mins = (now - t0) / 60
-                print(f"  {mins:6.1f} min   {n_events:9d} inputs   {disconnects} disconnects", end="\r")
+            if now - last_status >= (IPC_STATUS_EVERY_S if ipc else STATUS_EVERY_S):
+                if ipc:
+                    emit_status({"state": "logging", "t": round(now - t0, 1), "inputs": n_events,
+                                 "disconnects": disconnects, "connected": connected})
+                else:
+                    mins = (now - t0) / 60
+                    print(f"  {mins:6.1f} min   {n_events:9d} inputs   {disconnects} disconnects", end="\r")
                 last_status = now
             if seconds is not None and now - t0 >= seconds:
+                break
+            if stop.is_set():
                 break
             time.sleep(POLL_SLEEP_S)
     except KeyboardInterrupt:

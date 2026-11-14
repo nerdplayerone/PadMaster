@@ -40,7 +40,8 @@ PadLab does **not** measure true input latency. That needs hardware. Do not add 
 padlab/
   __init__.py      version
   __main__.py      python -m padlab
-  cli.py           commands: log (default), report, list
+  cli.py           commands: log (default), report, list, check, gui; log --ipc for the GUI
+  gui.py           tkinter window: starts 'log --ipc' as a child process, reads JSON status lines
   logger.py        background logger (SDL2 via pygame-ce)
   logfile.py       log format: gzip CSV, read and write
   analysis.py      all checks and THRESHOLDS (pure Python, no numpy)

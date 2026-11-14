@@ -48,18 +48,22 @@ The OK / Watch / Problem limits are PadLab defaults (judgement calls), not indus
 
 1. Download `PadLab.exe` from [Releases](../../releases).
 2. Connect your controller.
-3. Start `PadLab.exe`. A console window opens.
-4. Put the controller down for 10 seconds (hands-off drift check).
-5. Play your game. PadLab keeps logging in the background.
-6. Go back to the PadLab window and press **Ctrl+C**. The report opens in your browser.
+3. Start `PadLab.exe`. The PadLab window opens.
+4. Select your controller. Select the connection type (optional).
+5. Click **Start**. Put the controller down for 10 seconds. The window counts down.
+6. Play your game. PadLab keeps logging in the background. The "Inputs" number goes up while you play.
+7. Go back to the PadLab window and click **Stop and make report**. The report opens in your browser.
 
-Logs and reports go to `Documents\PadLab`.
+Logs and reports go to `Documents\PadLab`. Use **Open logs folder** to see them.
+
+`PadLab-console.exe` is the same program for testing. It shows a console window and works with the commands in Option B (for example `PadLab-console.exe log`).
 
 ### Option B: Python
 
 ```
 pip install pygame-ce
-python -m padlab                  # log, then report
+python -m padlab gui              # open the window
+python -m padlab                  # log in the console, then report
 python -m padlab list             # list controllers
 python -m padlab log --pad 1      # log the second controller
 python -m padlab log --connection dongle   # write the connection type in the report

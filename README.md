@@ -67,8 +67,6 @@ The OK / Watch / Problem limits are PadMaster defaults (judgement calls), not in
 
 Logs and reports go to `Documents\PadLab`. Use **Open logs folder** to see them.
 
-`PadMaster-console.exe` is the same program for testing. It shows a console window and works with the commands in Option B (for example `PadMaster-console.exe log`).
-
 ### Option B: Python
 
 ```

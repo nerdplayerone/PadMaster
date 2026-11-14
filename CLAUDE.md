@@ -193,7 +193,7 @@ Architecture (recommendation and reason):
 - Stop the logger with a `stop` line on its stdin, not with a signal. The logger then writes the report and prints `{"state": "done", "report": "<path>"}`.
 - Reason: SDL event handling and tkinter both want to own the main thread. Separate processes avoid this problem, and a GUI freeze can't stop the logging.
 - Keep the console mode working (`padlab log` without `--ipc`). It is useful for testing.
-- The .exe opens the GUI by default when started with no arguments. Use `--windowed` in PyInstaller for the GUI build. Keep a console build too, for debugging (two artefacts in the workflow).
+- The .exe opens the GUI by default when started with no arguments. Use `--windowed` in PyInstaller for the GUI build. Keep a console build too, for debugging. It goes only in the Actions run artefacts, not in releases (owner request, 2026-11-14).
 
 **Done when:** the owner can start, play, stop and open the report without the console.
 

@@ -44,6 +44,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/PadMaster.exe
-            dist/PadMaster-console.exe
+          # Only the app goes in the release. The console build stays in the run artefacts for debugging.
+          files: dist/PadMaster.exe

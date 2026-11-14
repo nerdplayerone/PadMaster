@@ -32,6 +32,7 @@ def make_fake_pygame(script, mapped=True):
         def get_numaxes(self): return 6
         def get_numbuttons(self): return 15
         def get_numhats(self): return 1
+        def get_axis(self, i): return 0.0
 
     pg.joystick = types.SimpleNamespace(Joystick=Joystick, init=lambda: None, get_count=lambda: 1)
     calls = {"n": 0}
@@ -50,7 +51,8 @@ def make_fake_pygame(script, mapped=True):
     ctrl = types.ModuleType("pygame._sdl2.controller")
     ctrl.init = lambda: None
     ctrl.is_controller = lambda i: mapped
-    ctrl.Controller = lambda i: object()
+    start_axes = {0: 120, 1: -80, 2: 0, 3: 0, 4: 0, 5: 0}
+    ctrl.Controller = lambda i: types.SimpleNamespace(get_axis=lambda a: start_axes[a])
     sdl2 = types.ModuleType("pygame._sdl2")
     sdl2.controller = ctrl
     pg._sdl2 = sdl2
@@ -80,6 +82,10 @@ def test_mapped_controller(monkeypatch, tmp_path):
     ]
     log = run_with(monkeypatch, tmp_path, script)
     rows = [(e.kind, e.name, e.value) for e in log.events]
+    # Start values at t=0 (SDL sends no event for a stick that does not move).
+    start = [("a", n, v) for n, v in (("lx", 120), ("ly", -80), ("rx", 0), ("ry", 0), ("lt", 0), ("rt", 0))]
+    assert rows[:6] == start and all(e.t == 0.0 for e in log.events[:6])
+    rows = rows[6:]
     assert rows == [("a", "lx", 1234), ("b", "up", 1), ("b", "left", 1), ("b", "up", 0), ("c", "pad", 0), ("c", "pad", 1)]
     assert log.meta["device"] == "Fake Pad" and log.meta["mode"] == "controller"
     assert "ended_ms" in log.meta
@@ -93,5 +99,7 @@ def test_unmapped_joystick_hat(monkeypatch, tmp_path):
     ]
     log = run_with(monkeypatch, tmp_path, script, mapped=False)
     rows = [(e.kind, e.name, e.value) for e in log.events]
+    assert rows[:6] == [("a", n, 0) for n in ("lx", "ly", "rx", "ry", "j4", "j5")]
+    rows = rows[6:]
     assert rows == [("b", "left", 1), ("b", "up", 1), ("b", "left", 0), ("a", "ly", -32767)]
     assert log.meta["mode"] == "joystick"

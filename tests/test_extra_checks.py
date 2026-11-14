@@ -264,11 +264,25 @@ def test_rolls_that_skip_the_diagonal_are_problem(tmp_path):
     assert len(d["roll_skip_times"]) == 20
 
 
-def test_gap_of_nothing_counts_as_skip(tmp_path):
+def test_gap_of_nothing_is_info_not_a_skip(tmp_path):
+    """A good pad also shows short gaps when the thumb lifts (owner's Xbox pad: 15%). Not graded."""
     r = _rolls(tmp_path, "gap.csv.gz", 40, skip_every=4, skip_kind="gap")
-    assert r.dpad["roll_skip_pct"] == pytest.approx(25)
-    assert find(r, "dpad_roll_skip").status == PROBLEM
-    assert r.dpad["roll_skip_times"][0]["how"] == "gap of nothing"
+    assert sum(r.dpad["rolls_gap"].values()) == 10
+    assert r.dpad["roll_gap_pct"] == pytest.approx(25)
+    assert r.dpad["roll_skip_pct"] == 0
+    assert find(r, "dpad_roll_skip").status == OK
+
+
+def test_real_logs_good_pad_ok_faulty_pad_problem():
+    """Regression (owner's logs 2026-11-14, D-pad rows only, same game).
+    Xbox pad: 3 of 105 rolls jumped straight (OK). DualSense: 31 of 164 (Problem)."""
+    base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    good = analyse(read_log(os.path.join(base, "dpad_rolls_good.csv.gz")))
+    bad = analyse(read_log(os.path.join(base, "dpad_rolls_faulty.csv.gz")))
+    assert good.dpad["rolls"] == 105 and sum(good.dpad["rolls_skipped"].values()) == 3
+    assert find(good, "dpad_roll_skip").status == OK
+    assert bad.dpad["rolls"] == 164 and sum(bad.dpad["rolls_skipped"].values()) == 31
+    assert find(bad, "dpad_roll_skip").status == PROBLEM
 
 
 def test_clean_rolls_are_ok(tmp_path):

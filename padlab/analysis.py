@@ -77,11 +77,13 @@ THRESHOLDS = {
     "blip_ok_pct": 2, "blip_watch_pct": 10,
     "dpad_min_cardinals": 20,
     # Rolls: a quick move from one direction to the next (right -> down). A working rocker passes
-    # through the diagonal on almost every roll. A skip is a direct switch, or a short gap of nothing.
+    # through the diagonal on almost every roll. Only a direct switch (C1 -> C2, no diagonal) is graded.
+    # A short gap of nothing is shown as info only: a good pad also shows it when the thumb lifts
+    # (owner's Xbox pad: 3% direct switches, 15% gaps; faulty pad: 19% direct, 27% gaps).
     "roll_diag_max_ms": 100,      # a diagonal longer than this is a held diagonal, not a roll
-    "roll_gap_max_ms": 40,        # a gap of nothing shorter than this, between neighbours, is a skip
+    "roll_gap_max_ms": 40,        # a gap of nothing shorter than this, between neighbours, is a gap roll
     "roll_min": 20,
-    "roll_skip_ok_pct": 10, "roll_skip_watch_pct": 25,
+    "roll_skip_ok_pct": 5, "roll_skip_watch_pct": 15,
     # Chords
     "chord_window_ms": 50,
     "frame_ms": 1000 / 60,
@@ -637,6 +639,7 @@ def analyse_dpad(log: Log) -> dict:
     # Rolls between neighbouring directions.
     rolls_through: dict[str, int] = {}
     rolls_skipped: dict[str, int] = {}
+    rolls_gap: dict[str, int] = {}
     skip_times: list[dict] = []
     for i in range(1, len(tl)):
         a, b = tl[i - 1][1], tl[i][1]
@@ -654,18 +657,20 @@ def analyse_dpad(log: Log) -> dict:
         mid_ms = tl[i][0] - tl[i - 1][0]
         # C1 -> nothing (short) -> C2
         if not a and mid_ms < th["roll_gap_max_ms"]:
-            rolls_skipped[name] = rolls_skipped.get(name, 0) + 1
-            skip_times.append({"t": tl[i - 1][0], "dir": name, "how": "gap of nothing", "ms": mid_ms})
+            rolls_gap[name] = rolls_gap.get(name, 0) + 1
         # C1 -> D -> C2 (quick)
         elif a == c1 | b and mid_ms <= th["roll_diag_max_ms"]:
             rolls_through[name] = rolls_through.get(name, 0) + 1
     n_through = sum(rolls_through.values())
     n_skip = sum(rolls_skipped.values())
-    n_rolls = n_through + n_skip
+    n_gap = sum(rolls_gap.values())
+    n_rolls = n_through + n_skip + n_gap
     res.update(
         rolls=n_rolls,
         rolls_through=rolls_through,
         rolls_skipped=rolls_skipped,
+        rolls_gap=rolls_gap,
+        roll_gap_pct=(n_gap / n_rolls * 100) if n_rolls >= th["roll_min"] else float("nan"),
         roll_skip_times=skip_times,
         roll_skip_pct=(n_skip / n_rolls * 100) if n_rolls >= th["roll_min"] else float("nan"),
     )
@@ -894,10 +899,11 @@ def build_findings(r: Report) -> None:
        grade(d["roll_skip_pct"], th["roll_skip_ok_pct"], th["roll_skip_watch_pct"]),
        f"{n_skip} of {d['rolls']} ({d['roll_skip_pct']:.0f}%)" if not math.isnan(d["roll_skip_pct"])
        else f"{n_skip} of {d['rolls']}",
-       "A quick move from one direction to the next (for example right to down) did not show the diagonal "
-       f"between them. A working D-pad shows the diagonal on almost every roll. Most skips: {worst or '-'}. "
-       f"At least {th['roll_min']} rolls are necessary for a result. Your thumb technique also has an effect, "
-       "so compare pads with the same player and game.")
+       "A quick move from one direction to the next (for example right to down) jumped straight to the next "
+       "direction. The diagonal between them did not show at all. A working D-pad shows the diagonal on almost "
+       f"every roll. Most skips: {worst or '-'}. "
+       f"Rolls with a short gap of nothing (usually the thumb lifts, not graded): {sum(d['rolls_gap'].values())}. "
+       f"At least {th['roll_min']} rolls are necessary for a result. Compare pads with the same player and game.")
     if d["invalid"]:
         _f(F, "dpad_invalid", "D-pad: opposite directions together", PROBLEM, str(d["invalid"]),
            "Up+down or left+right at the same time. A rocker D-pad should not do this.")

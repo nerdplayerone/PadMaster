@@ -88,6 +88,18 @@ python -m padlab report FILE.csv.gz
 - Play for at least 10 minutes. Some checks need more data.
 - To test wireless stutter, do one session per setup: dongle at the back of the PC, dongle on a USB extension, Bluetooth, wired.
 
+## Test: does Steam Input change what the PC gets?
+
+This test shows if Steam Input changes how often the PC gets new values from the pad. It does not measure input latency.
+
+1. Close Steam fully (right-click the Steam icon in the taskbar, then **Exit Steam**).
+2. In PadMaster, name the pad (for example "Xbox pad A, Steam off"). Push **START**. Turn the sticks in full circles for 2 minutes. Push **STOP**.
+3. Start Steam. Turn on Steam Input for your pad (Steam > Settings > Controller).
+4. Do step 2 again with the name "Xbox pad A, Steam on".
+5. Open **Compare**. Look at **Update rate** and **Update spread** for the two sessions.
+
+Use the same pad, the same connection and the same USB port for both sessions. If the update rate shows "at the limit", the real rate can be higher than PadMaster can see (about 500 Hz). When Steam Input is on, PadMaster can see Steam's virtual controller and not the real pad (inference, not tested yet). The result then shows what Steam passes on to games.
+
 ## How it works
 
 - PadMaster uses SDL2 through [pygame-ce](https://github.com/pygame-community/pygame-ce). It sets `SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1`, so it gets controller input while the game has focus.

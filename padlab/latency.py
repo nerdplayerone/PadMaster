@@ -90,9 +90,13 @@ def resolve(meta: dict, choices: dict) -> dict:
         entry = by_url(picked)
         if entry:
             return {"state": "chosen", "entry": entry, "suggest": [], "key": key}
-    # Try the owner's name and the model name. Use the one that matches better.
-    tries = [candidates(q) for q in {str(meta.get("label") or ""), str(meta.get("device") or "")} if q]
-    sug = max(tries, key=lambda c: c[0]["score"] if c else 0.0) if tries else []
+    # Match only what the owner typed. The name Windows reports can be wrong (for example,
+    # many pads report as "Xbox One Controller"), so it is never used for an automatic match.
+    label = str(meta.get("label") or "")
+    if not label:
+        sug = candidates(str(meta.get("device") or ""))  # hints only: the owner must choose
+        return {"state": "ask" if sug else "none", "entry": None, "suggest": sug, "key": key}
+    sug = candidates(label)
     clear = len(sug) < 2 or sug[0]["score"] - sug[1]["score"] >= 0.05  # not two near-equal models
     if sug and sug[0]["score"] >= AUTO_SCORE and clear:
         return {"state": "auto", "entry": by_url(sug[0]["url"]), "suggest": sug, "key": key}

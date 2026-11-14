@@ -110,3 +110,12 @@ def test_two_near_equal_models_ask_instead_of_guessing(monkeypatch):
     monkeypatch.setattr(latency, "_cache", data)
     assert latency.resolve({"label": "Xbox Series"}, {})["state"] in ("ask", "auto")
     assert latency.resolve({"label": "Xbox"}, {})["state"] == "ask"
+
+
+def test_only_the_typed_name_is_matched_not_the_windows_name():
+    """Owner report (2026-11-14): a pad that Windows calls "Xbox One Controller" was matched to
+    that model, but the owner typed a different pad. Match only the typed name."""
+    meta = {"label": "Sony DualSense", "device": "Microsoft Xbox Series Controller"}
+    assert latency.resolve(meta, {})["entry"]["name"] == "Sony DualSense"
+    no_label = latency.resolve({"device": "Microsoft Xbox Series Controller"}, {})
+    assert no_label["state"] == "ask" and no_label["entry"] is None

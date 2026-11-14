@@ -245,6 +245,15 @@ def render(r: Report, log_name: str = "", name: str | None = None) -> str:
     if title != model:
         out.append(f'<div class="sub">Controller model: {e(model)}</div>')
     out.append(f'<div class="sub">Connection: {e(m.get("connection") or "not recorded")}</div>')
+    from .analysis import guid_info
+    ids = guid_info(m.get("guid"))
+    bits = []
+    if ids.get("vid"):
+        bits.append(f'{ids["bus_name"]} · VID {ids["vid"]} · PID {ids["pid"]}')
+    if m.get("power"):
+        bits.append(f'power {m["power"]}')
+    if bits:
+        out.append(f'<div class="sub">{e(" · ".join(bits))}</div>')
     out.append(f'<div class="sub">PadMaster report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
                f'{s["active_min"]} active min · {s["inputs"]:,} inputs · {e(m.get("mode", "?"))} mode</div>')
     if m.get("mode") == "joystick":

@@ -1,10 +1,12 @@
-# CLAUDE.md: PadLab project instructions
+# CLAUDE.md: PadMaster project instructions
 
-Read this file fully before you change anything. It tells you what PadLab is, what works, what is not tested, and the order of work.
+> Name: the app was called PadLab until v0.1.0. The Python package and the commands stay `padlab` (`python -m padlab`). Old logs are named `padlab_*.csv.gz` and still work.
 
-## 1. What PadLab is
+Read this file fully before you change anything. It tells you what PadMaster is, what works, what is not tested, and the order of work.
 
-PadLab is a Windows tool that logs a game controller **in the background while the owner plays a game**. When the session stops, PadLab makes an HTML report that shows controller faults that players complain about:
+## 1. What PadMaster is
+
+PadMaster is a Windows tool that logs a game controller **in the background while the owner plays a game**. When the session stops, PadMaster makes an HTML report that shows controller faults that players complain about:
 
 - hidden centre deadzones and cross-shaped (axial) deadzones on the sticks
 - stick drift at rest, and a "safe in-game deadzone" value
@@ -18,7 +20,7 @@ PadLab is a Windows tool that logs a game controller **in the background while t
 
 The owner makes controller review videos. The report must be **accurate, readable on camera, and honest about its limits**. The event-time list in the report lets the owner find each fault in his gameplay recording.
 
-PadLab does **not** measure true input latency. That needs hardware. Do not add any feature that claims to measure it.
+PadMaster does **not** measure true input latency. That needs hardware. Do not add any feature that claims to measure it.
 
 ## 2. How the owner works (read this)
 
@@ -40,7 +42,12 @@ PadLab does **not** measure true input latency. That needs hardware. Do not add 
 padlab/
   __init__.py      version
   __main__.py      python -m padlab
-  cli.py           commands: log (default), report, list
+  cli.py           commands: log (default), report, list, check, gui; log --ipc for the GUI
+  gui.py           app window (pywebview): starts 'log --ipc' as a child process, reads JSON status lines
+  app.html         the app page: sidebar, History, Compare, Report
+  history.py       session history cache, controller names, settings, CSV export
+  theme.py         SCROLLBAR_CSS (the only scroll bar style)
+  branding.py      the owner's channel links
   logger.py        background logger (SDL2 via pygame-ce)
   logfile.py       log format: gzip CSV, read and write
   analysis.py      all checks and THRESHOLDS (pure Python, no numpy)
@@ -72,7 +79,7 @@ Raw integers are kept on purpose. The inner deadzone check needs the exact small
 
 ## 4. Hard rules
 
-1. PadLab only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
+1. PadMaster only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
 2. No network access in the app. No telemetry. No auto-update.
 3. No admin rights needed. No drivers.
 4. The analysis stays pure Python (standard library only). The .exe must stay small.
@@ -240,7 +247,7 @@ No long logs in the message. Put long output in a file and give the file name.
 ## 8. Do not
 
 - Do not claim latency numbers.
-- Do not compare PadLab results with Gamepadla numbers as if they used the same method.
+- Do not compare PadMaster results with Gamepadla numbers as if they used the same method.
 - Do not add third-party brand names, logos or controller product images to the app or report. The owner's own logo (`assets/logo.png`) is allowed.
 - Do not push, tag or make the repo public without the owner's approval.
 - Do not delete the owner's logs.

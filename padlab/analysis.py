@@ -32,6 +32,7 @@ THRESHOLDS = {
     "rest_radius": 0.25,          # a stick under this magnitude may be "at rest"
     "rest_tolerance": 0.06,       # values must stay this close for a rest window
     "rest_min_ms": 1500,          # minimum rest window
+    "rest_trim_ms": 150,          # ignore this much at each edge of a rest window (start or end of a move)
     "handsoff_window_ms": 15000,  # rest windows that start in the first 15 s = hands-off check
     "drift_ok": 0.05, "drift_watch": 0.10,
     "inner_dz_ok": 0.03, "inner_dz_watch": 0.10,
@@ -77,6 +78,19 @@ THRESHOLDS = {
     "dpad_min_diagonals": 10,
     "flicker_ok_pct": 2, "flicker_watch_pct": 10,
     "blip_ok_pct": 2, "blip_watch_pct": 10,
+    # Rolls: a quick move from one direction to the next (right -> down). A working rocker passes
+    # through the diagonal on almost every roll. Only a direct switch (C1 -> C2, no diagonal) is graded.
+    # A short gap of nothing is shown as info only: a good pad also shows it when the thumb lifts
+    # (owner's Xbox pad: 3% direct switches, 15% gaps; faulty pad: 19% direct, 27% gaps).
+    "roll_diag_max_ms": 100,      # a diagonal longer than this is a held diagonal, not a roll
+    "roll_gap_max_ms": 40,        # a gap of nothing shorter than this, between neighbours, is a gap roll
+    "roll_min": 20,
+    "roll_skip_ok_pct": 5, "roll_skip_watch_pct": 15,
+    # Return to centre: rest position after the stick was pushed past centre_from
+    "centre_from": 0.5,
+    "centre_lookback_ms": 1000,
+    "centre_min_returns": 5,
+    "centre_ok": 0.03, "centre_watch": 0.06,
     "dpad_min_cardinals": 20,
     # Chords
     "chord_window_ms": 50,
@@ -165,6 +179,31 @@ def stick_samples(log: Log, xn: str, yn: str) -> list[tuple[float, int, int]]:
     return out if seen else []
 
 
+def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float) -> dict | None:
+    """Mean, max and sample range of samples[i:j], counting only the time between lo and hi."""
+    n = len(samples)
+    sx = sy = wsum = 0.0
+    max_mag = 0.0
+    k0 = k1 = None
+    for k in range(i, j):
+        tk = samples[k][0]
+        t_next = samples[k + 1][0] if k + 1 < n else end_ms
+        w = min(t_next, hi) - max(tk, lo)
+        if w <= 0:
+            continue
+        nxk, nyk = norm(samples[k][1]), norm(samples[k][2])
+        sx += nxk * w
+        sy += nyk * w
+        wsum += w
+        max_mag = max(max_mag, math.hypot(nxk, nyk))
+        k0 = k if k0 is None else k0
+        k1 = k + 1
+    if wsum <= 0:
+        return None
+    mx, my = sx / wsum, sy / wsum
+    return {"x": mx, "y": -my, "mean_mag": math.hypot(mx, my), "max_mag": max_mag, "i0": k0, "i1": k1}
+
+
 def rest_windows(samples, end_ms: float) -> list[dict]:
     th = THRESHOLDS
     windows = []
@@ -177,25 +216,22 @@ def rest_windows(samples, end_ms: float) -> list[dict]:
             i += 1
             continue
         j = i
-        sx = sy = 0.0
-        max_mag = 0.0
         while j < n:
             _, xj, yj = samples[j]
             nxj, nyj = norm(xj), norm(yj)
             if (abs(nxj - nx0) > th["rest_tolerance"] or abs(nyj - ny0) > th["rest_tolerance"]
                     or math.hypot(nxj, nyj) >= th["rest_radius"]):
                 break
-            t_next = samples[j + 1][0] if j + 1 < n else end_ms
-            w = max(0.0, t_next - samples[j][0])
-            sx += nxj * w
-            sy += nyj * w
-            max_mag = max(max_mag, math.hypot(nxj, nyj))
             j += 1
         t_end = samples[j][0] if j < n else end_ms
         dur = t_end - t0
         if dur >= th["rest_min_ms"] and dur > 0:
-            mx, my = sx / dur, sy / dur
-            windows.append({"t": t0, "dur": dur, "x": mx, "y": -my, "mean_mag": math.hypot(mx, my), "max_mag": max_mag})
+            # Use only the middle of the window. The first and last samples can be the end of a
+            # return or the start of the next push (the thumb touches the stick first).
+            lo, hi = t0 + th["rest_trim_ms"], t_end - th["rest_trim_ms"]
+            ws = window_stats(samples, i, j, lo, hi, end_ms)
+            if ws:
+                windows.append({"t": t0, "dur": dur, "t_end": t_end, "i_start": i, "j": j, **ws})
         i = max(j, i + 1)
     return windows
 
@@ -214,6 +250,13 @@ def analyse_stick(log: Log, side: str) -> dict:
     # Rest / drift
     wins = rest_windows(s, end)
     handsoff = [w for w in wins if w["t"] < th["handsoff_window_ms"]]
+    if handsoff:
+        # Use only the start of the session for the hands-off check. A long rest window can end
+        # with the player picking up the pad and touching the stick.
+        w0 = handsoff[0]
+        hi = min(w0["t_end"] - th["rest_trim_ms"], th["handsoff_window_ms"])
+        ws = window_stats(s, w0["i_start"], w0["j"], w0["t"] + th["rest_trim_ms"], hi, end)
+        handsoff = [{**w0, **ws}] if ws else []
     res["rest_windows"] = len(wins)
     res["handsoff"] = handsoff[0] if handsoff else None
     res["rest_typical"] = percentile([w["mean_mag"] for w in wins], 0.5) if wins else float("nan")
@@ -317,7 +360,27 @@ def analyse_stick(log: Log, side: str) -> dict:
     res.update(_stick_resolution(s))
     res.update(_circularity(res["reach"]))
     res.update(_rest_noise(s, res["handsoff"]))
+    res.update(_centre_return(s, wins))
     return res
+
+
+def _centre_return(s, wins) -> dict:
+    """Rest position after each push past centre_from (from the parallel PadMaster branch)."""
+    import bisect
+    th = THRESHOLDS
+    times = [t for t, _, _ in s]
+    returns = []
+    for w in wins:
+        k = bisect.bisect_left(times, w["t"] - th["centre_lookback_ms"])
+        if any(math.hypot(norm(s[q][1]), norm(s[q][2])) > th["centre_from"] for q in range(k, w["i0"])):
+            returns.append((w["x"], w["y"]))
+    out = {"centre_returns": len(returns)}
+    if len(returns) >= th["centre_min_returns"]:
+        out["centre_err"] = percentile([math.hypot(x, y) for x, y in returns], 0.9)
+        out["centre_spread"] = max(math.hypot(a[0] - b[0], a[1] - b[1]) for a in returns for b in returns)
+    else:
+        out["centre_err"] = out["centre_spread"] = float("nan")
+    return out
 
 
 def _stick_resolution(s) -> dict:
@@ -409,6 +472,25 @@ def analyse_timing(log: Log, sticks: dict) -> dict:
 
 
 # ---------------------------------------------------------------- triggers
+
+def guid_info(guid: str | None) -> dict:
+    """Bus, vendor ID and product ID from an SDL GUID (inference: SDL 2 GUID layout)."""
+    if not guid or len(guid) != 32:
+        return {}
+    try:
+        b = bytes.fromhex(guid)
+    except ValueError:
+        return {}
+    bus = int.from_bytes(b[0:2], "little")
+    if b[6:8] != b"\0\0" or b[10:12] != b"\0\0":
+        return {"bus": bus}
+    return {
+        "bus": bus,
+        "bus_name": {0x03: "USB", 0x05: "Bluetooth"}.get(bus, f"0x{bus:04x}"),
+        "vid": f"{int.from_bytes(b[4:6], 'little'):04X}",
+        "pid": f"{int.from_bytes(b[8:10], 'little'):04X}",
+    }
+
 
 def analyse_trigger(log: Log, name: str) -> dict:
     vals = [e.value for e in log.events if e.kind == "a" and e.name == name]
@@ -571,6 +653,45 @@ def analyse_dpad(log: Log) -> dict:
         if is_blip:
             blips += 1
             blip_times.append({"t": t, "dir": DIRS.get(tuple(sorted(st)), "?"), "ms": dur(i)})
+
+    # Rolls between neighbouring directions.
+    rolls_through: dict[str, int] = {}
+    rolls_skipped: dict[str, int] = {}
+    rolls_gap: dict[str, int] = {}
+    skip_times: list[dict] = []
+    for i in range(1, len(tl)):
+        a, b = tl[i - 1][1], tl[i][1]
+        # C1 -> C2 directly
+        if _is_card(a) and _is_card(b) and _is_diag(a | b):
+            name = DIRS[tuple(sorted(a | b))]
+            rolls_skipped[name] = rolls_skipped.get(name, 0) + 1
+            skip_times.append({"t": tl[i][0], "dir": name, "how": "direct switch", "ms": 0.0})
+        if i < 2:
+            continue
+        c1 = tl[i - 2][1]
+        if not (_is_card(c1) and _is_card(b) and c1 != b and _is_diag(c1 | b)):
+            continue
+        name = DIRS[tuple(sorted(c1 | b))]
+        mid_ms = tl[i][0] - tl[i - 1][0]
+        # C1 -> nothing (short) -> C2
+        if not a and mid_ms < th["roll_gap_max_ms"]:
+            rolls_gap[name] = rolls_gap.get(name, 0) + 1
+        # C1 -> D -> C2 (quick)
+        elif a == c1 | b and mid_ms <= th["roll_diag_max_ms"]:
+            rolls_through[name] = rolls_through.get(name, 0) + 1
+    n_through = sum(rolls_through.values())
+    n_skip = sum(rolls_skipped.values())
+    n_gap = sum(rolls_gap.values())
+    n_rolls = n_through + n_skip + n_gap
+    res.update(
+        rolls=n_rolls,
+        rolls_through=rolls_through,
+        rolls_skipped=rolls_skipped,
+        rolls_gap=rolls_gap,
+        roll_gap_pct=(n_gap / n_rolls * 100) if n_rolls >= th["roll_min"] else float("nan"),
+        roll_skip_times=skip_times,
+        roll_skip_pct=(n_skip / n_rolls * 100) if n_rolls >= th["roll_min"] else float("nan"),
+    )
 
     res.update(
         diag_entries=diag_entries,
@@ -737,6 +858,16 @@ def build_findings(r: Report) -> None:
                grade(s["circle_error"], th["circle_ok"], th["circle_watch"]), pct(s["circle_error"]),
                "How far the outer edge is from a perfect circle, as a share of its average size. "
                "A high value means the stick reaches further in some directions than in others.")
+        # Return to centre
+        if math.isnan(s["centre_err"]):
+            _f(F, f"{side}_centre", f"{label}: return to centre", NODATA, "-",
+               f"Only {s['centre_returns']} returns to rest after a push were found. "
+               f"At least {th['centre_min_returns']} are necessary.")
+        else:
+            _f(F, f"{side}_centre", f"{label}: return to centre",
+               grade(s["centre_err"], th["centre_ok"], th["centre_watch"]), pct(s["centre_err"]),
+               f"Offset from centre when the stick comes back to rest after a push (90th percentile of "
+               f"{s['centre_returns']} returns). Spread between the rest points {pct(s['centre_spread'])}.")
         # Resolution
         if math.isnan(s["bits"]):
             _f(F, f"{side}_resolution", f"{label}: resolution", NODATA, "-",
@@ -802,6 +933,17 @@ def build_findings(r: Report) -> None:
        f"{d['blips']} ({d['blip_pct']:.1f}%)" if not math.isnan(d["blip_pct"]) else f"{d['blips']}",
        f"A diagonal showed for less than {th['flicker_ms']} ms during a single-direction press. "
        f"Out of {d['card_presses']} single-direction presses.")
+    n_skip = sum(d["rolls_skipped"].values())
+    worst = max(d["rolls_skipped"].items(), key=lambda kv: kv[1])[0] if n_skip else None
+    _f(F, "dpad_roll_skip", "D-pad: diagonal skipped in rolls",
+       grade(d["roll_skip_pct"], th["roll_skip_ok_pct"], th["roll_skip_watch_pct"]),
+       f"{n_skip} of {d['rolls']} ({d['roll_skip_pct']:.0f}%)" if not math.isnan(d["roll_skip_pct"])
+       else f"{n_skip} of {d['rolls']}",
+       "A quick move from one direction to the next (for example right to down) jumped straight to the next "
+       "direction. The diagonal between them did not show at all. A working D-pad shows the diagonal on almost "
+       f"every roll. Most skips: {worst or '-'}. "
+       f"Rolls with a short gap of nothing (usually the thumb lifts, not graded): {sum(d['rolls_gap'].values())}. "
+       f"At least {th['roll_min']} rolls are necessary for a result. Compare pads with the same player and game.")
     if d["invalid"]:
         _f(F, "dpad_invalid", "D-pad: opposite directions together", PROBLEM, str(d["invalid"]),
            "Up+down or left+right at the same time. A rocker D-pad should not do this.")
@@ -882,6 +1024,9 @@ METRICS = [
     {"key": "lt_start", "label": "Left trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
     {"key": "rt_start", "label": "Right trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
     {"key": "doubles", "label": "Double inputs", "unit": "count", "better": "low", "ok": "double_watch", "watch": "double_problem", "pct": False},
+    {"key": "l_centre", "label": "Left stick: return to centre", "unit": "%", "better": "low", "ok": "centre_ok", "watch": "centre_watch", "pct": True},
+    {"key": "r_centre", "label": "Right stick: return to centre", "unit": "%", "better": "low", "ok": "centre_ok", "watch": "centre_watch", "pct": True},
+    {"key": "dpad_roll_skip", "label": "D-pad: diagonal skipped in rolls", "unit": "%", "better": "low", "ok": "roll_skip_ok_pct", "watch": "roll_skip_watch_pct", "pct": False},
     {"key": "dpad_flicker", "label": "D-pad: diagonal flicker", "unit": "%", "better": "low", "ok": "flicker_ok_pct", "watch": "flicker_watch_pct", "pct": False},
     {"key": "disconnects", "label": "Disconnects", "unit": "count", "better": "low", "ok": None, "watch": None, "pct": False},
 ]
@@ -899,7 +1044,7 @@ def metric_values(r: Report) -> dict[str, float | None]:
     for side in ("l", "r"):
         s = r.sticks.get(side, {})
         if not s.get("enough"):
-            for k in ("drift", "noise", "inner", "axial", "outer", "circle", "bits"):
+            for k in ("drift", "noise", "inner", "axial", "outer", "circle", "bits", "centre"):
                 out[f"{side}_{k}"] = None
             continue
         ho = s.get("handsoff")
@@ -909,6 +1054,7 @@ def metric_values(r: Report) -> dict[str, float | None]:
         out[f"{side}_axial"] = ok(s.get("axial_band"))
         out[f"{side}_outer"] = ok(s.get("outer_avg"))
         out[f"{side}_circle"] = ok(s.get("circle_error"))
+        out[f"{side}_centre"] = ok(s.get("centre_err"))
         bits = s.get("bits")
         out[f"{side}_bits"] = ok(min(bits, THRESHOLDS["bits_cap"])) if bits is not None and not math.isnan(bits) else None
     for name in ("lt", "rt"):
@@ -917,6 +1063,7 @@ def metric_values(r: Report) -> dict[str, float | None]:
     out["doubles"] = float(r.buttons.get("double_total", 0))
     fp = r.dpad.get("flicker_pct")
     out["dpad_flicker"] = ok(fp) if r.dpad.get("diag_entries") else None
+    out["dpad_roll_skip"] = ok(r.dpad.get("roll_skip_pct"))
     out["disconnects"] = float(r.connection.get("disconnects", 0))
     return out
 

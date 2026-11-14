@@ -121,7 +121,10 @@ def main(argv: list[str] | None = None) -> int:
     except Exception:
         pass
     if getattr(sys, "frozen", False):
-        input("\nPress Enter to close this window.")
+        try:
+            input("\nPress Enter to close this window.")
+        except (EOFError, RuntimeError):
+            pass  # no console input (for example, started from a script or the windowed .exe)
     return 0
 
 

@@ -106,7 +106,15 @@ class _Pad:
             "axes": self.joystick.get_numaxes(),
             "buttons": self.joystick.get_numbuttons(),
             "hats": self.joystick.get_numhats(),
+            "power": self.power(),
         }
+
+    def power(self) -> str | None:
+        """SDL power level ("low", "full", "wired"...). None if this pygame-ce version can't read it."""
+        try:
+            return str(self.joystick.get_power_level())
+        except Exception:
+            return None
 
 
 def _hat_rows(old: tuple[int, int], new: tuple[int, int]) -> list[tuple[str, int]]:

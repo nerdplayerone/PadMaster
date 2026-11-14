@@ -1,4 +1,4 @@
-"""Build a synthetic PadLab log with known faults, for tests and the demo report.
+"""Build a synthetic PadMaster log with known faults, for tests and the demo report.
 
 Known faults in the default session:
 * Left stick: drift at rest of about 4.5%, cross-shaped (axial) dead band of 10%,

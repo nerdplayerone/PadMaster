@@ -11,6 +11,7 @@ tune them. They are judgement calls, not industry standards.
 
 from __future__ import annotations
 
+import bisect
 import math
 from dataclasses import dataclass, field
 from typing import Iterable
@@ -28,6 +29,7 @@ THRESHOLDS = {
     "rest_radius": 0.25,          # a stick under this magnitude may be "at rest"
     "rest_tolerance": 0.06,       # values must stay this close for a rest window
     "rest_min_ms": 1500,          # minimum rest window
+    "rest_trim_ms": 150,          # ignore this much at each edge of a rest window (start or end of a move)
     "handsoff_window_ms": 15000,  # rest windows that start in the first 15 s = hands-off check
     "drift_ok": 0.05, "drift_watch": 0.10,
     "inner_dz_ok": 0.03, "inner_dz_watch": 0.10,
@@ -45,6 +47,21 @@ THRESHOLDS = {
     "stutter_jump": 0.08,         # minimum jump across the gap
     "stutter_speed_match": 0.5,   # jump must be at least this share of (speed before gap x gap)
     "stutter_ok_per_min": 0.5, "stutter_watch_per_min": 3,
+    # Update rate (info only, never latency)
+    "late_x_median": 2,           # an interval longer than this x median is a "late" report
+    "interval_hist_ms": 30,       # histogram bins: 1 ms each up to this value, plus one overflow bin
+    # Noise at rest: peak-to-peak spread of the values in the hands-off window
+    "noise_ok": 0.02, "noise_watch": 0.05,
+    # Circularity: average distance of the full-tilt edge from a perfect circle
+    "circ_ok": 0.05, "circ_watch": 0.10,
+    # Return to centre: rest position after the stick was pushed past centre_from
+    "centre_from": 0.5,
+    "centre_lookback_ms": 1000,
+    "centre_min_returns": 5,
+    "centre_ok": 0.03, "centre_watch": 0.06,
+    # Resolution (info only)
+    "res_min_unique": 100,
+    "res_step_share": 0.05,       # a step size must occur in this share of gaps to count
     # Triggers
     "trigger_start_ok": 0.03, "trigger_start_watch": 0.10,
     "trigger_end_ok": 0.98, "trigger_end_watch": 0.90,
@@ -157,25 +174,39 @@ def rest_windows(samples, end_ms: float) -> list[dict]:
             i += 1
             continue
         j = i
-        sx = sy = 0.0
-        max_mag = 0.0
         while j < n:
             _, xj, yj = samples[j]
             nxj, nyj = norm(xj), norm(yj)
             if (abs(nxj - nx0) > th["rest_tolerance"] or abs(nyj - ny0) > th["rest_tolerance"]
                     or math.hypot(nxj, nyj) >= th["rest_radius"]):
                 break
-            t_next = samples[j + 1][0] if j + 1 < n else end_ms
-            w = max(0.0, t_next - samples[j][0])
-            sx += nxj * w
-            sy += nyj * w
-            max_mag = max(max_mag, math.hypot(nxj, nyj))
             j += 1
         t_end = samples[j][0] if j < n else end_ms
         dur = t_end - t0
         if dur >= th["rest_min_ms"] and dur > 0:
-            mx, my = sx / dur, sy / dur
-            windows.append({"t": t0, "dur": dur, "x": mx, "y": -my, "mean_mag": math.hypot(mx, my), "max_mag": max_mag})
+            # Use only the middle of the window. The first and last samples can be the end of a
+            # return or the start of the next push (the thumb touches the stick first).
+            lo, hi = t0 + th["rest_trim_ms"], t_end - th["rest_trim_ms"]
+            sx = sy = wsum = 0.0
+            max_mag = 0.0
+            k0 = k1 = None
+            for k in range(i, j):
+                tk = samples[k][0]
+                t_next = samples[k + 1][0] if k + 1 < n else end_ms
+                w = min(t_next, hi) - max(tk, lo)
+                if w <= 0:
+                    continue
+                nxk, nyk = norm(samples[k][1]), norm(samples[k][2])
+                sx += nxk * w
+                sy += nyk * w
+                wsum += w
+                max_mag = max(max_mag, math.hypot(nxk, nyk))
+                k0 = k if k0 is None else k0
+                k1 = k + 1
+            if wsum > 0:
+                mx, my = sx / wsum, sy / wsum
+                windows.append({"t": t0, "dur": dur, "x": mx, "y": -my, "mean_mag": math.hypot(mx, my),
+                                "max_mag": max_mag, "i0": k0, "i1": k1})
         i = max(j, i + 1)
     return windows
 
@@ -291,7 +322,130 @@ def analyse_stick(log: Log, side: str) -> dict:
                     stutters.append({"t": s[i][0], "gap_ms": dt, "jump": jump})
     res["stutters"] = stutters
     res["motion_min"] = motion_ms / 60000
+    res["intervals"] = interval_stats(dts)
+
+    # Noise at rest: spread of the values inside the hands-off window only. A still moment during
+    # play can be a thumb that holds the stick, and a thumb adds its own noise.
+    basis_win = handsoff[0] if handsoff else None
+    if basis_win and basis_win["i1"] - basis_win["i0"] >= 1:
+        xs = [norm(x) for _, x, _ in s[basis_win["i0"]:basis_win["i1"]]]
+        ys = [norm(y) for _, _, y in s[basis_win["i0"]:basis_win["i1"]]]
+        res["noise_p2p"] = max(max(xs) - min(xs), max(ys) - min(ys))
+        res["noise_std"] = max(_std(xs), _std(ys))
+        res["noise_source"] = "hands-off check"
+    else:
+        res["noise_p2p"] = res["noise_std"] = float("nan")
+        res["noise_source"] = None
+
+    # Circularity: average distance of the full-tilt edge from a perfect circle (over- and under-reach).
+    if len(covered) >= th["outer_min_covered"]:
+        res["circ_err"] = sum(abs(r - 1.0) for r in covered) / len(covered)
+    else:
+        res["circ_err"] = float("nan")
+
+    # Return to centre: rest position after each push past centre_from.
+    times = [t for t, _, _ in s]
+    returns = []
+    for w in wins:
+        k = bisect.bisect_left(times, w["t"] - th["centre_lookback_ms"])
+        pushed = any(math.hypot(norm(s[q][1]), norm(s[q][2])) > th["centre_from"] for q in range(k, w["i0"]))
+        if pushed:
+            returns.append((w["x"], w["y"]))
+    res["centre_returns"] = len(returns)
+    res["centre_points"] = returns[:400]
+    if len(returns) >= th["centre_min_returns"]:
+        mags = [math.hypot(x, y) for x, y in returns]
+        res["centre_err"] = percentile(mags, 0.9)
+        res["centre_spread"] = max(math.hypot(a[0] - b[0], a[1] - b[1]) for a in returns for b in returns)
+    else:
+        res["centre_err"] = res["centre_spread"] = float("nan")
+
+    # Close-up heatmap of the centre area (+/- 20%), to show the deadzone shape.
+    g, zoom = 41, 0.2
+    cgrid = [[0] * g for _ in range(g)]
+    for _, x, y in s:
+        nx, ny = norm(x), norm(y)
+        if abs(nx) < zoom and abs(ny) < zoom:
+            cgrid[min(g - 1, int((ny + zoom) / (2 * zoom) * g))][min(g - 1, int((nx + zoom) / (2 * zoom) * g))] += 1
+    res["heatmap_centre"] = cgrid
+    res["heatmap_centre_zoom"] = zoom
+
+    res["resolution"] = {xn: axis_resolution(log, xn, 65535), yn: axis_resolution(log, yn, 65535)}
     return res
+
+
+def _std(v: list[float]) -> float:
+    if not v:
+        return float("nan")
+    if len(v) == 1:
+        return 0.0
+    m = sum(v) / len(v)
+    return math.sqrt(sum((a - m) ** 2 for a in v) / (len(v) - 1))
+
+
+def interval_stats(dts: list[float]) -> dict:
+    """Time between reports while a stick moves. This is the update rate seen by the logger, not latency."""
+    th = THRESHOLDS
+    if len(dts) < 20:
+        return {"n": len(dts)}
+    med = percentile(dts, 0.5)
+    core = [d for d in dts if d <= 3 * med]
+    nb = th["interval_hist_ms"]
+    hist = [0] * (nb + 1)
+    for d in dts:
+        hist[min(nb, int(d))] += 1
+    mad = percentile([abs(d - med) for d in core], 0.5)
+    return {
+        "n": len(dts),
+        "median": med,
+        "mean": sum(core) / len(core),
+        "p01": percentile(dts, 0.01),
+        "p99": percentile(dts, 0.99),
+        "std": _std(core),
+        "mad": mad,
+        "rate_hz": 1000 / med if med > 0 else float("nan"),
+        "late_share": sum(1 for d in dts if d > th["late_x_median"] * med) / len(dts),
+        "hist": hist,
+    }
+
+
+def axis_resolution(log: Log, name: str, span: int) -> dict:
+    """Number of different values, the typical smallest step, and an estimated bit depth."""
+    th = THRESHOLDS
+    vals = sorted({e.value for e in log.events if e.kind == "a" and e.name == name})
+    res: dict = {"unique": len(vals)}
+    if len(vals) < th["res_min_unique"]:
+        res["step"] = res["bits"] = float("nan")
+        return res
+    gaps = [b - a for a, b in zip(vals, vals[1:]) if b > a]
+    counts: dict[int, int] = {}
+    for gp in gaps:
+        counts[gp] = counts.get(gp, 0) + 1
+    common = [gp for gp, c in counts.items() if c >= th["res_step_share"] * len(gaps)]
+    step = min(common) if common else min(gaps)
+    res["step"] = step
+    res["min_step"] = min(gaps)
+    res["bits"] = min(16.0, math.log2(span / step)) if step > 0 else float("nan")
+    return res
+
+
+def guid_info(guid: str | None) -> dict:
+    """Bus, vendor ID and product ID from an SDL GUID (inference: SDL 2 GUID layout)."""
+    if not guid or len(guid) != 32:
+        return {}
+    try:
+        b = bytes.fromhex(guid)
+    except ValueError:
+        return {}
+    bus = int.from_bytes(b[0:2], "little")
+    if b[6:8] != b"\0\0" or b[10:12] != b"\0\0":
+        return {"bus": bus}
+    return {
+        "bus": bus,
+        "bus_name": {0x03: "USB", 0x05: "Bluetooth"}.get(bus, f"0x{bus:04x}"),
+        "vid": f"{int.from_bytes(b[4:6], 'little'):04X}",
+        "pid": f"{int.from_bytes(b[8:10], 'little'):04X}",
+    }
 
 
 # ---------------------------------------------------------------- triggers
@@ -322,6 +476,7 @@ def analyse_trigger(log: Log, name: str) -> dict:
     for v in vals:
         bins[min(19, int(v / AXIS_MAX * 20))] += 1
     res["hist"] = bins
+    res["resolution"] = axis_resolution(log, name, 32767)
     return res
 
 
@@ -530,6 +685,7 @@ def session_info(log: Log) -> dict:
         "duration_ms": log.duration_ms,
         "inputs": inputs,
         "active_min": len(minutes),
+        "ids": guid_info(log.meta.get("guid")),
     }
 
 
@@ -601,6 +757,47 @@ def build_findings(r: Report) -> None:
                f"{len(s['stutters'])} ({rate:.1f}/min)",
                f"Gaps in the data while the stick was moving, with a large jump after the gap. "
                f"Normal update interval seen by the logger: {s['update_ms']:.1f} ms.")
+        # Update rate (info)
+        iv = s.get("intervals", {})
+        if iv.get("median"):
+            _f(F, f"{side}_rate", f"{label}: update rate while moving", INFO,
+               f"{iv['rate_hz']:.0f} Hz",
+               f"Median time between reports {iv['median']:.1f} ms. Jitter (standard deviation) {iv['std']:.2f} ms. "
+               f"{pct(iv['late_share'])} of reports came more than {th['late_x_median']}x later than normal. "
+               "This is the rate that the logger sees (about 1 ms precision). It is not input latency.")
+        # Noise at rest
+        if math.isnan(s["noise_p2p"]):
+            _f(F, f"{side}_noise", f"{label}: noise at rest", NODATA, "-",
+               "No hands-off check in this log. Put the controller down for 10 seconds at the start.")
+        else:
+            _f(F, f"{side}_noise", f"{label}: noise at rest",
+               grade(s["noise_p2p"], th["noise_ok"], th["noise_watch"]), pct(s["noise_p2p"]),
+               f"How much the value moves while nobody touches the stick (largest minus smallest value, "
+               f"from the {s['noise_source']}). Standard deviation {pct(s['noise_std'])}.")
+        # Circularity
+        if not math.isnan(s["circ_err"]):
+            _f(F, f"{side}_circ", f"{label}: circularity error",
+               grade(s["circ_err"], th["circ_ok"], th["circ_watch"]), pct(s["circ_err"]),
+               "Average distance of the full-tilt edge from a perfect circle, over the directions you reached. "
+               "Values above 100% (a square edge) and below 100% (short reach) both count.")
+        # Return to centre
+        if math.isnan(s["centre_err"]):
+            _f(F, f"{side}_centre", f"{label}: return to centre", NODATA, "-",
+               f"Only {s['centre_returns']} returns to rest after a push were found. "
+               f"At least {th['centre_min_returns']} are necessary.")
+        else:
+            _f(F, f"{side}_centre", f"{label}: return to centre",
+               grade(s["centre_err"], th["centre_ok"], th["centre_watch"]), pct(s["centre_err"]),
+               f"Offset from centre when the stick comes back to rest after a push (90th percentile of "
+               f"{s['centre_returns']} returns). Spread between the rest points {pct(s['centre_spread'])}.")
+        # Resolution (info)
+        rx, ry = s["resolution"][f"{side}x"], s["resolution"][f"{side}y"]
+        bits = [b for b in (rx["bits"], ry["bits"]) if not math.isnan(b)]
+        if bits:
+            _f(F, f"{side}_res", f"{label}: resolution", INFO, f"about {min(bits):.0f} bit",
+               f"Different values seen: X {rx['unique']}, Y {ry['unique']}. Typical step: "
+               f"X {rx['step'] if not math.isnan(rx['step']) else '-'}, Y {ry['step'] if not math.isnan(ry['step']) else '-'} "
+               "raw units. A low value means coarse steps. Software scaling can hide the true resolution.")
 
     for name, label in (("lt", "Left trigger"), ("rt", "Right trigger")):
         t = r.triggers.get(name, {})

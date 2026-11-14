@@ -82,16 +82,20 @@ def fmt_pct(x: float) -> str:
 
 # ---------------------------------------------------------------- charts
 
-def heatmap_svg(grid: list[list[int]], rest_points: list[tuple[float, float]]) -> str:
+def heatmap_svg(grid: list[list[int]], rest_points: list[tuple[float, float]], extent: float = 1.0,
+                label: str = "Stick position heatmap") -> str:
     g = len(grid)
     size = 260
     cell = size / g
     pad = 20
     mx = max((v for row in grid for v in row), default=0)
     parts = [f'<svg viewBox="0 0 {size + 2 * pad} {size + 2 * pad}" width="100%" style="max-width:320px" role="img" '
-             f'aria-label="Stick position heatmap">']
+             f'aria-label="{e(label)}">']
     cx = cy = pad + size / 2
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{size / 2}" fill="none" stroke="var(--line)" stroke-width="1"/>')
+    if extent >= 1.0:
+        parts.append(f'<circle cx="{cx}" cy="{cy}" r="{size / 2}" fill="none" stroke="var(--line)" stroke-width="1"/>')
+    else:
+        parts.append(f'<text x="{pad + 2}" y="{pad + size + 14}">±{extent * 100:.0f}%</text>')
     parts.append(f'<rect x="{pad}" y="{pad}" width="{size}" height="{size}" fill="none" stroke="var(--grid)"/>')
     parts.append(f'<line x1="{pad}" y1="{cy}" x2="{pad + size}" y2="{cy}" stroke="var(--grid)"/>')
     parts.append(f'<line x1="{cx}" y1="{pad}" x2="{cx}" y2="{pad + size}" stroke="var(--grid)"/>')
@@ -104,8 +108,8 @@ def heatmap_svg(grid: list[list[int]], rest_points: list[tuple[float, float]]) -
                 q = max(1, min(7, 1 + int(math.log1p(v) / lmx * 6.999)))
                 x = pad + c * cell
                 y = pad + r * cell
-                vx = (c + 0.5) / g * 2 - 1
-                vy = -((r + 0.5) / g * 2 - 1)
+                vx = ((c + 0.5) / g * 2 - 1) * extent
+                vy = -((r + 0.5) / g * 2 - 1) * extent
                 parts.append(f'<rect class="q{q}" x="{x:.2f}" y="{y:.2f}" width="{cell + 0.1:.2f}" height="{cell + 0.1:.2f}">'
                              f'<title>x {vx:+.2f}, y {vy:+.2f}: {v} samples</title></rect>')
     parts.append(f'<text x="{cx}" y="{pad - 6}" text-anchor="middle">up</text>')
@@ -160,6 +164,38 @@ def reach_svg(reach: list[float | None]) -> str:
     return "".join(parts)
 
 
+def interval_svg(hist: list[int]) -> str:
+    """Bar chart of the time between reports (1 ms bins, last bin = longer)."""
+    w, h, pad_l, pad_b = 300, 110, 8, 18
+    n = len(hist)
+    mx = max(hist) if hist and max(hist) else 1
+    total = sum(hist) or 1
+    bw = (w - pad_l) / n
+    parts = [f'<svg viewBox="0 0 {w} {h + pad_b}" width="100%" style="max-width:360px" role="img" '
+             f'aria-label="Time between reports">']
+    parts.append(f'<line x1="{pad_l}" y1="{h}" x2="{w}" y2="{h}" stroke="var(--line)"/>')
+    for i, v in enumerate(hist):
+        if not v:
+            continue
+        bh = max(1.5, (v / mx) * (h - 8))
+        x = pad_l + i * bw + 0.5
+        rng = f"{i}–{i + 1} ms" if i < n - 1 else f"{n - 1} ms or more"
+        parts.append(f'<rect x="{x:.1f}" y="{h - bh:.1f}" width="{max(1.0, bw - 1):.1f}" height="{bh:.1f}" rx="1" '
+                     f'fill="var(--series-1)"><title>{rng}: {v} reports ({v / total * 100:.1f}%)</title></rect>')
+    parts.append(f'<text x="{pad_l}" y="{h + 14}">0 ms</text>'
+                 f'<text x="{w}" y="{h + 14}" text-anchor="end">{n - 1}+ ms</text>')
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def _ms(x) -> str:
+    return "-" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x:.2f} ms"
+
+
+def _num(x, fmt: str = "{:.0f}") -> str:
+    return "-" if x is None or (isinstance(x, float) and math.isnan(x)) else fmt.format(x)
+
+
 def hist_svg(bins: list[int]) -> str:
     w, h, pad_l, pad_b = 300, 120, 8, 18
     data = bins[1:]  # bin 0 (released) dominates, so it is left out
@@ -197,6 +233,19 @@ def render(r: Report, log_name: str = "") -> str:
     out.append(f'<h1>{e(m.get("device", "Unknown controller"))}</h1>')
     out.append(f'<div class="sub">PadLab report · {e(m.get("started", ""))} · {clock(s["duration_ms"])} logged · '
                f'{s["active_min"]} active min · {s["inputs"]:,} inputs · {e(m.get("mode", "?"))} mode</div>')
+    ids = s.get("ids") or {}
+    dev_bits = []
+    if ids.get("vid"):
+        dev_bits.append(f'VID {ids["vid"]} · PID {ids["pid"]}')
+    if ids.get("bus_name"):
+        dev_bits.append(f'bus {ids["bus_name"]}')
+    if m.get("connection"):
+        dev_bits.append(f'connection {m["connection"]} (set by you)')
+    if m.get("power"):
+        end_p = m.get("power_end")
+        dev_bits.append(f'power {m["power"]}' + (f' at start, {end_p} at end' if end_p and end_p != m["power"] else ""))
+    if dev_bits:
+        out.append(f'<div class="sub">{e(" · ".join(dev_bits))}</div>')
     if m.get("mode") == "joystick":
         out.append('<div class="warn">SDL has no mapping for this controller, so stick names are guesses and '
                    'triggers are not tested. Results for sticks may be wrong.</div>')
@@ -229,8 +278,18 @@ def render(r: Report, log_name: str = "") -> str:
                    'cross-shaped deadzone or snapping.</div></div><div>')
         out.append(reach_svg(st["reach"]))
         out.append(f'<div class="cap">Maximum value at full tilt, by direction ({st["reach_covered"]} of '
-                   f'{THRESHOLDS["outer_sectors"]} directions reached). Dashed ring = 100%.</div></div></div>')
+                   f'{THRESHOLDS["outer_sectors"]} directions reached). Dashed ring = 100%.</div></div><div>')
+        out.append(heatmap_svg(st["heatmap_centre"], [], st["heatmap_centre_zoom"], "Centre close-up heatmap"))
+        out.append(f'<div class="cap">Close-up of the centre (±{st["heatmap_centre_zoom"] * 100:.0f}%). An empty area '
+                   'around the middle shows the in-built deadzone and its shape.</div></div>')
+        iv = st.get("intervals", {})
+        if iv.get("hist"):
+            out.append("<div>" + interval_svg(iv["hist"]))
+            out.append(f'<div class="cap">Time between reports while the stick moves ({iv["n"]:,} reports). '
+                       'One tall bar means a steady rate. A wide spread means jitter. This is not input latency.</div></div>')
+        out.append("</div>")
         ho = st.get("handsoff")
+        res_x, res_y = st["resolution"][f"{side}x"], st["resolution"][f"{side}y"]
         rows = [
             ("Smallest value out of centre", fmt_pct(st["inner_dz"])),
             ("Axial dead band X / Y", f'{fmt_pct(st["axial_x"])} / {fmt_pct(st["axial_y"])}'),
@@ -239,6 +298,18 @@ def render(r: Report, log_name: str = "") -> str:
             ("Rest moments found", str(st["rest_windows"])),
             ("Update interval while moving (logger view)", "-" if math.isnan(st["update_ms"]) else f'{st["update_ms"]:.1f} ms'),
             ("Minutes of stick movement", f'{st["motion_min"]:.1f}'),
+            ("Update rate while moving (median)", _num(iv.get("rate_hz"), "{:.0f} Hz")),
+            ("Time between reports: mean / median", f'{_ms(iv.get("mean"))} / {_ms(iv.get("median"))}'),
+            ("Time between reports: 1st / 99th pct", f'{_ms(iv.get("p01"))} / {_ms(iv.get("p99"))}'),
+            ("Jitter: standard deviation / MAD", f'{_ms(iv.get("std"))} / {_ms(iv.get("mad"))}'),
+            ("Late reports (more than 2x normal)", fmt_pct(iv.get("late_share"))),
+            ("Noise at rest: peak-to-peak / std dev", f'{fmt_pct(st["noise_p2p"])} / {fmt_pct(st["noise_std"])}'),
+            ("Circularity error", fmt_pct(st["circ_err"])),
+            ("Return to centre: 90th pct / spread", f'{fmt_pct(st["centre_err"])} / {fmt_pct(st["centre_spread"])}'),
+            ("Returns to rest after a push", str(st["centre_returns"])),
+            ("Different values X / Y", f'{res_x["unique"]} / {res_y["unique"]}'),
+            ("Typical step X / Y (raw)", f'{_num(res_x["step"])} / {_num(res_y["step"])}'),
+            ("Estimated bits X / Y", f'{_num(res_x["bits"], "{:.1f}")} / {_num(res_y["bits"], "{:.1f}")}'),
         ]
         out.append("<details><summary>Numbers</summary><table>" +
                    "".join(f"<tr><td>{e(a)}</td><td class='v'>{e(b)}</td></tr>" for a, b in rows) + "</table></details>")
@@ -256,16 +327,28 @@ def render(r: Report, log_name: str = "") -> str:
         out.append(hist_svg(t["hist"]))
         out.append(f'<div class="cap">How far the trigger was pulled, all samples above 5%. '
                    f'Start {fmt_pct(t["start"])} · full {fmt_pct(t["end"])} · {t["unique"]} values · '
-                   f'{t["presses"]} pulls past 50%.</div></div>')
+                   f'{t["presses"]} pulls past 50%.')
+        tr = t.get("resolution", {})
+        if not math.isnan(tr.get("bits", float("nan"))):
+            out.append(f' Typical step {tr["step"]} raw units (about {tr["bits"]:.1f} bit).')
+        out.append('</div></div>')
     out.append("</div>")
 
     # D-pad
     d = r.dpad
     out.append("<h2>D-pad</h2><div class='card'>")
     if d["per_dir"]:
-        out.append("<table><thead><tr><th>Diagonal</th><th>Times entered</th></tr></thead><tbody>")
+        fl: dict[str, int] = {}
+        bl: dict[str, int] = {}
+        for x in d["flicker_times"]:
+            fl[x["dir"]] = fl.get(x["dir"], 0) + 1
+        for x in d["blip_times"]:
+            bl[x["dir"]] = bl.get(x["dir"], 0) + 1
+        out.append("<table><thead><tr><th>Diagonal</th><th>Times entered</th><th>Flickers</th>"
+                   "<th>Accidental blips</th></tr></thead><tbody>")
         for k in ("up-left", "up-right", "down-left", "down-right"):
-            out.append(f"<tr><td>{k}</td><td class='v'>{d['per_dir'].get(k, 0)}</td></tr>")
+            out.append(f"<tr><td>{k}</td><td class='v'>{d['per_dir'].get(k, 0)}</td>"
+                       f"<td class='v'>{fl.get(k, 0)}</td><td class='v'>{bl.get(k, 0)}</td></tr>")
         out.append("</tbody></table>")
     else:
         out.append('<div class="sub">No diagonals in this session.</div>')

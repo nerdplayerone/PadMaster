@@ -7,3 +7,5 @@ dist/
 *.csv.gz
 *_report.html
 !docs/sample_report.html
+# Small anonymous cuts of real logs for regression tests (axis and button rows only, no device metadata)
+!tests/data/*.csv.gz

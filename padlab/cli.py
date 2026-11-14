@@ -3,6 +3,7 @@
     padlab                 start logging (Ctrl+C to stop), then write and open the report
     padlab report LOG      make a report from an existing log
     padlab list            list connected controllers
+    padlab check           show each input live, to confirm the mapping
 """
 
 from __future__ import annotations
@@ -48,6 +49,8 @@ def main(argv: list[str] | None = None) -> int:
     lg.add_argument("--out", default=default_out_dir(), help="folder for logs and reports")
     lg.add_argument("--seconds", type=float, default=None, help="stop after this many seconds")
     lg.add_argument("--no-open", action="store_true", help="do not open the report")
+    lg.add_argument("--connection", choices=("wired", "dongle", "bluetooth", "other"), default=None,
+                    help="how the controller is connected (shown in the report)")
 
     rp = sub.add_parser("report", help="make a report from a log file")
     rp.add_argument("log")
@@ -55,7 +58,15 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("list", help="list connected controllers")
 
+    ck = sub.add_parser("check", help="show each input live, to confirm the mapping")
+    ck.add_argument("--pad", type=int, default=0, help="controller index (see 'padlab list')")
+
     args = p.parse_args(argv)
+
+    if args.cmd == "check":
+        from .logger import check
+        check(pad_index=args.pad)
+        return 0
 
     if args.cmd == "report":
         make_report(args.log, open_it=not args.no_open)
@@ -73,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd is None:
         args = p.parse_args(["log"] + (argv if argv is not None else sys.argv[1:]))
     from .logger import run
-    path = run(args.out, pad_index=args.pad, seconds=args.seconds)
+    path = run(args.out, pad_index=args.pad, seconds=args.seconds, connection=args.connection)
     make_report(path, open_it=not args.no_open)
     if getattr(sys, "frozen", False):
         input("\nPress Enter to close this window.")

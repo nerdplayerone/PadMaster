@@ -18,6 +18,11 @@ You don't need to do test routines. Play as normal, then read the report.
 | Sticks | Cross-shaped deadzone / snapping | The dead band on one axis while the other axis is pushed |
 | Sticks | Outer reach | The maximum value at full tilt in 36 directions |
 | Sticks | Stutter while moving | Gaps in the data during continuous movement |
+| Sticks | Noise at rest | The spread of the values in the hands-off check |
+| Sticks | Circularity error | The average distance of the full-tilt edge from a perfect circle |
+| Sticks | Return to centre | The rest position after each push past 50% |
+| Sticks | Resolution (info) | The number of different values, the typical step and an estimated bit depth |
+| Sticks | Update rate (info) | The time between reports while a stick moves: median, jitter, late reports. This is not latency. |
 | Triggers | Start deadzone, full pull, analogue or digital | The smallest and largest values, the number of different values |
 | Buttons | Double inputs | A new press less than 20 ms after a release (a hand can't do that) |
 | D-pad | Diagonal flicker | A held diagonal drops to one direction for less than 35 ms |
@@ -57,6 +62,7 @@ pip install pygame-ce
 python -m padlab                  # log, then report
 python -m padlab list             # list controllers
 python -m padlab log --pad 1      # log the second controller
+python -m padlab log --connection dongle   # write the connection type in the report
 python -m padlab report FILE.csv.gz
 ```
 

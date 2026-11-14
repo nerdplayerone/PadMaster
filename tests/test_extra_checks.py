@@ -131,6 +131,17 @@ def test_push_after_handsoff_is_not_drift_or_noise():
         assert s["noise_p2p"] == 0
 
 
+def test_touch_at_end_of_long_handsoff_is_not_noise():
+    """Regression (real Xbox pad log 2026-11-14 00:17, right stick, first 60 s).
+    The pad rested for 42.7 s. A 12 ms thumb touch (3.1%) at 42.5 s was counted as noise and drift.
+    The hands-off check must use only the first handsoff_window_ms of the session."""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "long_handsoff_then_touch.csv.gz")
+    r = analyse(read_log(p))
+    s = r.sticks["r"]
+    assert s["handsoff"]["max_mag"] == 0
+    assert s["noise_p2p"] == 0
+
+
 # ------------------------------------------------------------ circularity
 
 def test_round_stick_has_low_circularity_error(tmp_path):

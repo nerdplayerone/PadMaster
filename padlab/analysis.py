@@ -162,6 +162,31 @@ def stick_samples(log: Log, xn: str, yn: str) -> list[tuple[float, int, int]]:
     return out if seen else []
 
 
+def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float) -> dict | None:
+    """Mean, max and sample range of samples[i:j], counting only the time between lo and hi."""
+    n = len(samples)
+    sx = sy = wsum = 0.0
+    max_mag = 0.0
+    k0 = k1 = None
+    for k in range(i, j):
+        tk = samples[k][0]
+        t_next = samples[k + 1][0] if k + 1 < n else end_ms
+        w = min(t_next, hi) - max(tk, lo)
+        if w <= 0:
+            continue
+        nxk, nyk = norm(samples[k][1]), norm(samples[k][2])
+        sx += nxk * w
+        sy += nyk * w
+        wsum += w
+        max_mag = max(max_mag, math.hypot(nxk, nyk))
+        k0 = k if k0 is None else k0
+        k1 = k + 1
+    if wsum <= 0:
+        return None
+    mx, my = sx / wsum, sy / wsum
+    return {"x": mx, "y": -my, "mean_mag": math.hypot(mx, my), "max_mag": max_mag, "i0": k0, "i1": k1}
+
+
 def rest_windows(samples, end_ms: float) -> list[dict]:
     th = THRESHOLDS
     windows = []
@@ -187,26 +212,9 @@ def rest_windows(samples, end_ms: float) -> list[dict]:
             # Use only the middle of the window. The first and last samples can be the end of a
             # return or the start of the next push (the thumb touches the stick first).
             lo, hi = t0 + th["rest_trim_ms"], t_end - th["rest_trim_ms"]
-            sx = sy = wsum = 0.0
-            max_mag = 0.0
-            k0 = k1 = None
-            for k in range(i, j):
-                tk = samples[k][0]
-                t_next = samples[k + 1][0] if k + 1 < n else end_ms
-                w = min(t_next, hi) - max(tk, lo)
-                if w <= 0:
-                    continue
-                nxk, nyk = norm(samples[k][1]), norm(samples[k][2])
-                sx += nxk * w
-                sy += nyk * w
-                wsum += w
-                max_mag = max(max_mag, math.hypot(nxk, nyk))
-                k0 = k if k0 is None else k0
-                k1 = k + 1
-            if wsum > 0:
-                mx, my = sx / wsum, sy / wsum
-                windows.append({"t": t0, "dur": dur, "x": mx, "y": -my, "mean_mag": math.hypot(mx, my),
-                                "max_mag": max_mag, "i0": k0, "i1": k1})
+            ws = window_stats(samples, i, j, lo, hi, end_ms)
+            if ws:
+                windows.append({"t": t0, "dur": dur, "t_end": t_end, "i_start": i, "j": j, **ws})
         i = max(j, i + 1)
     return windows
 
@@ -225,6 +233,13 @@ def analyse_stick(log: Log, side: str) -> dict:
     # Rest / drift
     wins = rest_windows(s, end)
     handsoff = [w for w in wins if w["t"] < th["handsoff_window_ms"]]
+    if handsoff:
+        # Use only the start of the session for the hands-off check. A long rest window can end
+        # with the player picking up the pad and touching the stick.
+        w0 = handsoff[0]
+        hi = min(w0["t_end"] - th["rest_trim_ms"], th["handsoff_window_ms"])
+        ws = window_stats(s, w0["i_start"], w0["j"], w0["t"] + th["rest_trim_ms"], hi, end)
+        handsoff = [{**w0, **ws}] if ws else []
     res["rest_windows"] = len(wins)
     res["handsoff"] = handsoff[0] if handsoff else None
     res["rest_typical"] = percentile([w["mean_mag"] for w in wins], 0.5) if wins else float("nan")

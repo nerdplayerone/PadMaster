@@ -153,3 +153,20 @@ def test_hold_then_flick_is_not_stutter(tmp_path):
     w.close()
     r = analyse(read_log(p))
     assert r.sticks["l"]["stutters"] == []
+
+
+def test_digital_trigger_with_values_on_the_way_is_not_a_deadzone():
+    """Owner report (2026-11-17): a pad with triggers in digital mode got a trigger deadzone
+    result. It sends a few values between off and full, but never a small pull."""
+    from padlab.analysis import analyse
+    from padlab.logfile import Log, Event
+    ev, t = [], 0.0
+    for _ in range(15):
+        for v in (21000, 32767):
+            ev.append(Event(t, "a", "rt", v)); t += 1
+        for v in (18000, 0):
+            ev.append(Event(t, "a", "rt", v)); t += 1
+    rep = analyse(Log(meta={"device": "Pad"}, events=ev))
+    assert rep.triggers["rt"]["digital"]
+    keys = [f.key for f in rep.findings]
+    assert "rt_type" in keys and "rt_start" not in keys

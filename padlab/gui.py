@@ -258,6 +258,25 @@ class Api:
             return {"ok": False, "message": f"The name is saved, but the report failed: {exc}"}
         return {"ok": True, "name": stored, "history": self.history()}
 
+    def delete_sessions(self, log_files: list) -> dict:
+        """Move sessions (log and report) to the Deleted folder. Nothing is erased: the owner
+        can move the files back to restore them."""
+        bin_dir = os.path.join(self._out_dir, "Deleted")
+        moved = 0
+        for lf in log_files or []:
+            name = os.path.basename(str(lf))
+            if not (name.startswith("padlab_") and name.endswith(".csv.gz")):
+                continue
+            log_path = os.path.join(self._out_dir, name)
+            if not os.path.isfile(log_path):
+                continue
+            os.makedirs(bin_dir, exist_ok=True)
+            for path in (log_path, log_path[: -len(".csv.gz")] + "_report.html"):
+                if os.path.isfile(path):
+                    os.replace(path, os.path.join(bin_dir, os.path.basename(path)))
+            moved += 1
+        return {"ok": True, "moved": moved, "folder": bin_dir, "history": self.history()}
+
     def compare_data(self) -> dict:
         from .analysis import metric_definitions
         return {"metrics": metric_definitions(), "sessions": self.history()}

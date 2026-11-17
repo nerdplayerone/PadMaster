@@ -105,6 +105,10 @@ tbody tr.sel td{background:var(--panel-2)}
 iframe{width:100%;height:100%;border:0;background:var(--bg);display:block}
 .rn{background:none;border:0;color:var(--muted);cursor:pointer;padding:2px 6px;margin-left:6px;border-radius:4px;font-size:13px}
 .rn:hover{color:var(--text);background:var(--panel-2)}
+.ck{width:16px;height:16px;accent-color:var(--silver);cursor:pointer;vertical-align:middle}
+td.cb,th.cb{width:28px;padding-right:0}
+.del{background:none;border:0;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px;font-size:13px}
+.del:hover{color:#fff;background:var(--critical)}
 .model{display:block;font-size:11px;color:var(--muted)}
 .rename-in{background:var(--panel-2);border:1px solid var(--silver);border-radius:4px;color:var(--text);font:inherit;padding:4px 6px;width:100%;max-width:280px}
 #compare{padding:20px}
@@ -177,6 +181,7 @@ iframe{width:100%;height:100%;border:0;background:var(--bg);display:block}
   <button id="tab-report">Report</button>
   <span class="spacer"></span>
   <span class="note" id="note"></span>
+  <button class="btn" id="delsel" style="padding:6px 10px;font-size:12px;letter-spacing:0;text-transform:none;display:none">Delete selected</button>
   <button class="btn" id="export" style="padding:6px 10px;font-size:12px;letter-spacing:0;text-transform:none">Export history</button>
   <button class="btn" id="browser" style="padding:6px 10px;font-size:12px;letter-spacing:0;text-transform:none;display:none">Open in browser</button>
  </nav>
@@ -189,7 +194,7 @@ iframe{width:100%;height:100%;border:0;background:var(--bg);display:block}
 
 <script>
 const $ = id => document.getElementById(id);
-let api = null, rows = [], current = null, poll = null, countdown = 0, cdTimer = null, state = "idle";
+let api = null, rows = [], current = null, poll = null, countdown = 0, cdTimer = null, state = "idle", picked = new Set();
 
 function esc(s){return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function clock(sec){sec=Math.floor(sec||0);const h=Math.floor(sec/3600),m=Math.floor(sec/60)%60,s=sec%60;
@@ -201,7 +206,7 @@ function when(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return iso
 function showTab(name){
  for(const t of ["history","compare","report"]){$("tab-"+t).classList.toggle("on",name===t);$(t).classList.toggle("hidden",name!==t);}
  if(name==="compare")renderCompare();
- $("export").style.display=name==="history"?"":"none";$("browser").style.display=name==="report"&&current?"":"none";
+ $("export").style.display=name==="history"?"":"none";if(typeof syncPicked==="function"&&$("ckall"))syncPicked();else $("delsel").style.display="none";$("browser").style.display=name==="report"&&current?"":"none";
 }
 
 function pills(r){
@@ -212,17 +217,35 @@ function pills(r){
 
 function renderHistory(){
  if(!rows.length){$("history").innerHTML='<div class="empty">No sessions yet.<br>Push Start to log your first session.</div>';return;}
- let h='<table><thead><tr><th>Date</th><th>Controller</th><th>Length</th><th>Inputs</th><th>Disconnects</th><th>Results</th></tr></thead><tbody>';
+ let h='<table><thead><tr><th class="cb"><input type="checkbox" class="ck" id="ckall" aria-label="Select all sessions"></th><th>Date</th><th>Controller</th><th>Length</th><th>Inputs</th><th>Disconnects</th><th>Results</th><th></th></tr></thead><tbody>';
  for(const r of rows){
-  h+=`<tr data-log="${esc(r.log_file)}" class="${current===r.log_file?"sel":""}"><td>${esc(when(r.started))}</td><td class="dev"><span class="dn">${esc(r.device)}</span><button class="rn" title="Rename this controller (all its sessions)" aria-label="Rename this controller and all its sessions">&#x270E;</button>${(r.model&&r.model!==r.device)||r.connection?`<span class="model">${esc([r.connection,r.model!==r.device?r.model:""].filter(Boolean).join(" · "))}</span>`:""}</td>`+
-     `<td>${clock(r.duration_s)}</td><td>${Number(r.inputs||0).toLocaleString("en-GB")}</td><td>${r.disconnects??""}</td><td>${r.error?"Unreadable log":pills(r)}</td></tr>`;
+  h+=`<tr data-log="${esc(r.log_file)}" class="${current===r.log_file?"sel":""}"><td class="cb"><input type="checkbox" class="ck" aria-label="Select this session" ${picked.has(r.log_file)?"checked":""}></td><td>${esc(when(r.started))}</td><td class="dev"><span class="dn">${esc(r.device)}</span><button class="rn" title="Rename this controller (all its sessions)" aria-label="Rename this controller and all its sessions">&#x270E;</button>${(r.model&&r.model!==r.device)||r.connection?`<span class="model">${esc([r.connection,r.model!==r.device?r.model:""].filter(Boolean).join(" · "))}</span>`:""}</td>`+
+     `<td>${clock(r.duration_s)}</td><td>${Number(r.inputs||0).toLocaleString("en-GB")}</td><td>${r.disconnects??""}</td><td>${r.error?"Unreadable log":pills(r)}</td><td><button class="del" title="Delete this session" aria-label="Delete this session">&#x1F5D1;</button></td></tr>`;
  }
  $("history").innerHTML=h+"</tbody></table>";
  $("note").textContent=`${rows.length} session${rows.length===1?"":"s"} in ${initData.out_dir}`;
  for(const tr of $("history").querySelectorAll("tbody tr")){
   tr.onclick=()=>openReport(tr.dataset.log);
   tr.querySelector(".rn").onclick=ev=>{ev.stopPropagation();startRename(tr);};
+  const ck=tr.querySelector(".ck");ck.onclick=ev=>{ev.stopPropagation();ck.checked?picked.add(tr.dataset.log):picked.delete(tr.dataset.log);syncPicked();};
+  tr.querySelector(".del").onclick=ev=>{ev.stopPropagation();deleteSessions([tr.dataset.log]);};
  }
+ $("ckall").onclick=ev=>{ev.stopPropagation();if(ev.target.checked)rows.forEach(r=>picked.add(r.log_file));else picked.clear();renderHistory();};
+ syncPicked();
+}
+function syncPicked(){
+ for(const k of [...picked])if(!rows.some(r=>r.log_file===k))picked.delete(k);
+ const n=picked.size,b=$("delsel");b.textContent=`Delete selected (${n})`;b.style.display=n&&!$("history").classList.contains("hidden")?"":"none";
+ const all=$("ckall");if(all){all.checked=n>0&&n===rows.length;all.indeterminate=n>0&&n<rows.length;}
+}
+async function deleteSessions(list){
+ if(!list.length)return;
+ const msg=list.length===1?"Delete this session?":`Delete ${list.length} sessions?`;
+ if(!confirm(msg+" PadMaster moves the log and the report to the Deleted folder in your logs folder. To restore a session, move its files back."))return;
+ const r=await api.delete_sessions(list);
+ rows=r.history;cmpData=null;list.forEach(k=>picked.delete(k));
+ if(list.includes(current)){current=null;currentPath=null;$("report").innerHTML='<div class="empty">Select a session in History to see its report.</div>';}
+ renderHistory();toast(`${r.moved} session${r.moved===1?"":"s"} moved to the Deleted folder.`);
 }
 
 async function openReport(log){
@@ -426,6 +449,7 @@ window.addEventListener("pywebviewready", async ()=>{
  $("folder").onclick=()=>api.open_logs_folder();
  $("last").onclick=()=>{const r=rows.find(x=>x.report_file)||rows[0];if(r)openReport(r.log_file);else toast("There are no reports yet.");};
  $("ontop").onchange=e=>api.set_on_top(e.target.checked);
+ $("delsel").onclick=()=>deleteSessions([...picked]);
  $("export").onclick=async()=>{const r=await api.export_history();toast(r.message);};
  $("browser").onclick=()=>{if(currentPath)api.open_report_in_browser(currentPath);};
  $("tab-history").onclick=()=>showTab("history");

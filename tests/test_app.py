@@ -334,3 +334,23 @@ def test_report_footer_has_channel_links(tmp_path):
     build(str(tmp_path / "padlab_20260101_100000.csv.gz"))
     html = Api(str(tmp_path)).report_html("padlab_20260101_100000.csv.gz")["html"]
     assert all(f'href="{u}"' in html for _, u in CHANNELS)
+
+
+def test_delete_moves_sessions_to_deleted_folder_and_keeps_files(tmp_path):
+    """Owner request (2026-11-17): delete and bulk delete in History. Files move, not erase."""
+    from padlab.gui import Api
+    from padlab.logfile import LogWriter
+    names = []
+    for i in range(3):
+        p = tmp_path / f"padlab_2026111{i}_100000.csv.gz"
+        w = LogWriter(str(p), {"device": "Pad", "guid": "g"})
+        w.write(0.0, "b", "a", 1); w.meta({"ended_ms": 1000.0}); w.close()
+        names.append(p.name)
+    (tmp_path / names[0].replace(".csv.gz", "_report.html")).write_text("x")
+    api = Api(str(tmp_path))
+    assert len(api.history()) == 3
+    res = api.delete_sessions([names[0], names[1], "../evil.csv.gz", "notes.txt"])
+    assert res["moved"] == 2 and [r["log_file"] for r in res["history"]] == [names[2]]
+    gone = tmp_path / "Deleted"
+    assert (gone / names[0]).is_file() and (gone / names[1]).is_file()
+    assert (gone / names[0].replace(".csv.gz", "_report.html")).is_file()

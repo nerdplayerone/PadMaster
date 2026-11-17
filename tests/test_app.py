@@ -354,3 +354,48 @@ def test_delete_moves_sessions_to_deleted_folder_and_keeps_files(tmp_path):
     gone = tmp_path / "Deleted"
     assert (gone / names[0]).is_file() and (gone / names[1]).is_file()
     assert (gone / names[0].replace(".csv.gz", "_report.html")).is_file()
+
+
+
+def test_check_update_compares_versions_and_handles_no_internet(tmp_path):
+    from padlab import __version__
+    from padlab.gui import Api
+    api = Api(str(tmp_path))
+    rel = "https://github.com/nerdplayerone/PadMaster/releases/tag/v99.0.0"
+    new = api.check_update(fetch=lambda: {"tag_name": "v99.0.0", "html_url": rel})
+    assert new["state"] == "update" and new["latest"] == "99.0.0" and new["url"] == rel
+    assert api.check_update(fetch=lambda: {"tag_name": "v" + __version__})["state"] == "latest"
+    evil = api.check_update(fetch=lambda: {"tag_name": "v99", "html_url": "https://evil.example/"})
+    assert evil["url"] == "https://github.com/nerdplayerone/PadMaster/releases"
+
+    def offline():
+        raise OSError("no network")
+    assert api.check_update(fetch=offline)["state"] == "error"
+
+
+def test_auto_update_check_runs_once_a_day_and_can_be_turned_off(tmp_path):
+    from padlab.gui import Api
+    api = Api(str(tmp_path))
+    calls = []
+    fetch = lambda: calls.append(1) or {"tag_name": "v0.0.1"}
+    assert api.check_update(auto=True, fetch=fetch)["state"] == "latest"
+    assert api.check_update(auto=True, fetch=fetch)["state"] == "skipped" and len(calls) == 1
+    api.set_auto_update(False)
+    assert api.init()["auto_update"] is False
+    assert api.check_update(auto=True, fetch=fetch)["state"] == "off" and len(calls) == 1
+    assert api.check_update(fetch=fetch)["state"] == "latest"  # the button still works
+
+
+def test_report_bug_opens_a_draft_and_sends_nothing(monkeypatch, tmp_path):
+    import webbrowser
+    from padlab import branding
+    from padlab.gui import Api
+    opened = []
+    monkeypatch.setattr(webbrowser, "open", lambda u: opened.append(u))
+    api = Api(str(tmp_path))
+    monkeypatch.setattr(branding, "BUG_EMAIL", "")
+    assert not api.report_bug("Pad A")["email"]
+    assert opened[-1].startswith("https://github.com/nerdplayerone/PadMaster/issues/new?title=")
+    monkeypatch.setattr(branding, "BUG_EMAIL", "bugs@example.com")
+    assert api.report_bug("Pad A")["email"]
+    assert opened[-1].startswith("mailto:bugs@example.com?subject=") and "Pad%20A" in opened[-1]

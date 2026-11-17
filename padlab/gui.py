@@ -1,7 +1,9 @@
 """PadMaster app window.
 
 The window is a local web page shown with pywebview (Microsoft Edge WebView2 on
-Windows). It loads nothing from the internet.
+Windows). It loads nothing from the internet. The only network use is the update
+check: one request to GitHub for the latest version number (on click, or once a day
+at start if the user leaves that on). It sends no user data.
 
 The SDL logger runs in a separate process (``padlab log --ipc``). It writes one JSON
 status line per second to stdout. The window stops it with a ``stop`` line on stdin.
@@ -12,6 +14,7 @@ main thread with the window.
 from __future__ import annotations
 
 from .branding import CHANNELS, is_channel_url
+from . import branding
 import json
 import os
 import subprocess
@@ -67,6 +70,14 @@ def _is_gamepadla_url(url: str) -> bool:
     return url.rstrip("/") == "https://gamepadla.com" or by_url(url) is not None
 
 
+def _version_tuple(v: str) -> tuple:
+    out = []
+    for part in str(v).split("."):
+        num = "".join(ch for ch in part if ch.isdigit())
+        out.append(int(num) if num else 0)
+    return tuple(out)
+
+
 class Api:
     """Functions the page calls through ``window.pywebview.api``. No pywebview import here,
     so tests can use this class without a window."""
@@ -90,7 +101,12 @@ class Api:
             "logo": logo_data_uri(),
             "history": self.history(),
             "channels": [{"name": n, "url": u} for n, u in CHANNELS],
+            "auto_update": self._settings().get("auto_update") is not False,
         }
+
+    def _settings(self) -> dict:
+        from .history import load_settings
+        return load_settings(self._out_dir)
 
     def devices(self) -> list[dict]:
         try:
@@ -290,11 +306,73 @@ class Api:
         """Open an allowed address in the normal web browser: the owner's channels, or a
         Gamepadla.com page from the bundled data. No other address is opened."""
         url = str(url)
-        if not (is_channel_url(url) or _is_gamepadla_url(url)):
+        if not (is_channel_url(url) or _is_gamepadla_url(url) or url.startswith(branding.RELEASES_URL)):
             return False
         import webbrowser
         webbrowser.open(url)
         return True
+
+    def report_bug(self, pad_name: str = "") -> dict:
+        """Open a bug report draft (email or GitHub issue) with the facts the owner needs.
+        Nothing is sent: the user reads the draft and sends it."""
+        import platform
+        import urllib.parse
+        import webbrowser
+        rows = self.history()
+        body = (
+            "What happened:\n\n\nWhat did you expect:\n\n\n"
+            f"PadMaster version: {__version__}\n"
+            f"Windows: {platform.platform()}\n"
+            f"Controller: {str(pad_name)[:60]}\n"
+            f"Last session: {rows[0]['log_file'] if rows else 'none'}\n\n"
+            "Please attach the log file (.csv.gz) from Documents\\PadLab if you can."
+        )
+        title = f"PadMaster {__version__} bug: "
+        q = urllib.parse.quote
+        if branding.BUG_EMAIL:
+            url = f"mailto:{branding.BUG_EMAIL}?subject={q(title)}&body={q(body)}"
+        else:
+            url = f"{branding.ISSUES_URL}?title={q(title)}&body={q(body)}"
+        webbrowser.open(url)
+        return {"ok": True, "email": bool(branding.BUG_EMAIL)}
+
+    def check_update(self, auto: bool = False, fetch=None) -> dict:
+        """Ask GitHub for the latest release version. Sends no user data.
+        auto=True: the start-up check. It runs at most once a day, and not if turned off."""
+        import urllib.request
+        from .history import load_settings, save_setting
+        st = load_settings(self._out_dir)
+        if auto:
+            if st.get("auto_update") is False:
+                return {"state": "off", "current": __version__}
+            if time.time() - float(st.get("last_update_check") or 0) < 86400:
+                return {"state": "skipped", "current": __version__}
+        try:
+            if fetch is None:
+                req = urllib.request.Request(branding.LATEST_API, headers={
+                    "User-Agent": "PadMaster", "Accept": "application/vnd.github+json"})
+                with urllib.request.urlopen(req, timeout=8) as r:
+                    data = json.loads(r.read().decode("utf-8"))
+            else:
+                data = fetch()
+            tag = str(data.get("tag_name", "")).lstrip("v")
+            url = str(data.get("html_url") or branding.RELEASES_URL)
+        except Exception:
+            return {"state": "error", "current": __version__,
+                    "message": "PadMaster can't get the update information. Check your internet connection."}
+        try:
+            save_setting(self._out_dir, "last_update_check", time.time())
+        except OSError:
+            pass
+        if not tag:
+            return {"state": "error", "current": __version__, "message": "No release found."}
+        newer = _version_tuple(tag) > _version_tuple(__version__)
+        return {"state": "update" if newer else "latest", "current": __version__, "latest": tag,
+                "url": url if url.startswith(branding.RELEASES_URL) else branding.RELEASES_URL}
+
+    def set_auto_update(self, on: bool) -> None:
+        from .history import save_setting
+        save_setting(self._out_dir, "auto_update", bool(on))
 
     def open_report_in_browser(self, path: str) -> None:
         import webbrowser

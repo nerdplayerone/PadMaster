@@ -80,7 +80,7 @@ Raw integers are kept on purpose. The inner deadzone check needs the exact small
 ## 4. Hard rules
 
 1. PadMaster only **reads** the controller. Never send input, never use virtual controller drivers, never hook, read or inject into a game process. (Anti-cheat safety.)
-2. No network access in the app. No telemetry. No auto-update. (`tools/fetch_gamepadla.py` runs only on the developer PC before a release. The app never connects to Gamepadla.)
+2. No network access in the app, with one exception: the update check (owner decision, 2026-11-17). It asks GitHub for the latest release version, on a click or once a day at start (the user can turn the start check off). It sends no user data and downloads nothing: the user downloads the new .exe in the browser. No telemetry. No auto-install. "Report a bug" only opens a draft (email if `BUG_EMAIL` in `branding.py` is set, else a GitHub issue); the user sends it. (`tools/fetch_gamepadla.py` runs only on the developer PC before a release. The app never connects to Gamepadla.)
 3. No admin rights needed. No drivers.
 4. The analysis stays pure Python (standard library only). The .exe must stay small.
 5. Keep all tests passing. Add a test for every bug you fix.

@@ -74,6 +74,14 @@ select{flex:1;background:var(--panel-2);border:1px solid var(--line-2);border-ra
 .channels button .play{width:0;height:0;border-left:8px solid #0b0b0c;border-top:5px solid transparent;border-bottom:5px solid transparent}
 .channels button .go{margin-left:auto;font-size:11px;font-weight:600;opacity:.7}
 .channels+.foot{margin-top:10px}
+.tools{display:flex;gap:8px;margin-top:10px}
+.tools button{flex:1;background:var(--panel-2);border:1px solid var(--line-2);border-radius:6px;color:var(--text-2);font:inherit;font-size:12px;padding:7px 8px;cursor:pointer}
+.tools button:hover{color:var(--text);border-color:var(--silver)}
+.autoupd{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:6px}
+.upd{font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.4}
+.upd:empty{display:none}
+.upd.new{color:var(--text);background:rgba(201,133,0,.15);border:1px solid var(--warning);border-radius:6px;padding:8px}
+.upd a{color:var(--warning);cursor:pointer;text-decoration:underline;font-weight:600}
 .foot{margin-top:auto;font-size:11px;color:var(--muted);line-height:1.5}
 main{display:flex;flex-direction:column;min-width:0;min-height:0}
 nav{display:flex;align-items:center;gap:4px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--bg)}
@@ -171,6 +179,9 @@ td.cb,th.cb{width:28px;padding-right:0}
  <label class="check"><input type="checkbox" id="ontop"> Always on top</label>
 
  <div class="channels" id="channels"></div>
+ <div class="tools"><button id="bug">Report a bug</button><button id="upd">Check for updates</button></div>
+ <label class="autoupd"><input type="checkbox" id="autoupd" checked> Check for updates when PadMaster starts</label>
+ <div class="upd" id="updmsg" role="status"></div>
  <div class="foot" id="foot">PadMaster reads the controller only. It does not measure input latency.</div>
 </aside>
 
@@ -237,6 +248,14 @@ function syncPicked(){
  for(const k of [...picked])if(!rows.some(r=>r.log_file===k))picked.delete(k);
  const n=picked.size,b=$("delsel");b.textContent=`Delete selected (${n})`;b.style.display=n&&!$("history").classList.contains("hidden")?"":"none";
  const all=$("ckall");if(all){all.checked=n>0&&n===rows.length;all.indeterminate=n>0&&n<rows.length;}
+}
+async function checkUpdate(auto){
+ const m=$("updmsg");if(!auto){m.className="upd";m.textContent="Checking...";}
+ const r=await api.check_update(auto);
+ if(r.state==="update"){m.className="upd new";m.innerHTML=`PadMaster ${esc(r.latest)} is available. You have ${esc(r.current)}. <a id="getupd">Download it</a>`;$("getupd").onclick=()=>api.open_link(r.url);}
+ else if(auto){return;}
+ else if(r.state==="latest"){m.textContent=`You have the latest version (${r.current}).`;}
+ else{m.textContent=r.message||"";}
 }
 async function deleteSessions(list){
  if(!list.length)return;
@@ -449,6 +468,11 @@ window.addEventListener("pywebviewready", async ()=>{
  $("folder").onclick=()=>api.open_logs_folder();
  $("last").onclick=()=>{const r=rows.find(x=>x.report_file)||rows[0];if(r)openReport(r.log_file);else toast("There are no reports yet.");};
  $("ontop").onchange=e=>api.set_on_top(e.target.checked);
+ $("bug").onclick=async()=>{const r=await api.report_bug($("padname").value);toast(r.email?"Your email app opens with a draft. Add the details, then send it.":"GitHub opens with a draft issue. Add the details, then submit it.");};
+ $("upd").onclick=()=>checkUpdate(false);
+ $("autoupd").checked=initData.auto_update!==false;
+ $("autoupd").onchange=()=>api.set_auto_update($("autoupd").checked);
+ checkUpdate(true);
  $("delsel").onclick=()=>deleteSessions([...picked]);
  $("export").onclick=async()=>{const r=await api.export_history();toast(r.message);};
  $("browser").onclick=()=>{if(currentPath)api.open_report_in_browser(currentPath);};

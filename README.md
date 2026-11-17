@@ -67,6 +67,12 @@ The OK / Watch / Problem limits are PadMaster defaults (judgement calls), not in
 
 Logs and reports go to `Documents\PadLab`. Use **Open logs folder** to see them.
 
+To delete sessions, tick them in **History** and click **Delete selected**, or click the bin on one row. PadMaster moves the files to `Documents\PadLab\Deleted`. To restore a session, move its files back.
+
+**Report a bug** opens a draft with your PadMaster version, Windows version and controller name. Read it, add what happened, then send it. Attach the log file if you can.
+
+**Updates:** PadMaster asks GitHub for the latest version number once a day when it starts. It sends no data about you. To stop this, clear **Check for updates when PadMaster starts**. **Check for updates** does the same check at any time. PadMaster does not install updates itself.
+
 ### Option B: Python
 
 ```

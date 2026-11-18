@@ -155,18 +155,31 @@ def test_hold_then_flick_is_not_stutter(tmp_path):
     assert r.sticks["l"]["stutters"] == []
 
 
-def test_digital_trigger_with_values_on_the_way_is_not_a_deadzone():
-    """Owner report (2026-11-17): a pad with triggers in digital mode got a trigger deadzone
-    result. It sends a few values between off and full, but never a small pull."""
+def test_digital_trigger_with_a_small_value_on_the_way_is_digital():
+    """Submitted log (2026-11-18): each press goes 0 -> 6167 -> 23643 -> 32767 within
+    about 2 ms. The small value on the way must not make it an analogue trigger."""
     from padlab.analysis import analyse
     from padlab.logfile import Log, Event
     ev, t = [], 0.0
-    for _ in range(15):
-        for v in (21000, 32767):
-            ev.append(Event(t, "a", "rt", v)); t += 1
-        for v in (18000, 0):
-            ev.append(Event(t, "a", "rt", v)); t += 1
+    for i in range(100):
+        ev.append(Event(t, "a", "lt", 0)); t += 200
+        if i % 25 == 0:
+            ev.append(Event(t, "a", "lt", 1413 + i)); t += 1
+            ev.append(Event(t, "a", "lt", 19017 + i)); t += 1
+        ev.append(Event(t, "a", "lt", 32767)); t += 200
     rep = analyse(Log(meta={"device": "Pad"}, events=ev))
-    assert rep.triggers["rt"]["digital"]
+    assert rep.triggers["lt"]["digital"] and rep.triggers["lt"]["unique"] > 3
     keys = [f.key for f in rep.findings]
-    assert "rt_type" in keys and "rt_start" not in keys
+    assert "lt_type" in keys and "lt_start" not in keys
+
+
+def test_slow_analogue_pulls_stay_analogue():
+    from padlab.analysis import analyse
+    from padlab.logfile import Log, Event
+    ev, t = [], 0.0
+    for _ in range(10):
+        for v in list(range(0, 32767, 1500)) + [32767] + list(range(32767, -1, -1500)):
+            ev.append(Event(t, "a", "rt", v)); t += 4
+    rep = analyse(Log(meta={"device": "Pad"}, events=ev))
+    assert not rep.triggers["rt"]["digital"]
+

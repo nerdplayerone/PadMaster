@@ -25,7 +25,7 @@ from .logfile import (
 
 # Increase when a check or a threshold changes. Old reports and the history cache are
 # then made again from the logs.
-ANALYSIS_VERSION = 7  # raise when checks or report layout change: old reports are made again
+ANALYSIS_VERSION = 8  # raise when checks or report layout change: old reports are made again
 
 THRESHOLDS = {
     # Sticks
@@ -69,7 +69,7 @@ THRESHOLDS = {
     "trigger_start_ok": 0.03, "trigger_start_watch": 0.10,
     "trigger_end_ok": 0.98, "trigger_end_watch": 0.90,
     "min_trigger_events": 20,
-    "trigger_digital_min": 0.5,   # never below this pull: on/off trigger (digital mode)
+    "trigger_digital_share": 0.95,  # share of values at fully off or fully on: digital trigger
     # Buttons
     "double_gap_ms": 20,          # release -> press faster than this is not a human
     "double_watch": 1, "double_problem": 3,
@@ -504,10 +504,12 @@ def analyse_trigger(log: Log, name: str) -> dict:
     res["start"] = (min(nonzero) / AXIS_MAX) if nonzero else float("nan")
     res["end"] = max(vals) / AXIS_MAX
     res["unique"] = len(set(vals))
-    # Digital mode: only on/off. Some pads also send a few values on the way (owner report,
-    # 2026-11-17, GuliKit TT Max). So a trigger that never reports a small pull is digital too.
-    res["digital"] = res["unique"] <= 3 or (
-        bool(nonzero) and min(nonzero) >= AXIS_MAX * THRESHOLDS["trigger_digital_min"])
+    # Digital mode: only on/off. Some pads also send 1 or 2 values on the way, within about
+    # 1 ms (owner report and a submitted log, 2026-11-17/18). So a trigger that is almost
+    # always fully off or fully on is digital, even if it sent a few in-between values.
+    at_ends = sum(1 for v in vals if v == 0 or v >= AXIS_MAX * 0.98)
+    res["end_share"] = at_ends / len(vals)
+    res["digital"] = res["unique"] <= 3 or res["end_share"] >= THRESHOLDS["trigger_digital_share"]
     presses = 0
     above = False
     for v in vals:
@@ -912,7 +914,7 @@ def build_findings(r: Report) -> None:
             continue
         if t["digital"]:
             _f(F, f"{name}_type", f"{label}: type", INFO, "Digital",
-               "The trigger never reported a small pull, only on/off (a hair-trigger or digital mode). "
+               f"The trigger was fully off or fully on for {t['end_share']:.0%} of its values (a hair-trigger or digital mode). "
                "PadMaster does not grade the deadzone of a digital trigger.")
             continue
         _f(F, f"{name}_start", f"{label}: start deadzone",

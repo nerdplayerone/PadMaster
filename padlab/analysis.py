@@ -25,7 +25,7 @@ from .logfile import (
 
 # Increase when a check or a threshold changes. Old reports and the history cache are
 # then made again from the logs.
-ANALYSIS_VERSION = 8  # raise when checks or report layout change: old reports are made again
+ANALYSIS_VERSION = 9  # raise when checks or report layout change: old reports are made again
 
 THRESHOLDS = {
     # Sticks
@@ -73,6 +73,10 @@ THRESHOLDS = {
     # Buttons
     "double_gap_ms": 20,          # release -> press faster than this is not a human
     "double_watch": 1, "double_problem": 3,
+    # Contact bounce (default, from one submitted log, 2026-11-18): after a hold of at least
+    # bounce_hold_ms, the switch goes off and on again within bounce_gap_ms. A thumb can't do
+    # that. Games that read the state once per frame usually miss it. Graded Watch at most.
+    "bounce_gap_ms": 5, "bounce_hold_ms": 50, "bounce_watch": 1,
     # D-pad
     "flicker_ms": 35,
     "dpad_split_max_ms": 100,
@@ -553,18 +557,20 @@ def presses(log: Log) -> dict[str, list[tuple[float, float | None]]]:
 def analyse_buttons(log: Log) -> dict:
     gap = THRESHOLDS["double_gap_ms"]
     pr = presses(log)
-    res: dict = {"counts": {}, "doubles": {}, "double_times": []}
+    res: dict = {"counts": {}, "doubles": {}, "double_times": [], "bounces": {}, "bounce_times": []}
     for name, lst in sorted(pr.items()):
         res["counts"][name] = len(lst)
-        n = 0
         for (d1, u1), (d2, _) in zip(lst, lst[1:]):
             if u1 is not None and 0 <= d2 - u1 < gap:
-                n += 1
-                res["double_times"].append({"t": d2, "button": name, "gap_ms": d2 - u1, "held_ms": u1 - d1})
-        if n:
-            res["doubles"][name] = n
+                item = {"t": d2, "button": name, "gap_ms": d2 - u1, "held_ms": u1 - d1}
+                bounce = item["gap_ms"] < THRESHOLDS["bounce_gap_ms"] and item["held_ms"] >= THRESHOLDS["bounce_hold_ms"]
+                kind = "bounce" if bounce else "double"
+                res[kind + "_times"].append(item)
+                res[kind + "s"][name] = res[kind + "s"].get(name, 0) + 1
     res["double_total"] = sum(res["doubles"].values())
+    res["bounce_total"] = sum(res["bounces"].values())
     res["double_times"].sort(key=lambda d: d["t"])
+    res["bounce_times"].sort(key=lambda d: d["t"])
     res["paddles"] = {p: res["counts"].get(p, 0) for p in PADDLES if res["counts"].get(p, 0)}
     return res
 
@@ -929,7 +935,15 @@ def build_findings(r: Report) -> None:
     st = OK if n < th["double_watch"] else WATCH if n < th["double_problem"] else PROBLEM
     which = ", ".join(f"{k} x{v}" for k, v in sorted(b["doubles"].items(), key=lambda kv: -kv[1]))
     _f(F, "doubles", "Double inputs", st, str(n),
-       f"A new press less than {th['double_gap_ms']} ms after a release. " + (f"Buttons: {which}." if which else ""))
+       f"A new press less than {th['double_gap_ms']} ms after a release. " + (f"Buttons: {which}." if which else "")
+       + f" Contact bounce is not counted here (see the next line).")
+    nb = b.get("bounce_total", 0)
+    bwhich = ", ".join(f"{k} x{v}" for k, v in sorted(b.get("bounces", {}).items(), key=lambda kv: -kv[1]))
+    _f(F, "bounce", "Contact bounce", OK if nb < th["bounce_watch"] else WATCH, str(nb),
+       f"After a hold of at least {th['bounce_hold_ms']} ms, the button went off and on again in less than "
+       f"{th['bounce_gap_ms']} ms. A thumb can't do that: the switch contact bounces. Games that read the button "
+       f"once per frame usually miss it. Games that read every press can see a second press. "
+       + (f"Buttons: {bwhich}." if bwhich else ""))
 
     d = r.dpad
     _f(F, "dpad_flicker", "D-pad: diagonal flicker", grade(d["flicker_pct"], th["flicker_ok_pct"], th["flicker_watch_pct"]),
@@ -974,15 +988,17 @@ def build_findings(r: Report) -> None:
 def _drop_flicker_doubles(r: Report) -> None:
     """A D-pad flicker also looks like a fast release + press. Count it once, as a flicker."""
     ends = [f["t"] + f["ms"] for f in r.dpad["flicker_times"]]
-    keep = []
-    for d in r.buttons["double_times"]:
-        if d["button"] in DPAD_BUTTONS and any(abs(d["t"] - x) < 0.01 for x in ends):
-            r.buttons["doubles"][d["button"]] -= 1
-            continue
-        keep.append(d)
-    r.buttons["double_times"] = keep
-    r.buttons["doubles"] = {k: v for k, v in r.buttons["doubles"].items() if v > 0}
-    r.buttons["double_total"] = sum(r.buttons["doubles"].values())
+    for kind in ("double", "bounce"):
+        keep = []
+        counts = r.buttons.get(kind + "s", {})
+        for d in r.buttons.get(kind + "_times", []):
+            if d["button"] in DPAD_BUTTONS and any(abs(d["t"] - x) < 0.01 for x in ends):
+                counts[d["button"]] -= 1
+                continue
+            keep.append(d)
+        r.buttons[kind + "_times"] = keep
+        r.buttons[kind + "s"] = {k: v for k, v in counts.items() if v > 0}
+        r.buttons[kind + "_total"] = sum(r.buttons[kind + "s"].values())
 
 
 def analyse(log: Log) -> Report:
@@ -1031,6 +1047,7 @@ METRICS = [
     {"key": "lt_start", "label": "Left trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
     {"key": "rt_start", "label": "Right trigger: start deadzone", "unit": "%", "better": "low", "ok": "trigger_start_ok", "watch": "trigger_start_watch", "pct": True},
     {"key": "doubles", "label": "Double inputs", "unit": "count", "better": "low", "ok": "double_watch", "watch": "double_problem", "pct": False},
+    {"key": "bounce", "label": "Contact bounce", "unit": "count", "better": "low", "ok": "bounce_watch", "watch": "bounce_watch", "pct": False},
     {"key": "l_centre", "label": "Left stick: return to centre", "unit": "%", "better": "low", "ok": "centre_ok", "watch": "centre_watch", "pct": True},
     {"key": "r_centre", "label": "Right stick: return to centre", "unit": "%", "better": "low", "ok": "centre_ok", "watch": "centre_watch", "pct": True},
     {"key": "dpad_roll_skip", "label": "D-pad: diagonal skipped in rolls", "unit": "%", "better": "low", "ok": "roll_skip_ok_pct", "watch": "roll_skip_watch_pct", "pct": False},
@@ -1068,6 +1085,7 @@ def metric_values(r: Report) -> dict[str, float | None]:
         t = r.triggers.get(name, {})
         out[f"{name}_start"] = ok(t.get("start")) if t.get("enough") and not t.get("digital") else None
     out["doubles"] = float(r.buttons.get("double_total", 0))
+    out["bounce"] = float(r.buttons.get("bounce_total", 0))
     fp = r.dpad.get("flicker_pct")
     out["dpad_flicker"] = ok(fp) if r.dpad.get("diag_entries") else None
     out["dpad_roll_skip"] = ok(r.dpad.get("roll_skip_pct"))

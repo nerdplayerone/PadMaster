@@ -183,3 +183,29 @@ def test_slow_analogue_pulls_stay_analogue():
     rep = analyse(Log(meta={"device": "Pad"}, events=ev))
     assert not rep.triggers["rt"]["digital"]
 
+
+
+
+def test_contact_bounce_is_split_from_double_inputs():
+    """Owner decision (2026-11-18): a long hold, then off and on in under 5 ms, is contact
+    bounce (Watch). A short press, then a new press 8 ms later, stays a double input."""
+    from padlab.analysis import analyse, WATCH
+    from padlab.logfile import Log, Event
+    ev, t = [], 0.0
+
+    def press(name, start, ms):
+        ev.append(Event(start, "b", name, 1)); ev.append(Event(start + ms, "b", name, 0))
+    for i in range(30):
+        t = i * 1000.0
+        press("a", t, 300)
+        if i % 10 == 0:
+            press("a", t + 302, 200)   # bounce: 2 ms off after a 300 ms hold
+        press("b", t + 600, 30)
+        if i % 15 == 0:
+            press("b", t + 638, 30)    # double: 8 ms after a 30 ms press
+    ev.sort(key=lambda e: e.t)
+    rep = analyse(Log(meta={"device": "Pad"}, events=ev))
+    assert rep.buttons["bounces"] == {"a": 3} and rep.buttons["doubles"] == {"b": 2}
+    f = {x.key: x for x in rep.findings}
+    assert f["bounce"].status == WATCH and f["bounce"].value == "3"
+    assert f["doubles"].value == "2"

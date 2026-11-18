@@ -370,6 +370,8 @@ def render(r: Report, log_name: str = "", name: str | None = None, latency: dict
         events.append((o["t"], "Disconnect", f'back after {o["ms"] / 1000:.1f} s' if o["ms"] else "did not come back"))
     for x in r.buttons["double_times"]:
         events.append((x["t"], "Double input", f'{x["button"]}: {x["gap_ms"]:.1f} ms gap'))
+    for x in r.buttons.get("bounce_times", []):
+        events.append((x["t"], "Contact bounce", f'{x["button"]}: off for {x["gap_ms"]:.1f} ms after {x["held_ms"]:.0f} ms hold'))
     for x in d["flicker_times"]:
         events.append((x["t"], "D-pad flicker", f'{x["dir"]}: dropped for {x["ms"]:.0f} ms'))
     for x in d["blip_times"]:

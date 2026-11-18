@@ -126,8 +126,14 @@ main{position:relative}
 #guide.hidden{display:none}
 .gstep{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .gtext{font-size:30px;font-weight:600;max-width:760px;line-height:1.3}
-.gtext.sym{font-size:150px;line-height:1;font-weight:700}
-.gtext.btnp{font-size:90px;line-height:1;font-weight:700}
+.gtext.pic{line-height:0}
+.gpic{width:240px;height:240px;display:block}
+.gpic .off{fill:var(--panel-2,#1b1b1e);stroke:var(--line-2,#2e2e33);stroke-width:2}
+.gpic .on{fill:var(--silver,#d9d9de);stroke:var(--silver,#d9d9de);stroke-width:2;filter:drop-shadow(0 0 10px rgba(217,217,222,.45))}
+.gpic .hub{fill:var(--panel-2,#1b1b1e)}
+.gpic text{font:700 26px "Segoe UI",system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;fill:var(--muted,#85858f)}
+.gpic text.on{fill:#0b0b0c;stroke:none;filter:none}
+.glabel{font-size:15px;color:var(--text-2,#b9b9c2);margin-top:14px;line-height:1.3}
 .gbar{width:min(520px,80%);height:6px;background:var(--line-2);border-radius:3px;overflow:hidden}
 .gbar i{display:block;height:100%;width:0;background:var(--silver)}
 .bcard{border:1px solid var(--line-2);border-radius:8px;padding:14px 16px;margin-bottom:10px;background:var(--panel)}
@@ -367,12 +373,39 @@ function setBusy(running){
 }
 
 let guidedRun=false;
+// Prompt pictures: a D-pad with the asked direction(s) lit, or the face and shoulder buttons with one lit.
+const DIRS={dpad_up:["up"],dpad_down:["down"],dpad_left:["left"],dpad_right:["right"],dpad_upleft:["up","left"],dpad_upright:["up","right"],dpad_downleft:["down","left"],dpad_downright:["down","right"]};
+const DIRNAME={up:"Up",down:"Down",left:"Left",right:"Right"};
+function dpadSvg(on){
+ const arm={up:"M95 20h50v75H95z",down:"M95 145h50v75H95z",left:"M20 95h75v50H20z",right:"M145 95h75v50h-75z"};
+ const tri={up:"M120 42l-12 18h24z",down:"M120 198l-12-18h24z",left:"M42 120l18-12v24z",right:"M198 120l-18-12v24z"};
+ let s='<svg class="gpic" viewBox="0 0 240 240" aria-hidden="true">';
+ for(const d of ["up","down","left","right"])s+=`<path class="${on.includes(d)?"on":"off"}" d="${arm[d]}" rx="8"/>`;
+ s+='<rect class="hub" x="95" y="95" width="50" height="50"/>';
+ for(const d of ["up","down","left","right"])s+=`<path d="${tri[d]}" style="fill:${on.includes(d)?"#0b0b0c":"var(--muted,#85858f)"}"/>`;
+ return s+"</svg>";
+}
+function buttonSvg(key){
+ const face={btn_y:[120,52,"Y"],btn_x:[52,120,"X"],btn_b:[188,120,"B"],btn_a:[120,188,"A"]};
+ let s='<svg class="gpic" viewBox="0 0 240 240" aria-hidden="true">';
+ if(key==="btn_lb"||key==="btn_rb"){
+  for(const [k,x,t] of [["btn_lb",20,"LB"],["btn_rb",130,"RB"]])
+   s+=`<rect class="${k===key?"on":"off"}" x="${x}" y="95" width="90" height="50" rx="25"/><text class="${k===key?"on":""}" x="${x+45}" y="120">${t}</text>`;
+ }else for(const k in face){const [x,y,t]=face[k];
+  s+=`<circle class="${k===key?"on":"off"}" cx="${x}" cy="${y}" r="32"/><text class="${k===key?"on":""}" x="${x}" y="${y}">${t}</text>`;}
+ return s+"</svg>";
+}
 function showGuide(p){
  if(!p){$("guide").classList.add("hidden");return;}
  $("guide").classList.remove("hidden");
  const game=!p.key.startsWith("phase_")&&p.key!=="end";
  $("gstep").textContent=p.key.startsWith("phase_")?`Guided test: step ${["phase_rest","phase_circles_slow","phase_circles_fast","phase_edges","phase_triggers","phase_game"].indexOf(p.key)+1} of 6`:(game?"Press what you see":"Guided test");
- $("gtext").textContent=p.text;$("gtext").className="gtext"+(game?(p.key.startsWith("dpad_")?" sym":" btnp"):"");
+ if(game){
+  const isD=p.key.startsWith("dpad_");
+  const label=isD?"D-pad: "+DIRS[p.key].map(d=>DIRNAME[d]).join(" + "):p.text;
+  $("gtext").className="gtext pic";$("gtext").innerHTML=(isD?dpadSvg(DIRS[p.key]):buttonSvg(p.key))+`<div class="glabel">${esc(label)}</div>`;
+  $("gtext").setAttribute("aria-label",label);
+ }else{$("gtext").className="gtext";$("gtext").textContent=p.text;$("gtext").removeAttribute("aria-label");}
  $("gbar").style.width=Math.round(100*(p.i+1)/p.n)+"%";
 }
 async function start(guided){

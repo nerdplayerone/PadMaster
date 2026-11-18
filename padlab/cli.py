@@ -72,6 +72,8 @@ def main(argv: list[str] | None = None) -> int:
     lg.add_argument("--name", default="", help="your name for this controller, for example 'Xbox pad A'")
     lg.add_argument("--connection", default="", choices=["", "Wired", "Dongle", "Bluetooth"],
                     help="how the controller is connected")
+    lg.add_argument("--auto-stop", type=float, default=0,
+                    help="stop after this many minutes with no controller use (0: off)")
     lg.add_argument("--ipc", action="store_true", help="for the app window: JSON status lines, stop with a 'stop' line")
 
     rp = sub.add_parser("report", help="make a report from a log file")
@@ -114,7 +116,8 @@ def main(argv: list[str] | None = None) -> int:
         return gui_main(getattr(args, "out", None) or default_out_dir())
 
     from .logger import emit, run
-    path = run(args.out, pad_index=args.pad, seconds=args.seconds, ipc=args.ipc, label=args.name, connection=args.connection)
+    path = run(args.out, pad_index=args.pad, seconds=args.seconds, ipc=args.ipc, label=args.name, connection=args.connection,
+               idle_stop_s=(args.auto_stop * 60) or None)
     if args.ipc:
         if not path:
             emit({"state": "done", "report": "", "log": ""})
@@ -123,7 +126,9 @@ def main(argv: list[str] | None = None) -> int:
             report = make_report(path, open_it=False, quiet=True)
             from .history import update_index
             update_index(args.out)
-            emit({"state": "done", "report": report, "log": path})
+            from .logfile import read_log
+            auto = bool(read_log(path).meta.get("auto_stopped"))
+            emit({"state": "done", "report": report, "log": path, "auto_stopped": auto})
         except Exception as exc:  # report the error to the app window
             emit({"state": "error", "message": f"The report failed: {exc}", "log": path})
             return 1

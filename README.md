@@ -63,6 +63,7 @@ The OK / Watch / Problem limits are PadMaster defaults (judgement calls), not in
 5. Click **START**. Put the controller down for 10 seconds. The window counts down.
 6. Play your game. PadMaster keeps logging in the background. The "Inputs" number goes up while you play.
 7. Go back to the PadMaster window and click **STOP**. The report opens in the window.
+   - **Auto stop:** if you forget, PadMaster stops by itself when you don't use the controller for 10 minutes. Change the time, or set it to Off, in the sidebar. Small stick drift does not count as use.
 8. **History** lists every session. Click the pencil to rename a controller. **Compare** shows charts of every check for each controller.
 
 Logs and reports go to `Documents\PadLab`. Use **Open logs folder** to see them.

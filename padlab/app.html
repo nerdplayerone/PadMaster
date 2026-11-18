@@ -160,6 +160,8 @@ td.cb,th.cb{width:28px;padding-right:0}
   <div class="hint">Type a new name, or select a name you used before.</div>
   <div class="label" style="margin-top:10px"><label for="conn">Connection</label></div>
   <div class="row"><select id="conn"><option value="">Not set</option><option>Wired</option><option>Dongle</option><option>Bluetooth</option></select></div>
+  <div class="label" style="margin-top:10px"><label for="autostop">Auto stop</label></div>
+  <div class="row"><select id="autostop" title="Stop logging when the controller is not used for this time"><option value="0">Off</option><option value="5">After 5 min with no use</option><option value="10">After 10 min with no use</option><option value="20">After 20 min with no use</option><option value="30">After 30 min with no use</option></select></div>
  </div>
 
  <div class="prompt" id="prompt"><div class="msg" id="msg">Connect the controller. Then push Start.</div><div class="count" id="count">&nbsp;</div></div>
@@ -316,6 +318,7 @@ async function loadPadNames(){
  $("padnames").innerHTML=r.names.map(n=>`<option value="${esc(n)}"></option>`).join("");
  if(!$("padname").value)$("padname").value=r.last||"";
  if(!$("conn").dataset.set){$("conn").value=r.last_connection||"";$("conn").dataset.set="1";}
+ if(!$("autostop").dataset.set){$("autostop").value=String(r.auto_stop_min??10);if(!$("autostop").value)$("autostop").value="10";$("autostop").dataset.set="1";}
 }
 
 async function loadDevices(){
@@ -334,7 +337,7 @@ function setBusy(running){
 }
 
 async function start(){
- const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value);
+ const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value,parseFloat($("autostop").value||"0"));
  if(!r.ok){toast(r.message);return;}
  state="running";setBusy(true);
  $("s-time").textContent="0:00";$("s-inputs").textContent="0";$("s-disc").textContent="0";
@@ -360,7 +363,7 @@ async function tick(){
  }
  clearInterval(poll);clearInterval(cdTimer);state="idle";setBusy(false);$("go").disabled=false;
  if(s.state==="done"){loadPadNames();
-  setPrompt("Report ready.","");rows=await api.history();cmpData=null;renderHistory();
+  setPrompt(s.auto_stopped?"Logging stopped: the controller was not used. Report ready.":"Report ready.","");rows=await api.history();cmpData=null;renderHistory();
   if(s.log){const name=s.log.split(/[\\/]/).pop();openReport(name);}
  }else if(s.state==="error"){setPrompt(s.message||"Logging stopped with an error.","",'err');}
 }

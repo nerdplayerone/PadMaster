@@ -271,10 +271,17 @@ def emit(obj: dict) -> None:
 CONNECTIONS = ("Wired", "Dongle", "Bluetooth")
 
 
+IDLE_MOVE = 0.08  # stick/trigger movement (share of full range) that counts as use
+
+
 def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         ipc: bool = False, stop_flag: dict | None = None, label: str = "",
-        connection: str = "") -> str:
-    """Log until Ctrl+C, a stop request, or ``seconds``. Returns the log file path.
+        connection: str = "", idle_stop_s: float | None = None) -> str:
+    """Log until Ctrl+C, a stop request, ``seconds``, or ``idle_stop_s`` with no use.
+    Returns the log file path.
+
+    No use means no button press and no stick or trigger movement larger than
+    IDLE_MOVE of the full range. Small noise from a drifting stick does not count as use.
 
     IPC mode (used by the app window): no text for people on stdout. One JSON status
     line per second instead, for example
@@ -342,6 +349,20 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
     connected = True
     loop_passes = 0
     loop_rate_done = False
+    last_use = time.perf_counter()
+    idle_ref: dict[str, int] = {}
+    auto_stopped = False
+
+    def used(kind: str, name: str, value: int) -> None:
+        nonlocal last_use
+        if kind == "b":
+            last_use = time.perf_counter()
+            return
+        ref = idle_ref.get(name)
+        if ref is None or abs(value - ref) > 32767 * IDLE_MOVE:
+            if ref is not None:
+                last_use = time.perf_counter()
+            idle_ref[name] = value
 
     try:
         while True:
@@ -360,22 +381,27 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
                     if name:
                         writer.write(t_ms, "a", name, ev.value)
                         n_events += 1
+                        used("a", name, ev.value)
                 elif ev.type in (pygame.CONTROLLERBUTTONDOWN, pygame.CONTROLLERBUTTONUP) and pad.mapped and inst == pad.instance_id:
                     name = CONTROLLER_BUTTONS.get(ev.button, f"btn{ev.button}")
                     writer.write(t_ms, "b", name, 1 if ev.type == pygame.CONTROLLERBUTTONDOWN else 0)
                     n_events += 1
+                    used("b", name, 1)
                 elif ev.type == pygame.JOYAXISMOTION and not pad.mapped and inst == pad.instance_id:
                     # Unmapped pad: guess the common layout (0,1 left stick, 2,3 right stick).
                     guess = {0: "lx", 1: "ly", 2: "rx", 3: "ry"}.get(ev.axis, f"j{ev.axis}")
                     writer.write(t_ms, "a", guess, int(round(ev.value * 32767)))
                     n_events += 1
+                    used("a", guess, int(round(ev.value * 32767)))
                 elif ev.type in (pygame.JOYBUTTONDOWN, pygame.JOYBUTTONUP) and not pad.mapped and inst == pad.instance_id:
                     writer.write(t_ms, "b", f"jb{ev.button}", 1 if ev.type == pygame.JOYBUTTONDOWN else 0)
                     n_events += 1
+                    used("b", "jb", 1)
                 elif ev.type == pygame.JOYHATMOTION and not pad.mapped and inst == pad.instance_id and ev.hat == 0:
                     for name, val in _hat_rows(pad.hat, tuple(ev.value)):
                         writer.write(t_ms, "b", name, val)
                         n_events += 1
+                        used("b", name, 1)
                     pad.hat = tuple(ev.value)
                 elif ev.type == pygame.JOYDEVICEREMOVED and inst == pad.instance_id:
                     writer.write(t_ms, "c", "pad", 0)
@@ -407,12 +433,20 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
                 break
             if seconds is not None and now - t0 >= seconds:
                 break
+            if idle_stop_s and time.perf_counter() - last_use >= idle_stop_s:
+                auto_stopped = True
+                say(f"\n  No controller use for {idle_stop_s / 60:g} min. Logging stops.")
+                break
             time.sleep(POLL_SLEEP_S)
     except KeyboardInterrupt:
         pass
     finally:
         ended_ms = (time.perf_counter() - t0) * 1000.0
-        writer.meta({"ended_ms": round(ended_ms, 3)})
+        end_meta = {"ended_ms": round(ended_ms, 3)}
+        if auto_stopped:
+            end_meta["auto_stopped"] = True
+            end_meta["idle_stop_s"] = idle_stop_s
+        writer.meta(end_meta)
         writer.close()
         pygame.quit()
         say("\nStopped.")

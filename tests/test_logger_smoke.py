@@ -103,3 +103,32 @@ def test_unmapped_joystick_hat(monkeypatch, tmp_path):
     rows = rows[6:]
     assert rows == [("b", "left", 1), ("b", "up", 1), ("b", "left", 0), ("a", "ly", -32767)]
     assert log.meta["mode"] == "joystick"
+
+
+
+def test_auto_stop_after_no_use_but_not_for_stick_noise(monkeypatch, tmp_path):
+    """Owner request (2026-11-18): stop by itself when the pad is not used.
+    Small stick noise (a drifting stick) must not keep the session running."""
+    import time as _t
+    pg, sdl2, ctrl = make_fake_pygame([], True)
+    n = {"i": 0}
+
+    def get():
+        n["i"] += 1
+        _t.sleep(0.005)
+        if n["i"] > 400:
+            raise KeyboardInterrupt  # safety: the auto stop did not work
+        if n["i"] == 1:
+            return [types.SimpleNamespace(type=pg.CONTROLLERBUTTONDOWN, instance_id=7, button=0)]
+        # Stick noise of about 1% only.
+        return [types.SimpleNamespace(type=pg.CONTROLLERAXISMOTION, instance_id=7, axis=0,
+                                      value=300 if n["i"] % 2 else -300)]
+    pg.event = types.SimpleNamespace(get=get, pump=lambda: None)
+    monkeypatch.setitem(sys.modules, "pygame", pg)
+    monkeypatch.setitem(sys.modules, "pygame._sdl2", sdl2)
+    monkeypatch.setitem(sys.modules, "pygame._sdl2.controller", ctrl)
+    from padlab import logger
+    monkeypatch.setattr(logger, "POLL_SLEEP_S", 0)
+    log = read_log(logger.run(str(tmp_path), 0, idle_stop_s=0.3))
+    assert log.meta.get("auto_stopped") is True
+    assert n["i"] < 400

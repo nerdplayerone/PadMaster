@@ -123,9 +123,11 @@ class Api:
         names = sorted({r["device"] for r in self.history() if r.get("device") and r["device"] != "Unreadable log"},
                        key=str.lower)
         return {"names": names, "last": load_settings(self._out_dir).get("last_pad_name", ""),
-                "last_connection": load_settings(self._out_dir).get("last_connection", "")}
+                "last_connection": load_settings(self._out_dir).get("last_connection", ""),
+                "auto_stop_min": load_settings(self._out_dir).get("auto_stop_min", 10)}
 
-    def start(self, pad_index: int = 0, pad_name: str = "", connection: str = "") -> dict:
+    def start(self, pad_index: int = 0, pad_name: str = "", connection: str = "",
+              auto_stop_min: float = 10) -> dict:
         with self._lock:
             if self._proc and self._proc.poll() is None:
                 return {"ok": False, "message": "Logging is already running."}
@@ -135,11 +137,18 @@ class Api:
             save_setting(self._out_dir, "last_pad_name", pad_name)
             connection = connection if connection in ("Wired", "Dongle", "Bluetooth") else ""
             save_setting(self._out_dir, "last_connection", connection)
+            try:
+                auto_stop_min = max(0.0, min(120.0, float(auto_stop_min)))
+            except (TypeError, ValueError):
+                auto_stop_min = 10.0
+            save_setting(self._out_dir, "auto_stop_min", auto_stop_min)
             cmd = padlab_command("log", "--ipc", "--pad", str(int(pad_index)), "--out", self._out_dir)
             if pad_name:
                 cmd += ["--name", pad_name]
             if connection:
                 cmd += ["--connection", connection]
+            if auto_stop_min:
+                cmd += ["--auto-stop", f"{auto_stop_min:g}"]
             try:
                 self._proc = self._popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE, text=True, bufsize=1,

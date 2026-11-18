@@ -6,7 +6,7 @@ You don't need to do test routines. Play as normal, then read the report.
 
 ![Sample report](docs/sample_report.png)
 
-> **Status: early version (0.1.5).** Tested on real hardware with the pads in the list below. Other pads can work, but they are not tested. Please report problems in Issues.
+> **Status: early version (0.1.6).** Tested on real hardware with the pads in the list below. Other pads can work, but they are not tested. Please report problems in Issues.
 
 ### Tested pads
 

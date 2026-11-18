@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "padmaster"
-version = "0.1.4"
+version = "0.1.5"
 description = "Log a game controller in the background while you play, then get a report on deadzones, drift, D-pad flicker and double inputs."
 readme = "README.md"
 license = { text = "MIT" }

@@ -399,3 +399,19 @@ def test_report_bug_opens_a_draft_and_sends_nothing(monkeypatch, tmp_path):
     monkeypatch.setattr(branding, "BUG_EMAIL", "bugs@example.com")
     assert api.report_bug("Pad A")["email"]
     assert opened[-1].startswith("mailto:bugs@example.com?subject=") and "Pad%20A" in opened[-1]
+
+
+
+def test_controller_mapping_file_is_bundled_and_used():
+    """Owner approval (2026-11-18): bundle SDL_GameControllerDB so more pads are mapped."""
+    import os
+    from padlab import logger
+    assert os.path.isfile(logger.MAPPING_FILE)
+    txt = open(logger.MAPPING_FILE, encoding="utf-8").read()
+    assert "provided 'as-is'" in txt
+    rows = [x for x in txt.splitlines() if x and not x.startswith("#")]
+    assert len(rows) > 500 and all("platform:Windows" in x for x in rows)
+    assert os.environ.get("SDL_GAMECONTROLLERCONFIG_FILE")
+    root = os.path.dirname(os.path.dirname(logger.MAPPING_FILE))
+    wf = open(os.path.join(root, ".github", "workflows", "build.yml"), encoding="utf-8").read()
+    assert wf.count("gamecontrollerdb.txt:padlab") == 2

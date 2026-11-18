@@ -17,6 +17,11 @@ from datetime import datetime
 # Must be set before SDL starts.
 os.environ.setdefault("SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS", "1")
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
+# Community controller mappings (SDL_GameControllerDB, zlib licence; owner approval 2026-11-18).
+# They let SDL map more pads, so fewer pads fall back to "joystick" mode.
+MAPPING_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gamecontrollerdb.txt")
+if os.path.isfile(MAPPING_FILE):
+    os.environ.setdefault("SDL_GAMECONTROLLERCONFIG_FILE", MAPPING_FILE)
 
 from . import __version__  # noqa: E402
 from .logfile import LogWriter  # noqa: E402

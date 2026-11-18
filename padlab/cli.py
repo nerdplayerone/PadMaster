@@ -74,6 +74,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="how the controller is connected")
     lg.add_argument("--auto-stop", type=float, default=0,
                     help="stop after this many minutes with no controller use (0: off)")
+    lg.add_argument("--guided", action="store_true",
+                    help="guided test: about 4 minutes of on-screen steps, then stop")
     lg.add_argument("--ipc", action="store_true", help="for the app window: JSON status lines, stop with a 'stop' line")
 
     rp = sub.add_parser("report", help="make a report from a log file")
@@ -117,7 +119,8 @@ def main(argv: list[str] | None = None) -> int:
 
     from .logger import emit, run
     path = run(args.out, pad_index=args.pad, seconds=args.seconds, ipc=args.ipc, label=args.name, connection=args.connection,
-               idle_stop_s=(args.auto_stop * 60) or None)
+               idle_stop_s=(args.auto_stop * 60) or None,
+               guided=args.guided)
     if args.ipc:
         if not path:
             emit({"state": "done", "report": "", "log": ""})

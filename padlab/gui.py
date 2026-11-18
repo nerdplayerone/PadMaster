@@ -127,7 +127,7 @@ class Api:
                 "auto_stop_min": load_settings(self._out_dir).get("auto_stop_min", 10)}
 
     def start(self, pad_index: int = 0, pad_name: str = "", connection: str = "",
-              auto_stop_min: float = 10) -> dict:
+              auto_stop_min: float = 10, guided: bool = False) -> dict:
         with self._lock:
             if self._proc and self._proc.poll() is None:
                 return {"ok": False, "message": "Logging is already running."}
@@ -147,7 +147,9 @@ class Api:
                 cmd += ["--name", pad_name]
             if connection:
                 cmd += ["--connection", connection]
-            if auto_stop_min:
+            if guided:
+                cmd += ["--guided"]
+            elif auto_stop_min:
                 cmd += ["--auto-stop", f"{auto_stop_min:g}"]
             try:
                 self._proc = self._popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -187,7 +189,7 @@ class Api:
                 msg = json.loads(line)
             except ValueError:
                 continue
-            keep = {k: self._status[k] for k in ("started_at", "device", "log") if k in self._status}
+            keep = {k: self._status[k] for k in ("started_at", "device", "log", "prompt") if k in self._status}
             if self._status.get("state") == "stopping" and msg.get("state") == "logging":
                 msg["state"] = "stopping"
             self._status = {**keep, **msg}

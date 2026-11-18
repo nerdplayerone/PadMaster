@@ -58,6 +58,9 @@ THRESHOLDS = {
     # Update rate and interval spread
     "timing_min_intervals": 500,
     "spread_ok_ms": 1.5, "spread_watch_ms": 4.0,
+    # Guided test (information only: the results include the player's own accuracy).
+    # A prompt counts as hit if the exact input comes before the next prompt, at most this late.
+    "guided_window_ms": 1500,
     # Performance score (Best controller view, owner request 2026-11-18). Update rate:
     # 125 Hz scores 0 and 1000 Hz scores 100. Each doubling adds a third (250 = 33, 500 = 67).
     "perf_rate_low_hz": 125.0, "perf_rate_high_hz": 1000.0,
@@ -129,6 +132,7 @@ class Report:
     chords: dict = field(default_factory=dict)
     connection: dict = field(default_factory=dict)
     timing: dict = field(default_factory=dict)
+    guided: dict = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------- helpers
@@ -789,6 +793,28 @@ def _f(findings: list[Finding], *a, **k) -> None:
     findings.append(Finding(*a, **k))
 
 
+def _guided_findings(r: Report, F: list) -> None:
+    g = r.guided
+    if not g:
+        return
+    note = " This includes your own accuracy, so compare pads with the same player."
+    for kind, title, what in (("diag", "Guided: D-pad diagonals hit", "Diagonal prompts where both directions were held together."),
+                              ("card", "Guided: D-pad directions hit", "Up, down, left and right prompts that were pressed."),
+                              ("btn", "Guided: buttons hit", "Button prompts that were pressed.")):
+        hit, n = g[kind]
+        if n:
+            _f(F, f"guided_{kind}", title, INFO, f"{hit} of {n} ({hit / n:.0%})", what + note)
+    if g["card"][1]:
+        _f(F, "guided_accidental", "Guided: accidental diagonals", INFO, str(g["accidental_diag"]),
+           "Up, down, left or right prompts where a diagonal also showed." + note)
+    if g["btn"][1]:
+        _f(F, "guided_wrong", "Guided: wrong button presses", INFO, str(g["wrong"]),
+           "Button prompts where another button was also pressed." + note)
+    if not g["complete"]:
+        _f(F, "guided_incomplete", "Guided test not finished", INFO, "stopped early",
+           "The test was stopped before the end. Some results can be missing.")
+
+
 def build_findings(r: Report) -> None:
     th = THRESHOLDS
     F = r.findings
@@ -1013,8 +1039,10 @@ def analyse(log: Log) -> Report:
     r.chords = analyse_chords(log)
     r.connection = analyse_connection(log)
     r.timing = analyse_timing(log, r.sticks)
+    r.guided = analyse_guided(log)
     _drop_flicker_doubles(r)
     build_findings(r)
+    _guided_findings(r, r.findings)
     return r
 
 
@@ -1189,3 +1217,65 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list
         else:
             c["rank"] = None
     return out
+
+
+# ---------------------------------------------------------------- guided test
+
+def analyse_guided(log: Log) -> dict:
+    """Score the prompt game of a guided test. Empty dict for a normal session.
+
+    For each prompt: hit if the exact input happens before the next prompt (at most
+    guided_window_ms after it). D-pad: the held directions must be exactly the asked
+    ones (both for a diagonal). A cardinal prompt that also shows a diagonal counts as
+    an accidental diagonal. A button prompt with another face or shoulder button
+    pressed counts as a wrong press."""
+    from .guided import BUTTONS, DPAD
+    prompts = [e for e in log.events if e.kind == "p"]
+    if not prompts:
+        return {}
+    win = THRESHOLDS["guided_window_ms"]
+    steps = [{"t": e.t, "key": e.name} for e in prompts]
+    game = [i for i, p in enumerate(steps) if p["key"] in DPAD or p["key"] in BUTTONS]
+    dirs = ("up", "down", "left", "right")
+    held: set[str] = set()
+    timeline: list[tuple[float, frozenset]] = [(0.0, frozenset())]
+    presses: list[tuple[float, str]] = []
+    for e in log.events:
+        if e.kind != "b":
+            continue
+        if e.name in dirs:
+            (held.add if e.value else held.discard)(e.name)
+            timeline.append((e.t, frozenset(held)))
+        elif e.value:
+            presses.append((e.t, e.name))
+    btn_names = {v[1] for v in BUTTONS.values()}
+    res = {"card": [0, 0], "diag": [0, 0], "btn": [0, 0], "accidental_diag": 0, "wrong": 0,
+           "misses": [], "prompts": len(game),
+           "complete": bool(log.meta.get("guided_complete", False)),
+           "phases": [{"t": p["t"], "key": p["key"]} for p in steps if p["key"].startswith("phase_")]}
+    for i in game:
+        p = steps[i]
+        t0 = p["t"]
+        nxt = steps[i + 1]["t"] if i + 1 < len(steps) else t0 + win
+        t1 = min(t0 + win, nxt)
+        if p["key"] in DPAD:
+            want = frozenset(DPAD[p["key"]][1])
+            kind = "diag" if len(want) == 2 else "card"
+            before = [s for t, s in timeline if t <= t0]
+            states = ([before[-1]] if before else []) + [s for t, s in timeline if t0 < t <= t1]
+            hit = want in states[1:]  # a new press after the prompt
+            if kind == "card" and any(len(s) == 2 for s in states[1:]):
+                res["accidental_diag"] += 1
+        else:
+            want_b = BUTTONS[p["key"]][1]
+            kind = "btn"
+            got = [n for t, n in presses if t0 < t <= t1 and n in btn_names]
+            hit = want_b in got
+            if any(n != want_b for n in got):
+                res["wrong"] += 1
+        res[kind][1] += 1
+        if hit:
+            res[kind][0] += 1
+        else:
+            res["misses"].append({"t": t0, "prompt": p["key"]})
+    return res

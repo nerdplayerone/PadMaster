@@ -6,7 +6,8 @@ A PadMaster log is a gzip-compressed CSV file.
 * Each data row is ``t_ms,kind,name,value``:
 
   - ``t_ms``  milliseconds since the start of the session (float, 3 decimals)
-  - ``kind``  ``a`` axis, ``b`` button, ``c`` connection
+  - ``kind``  ``a`` axis, ``b`` button, ``c`` connection, ``p`` guided-test prompt
+              (``name`` is the prompt key, ``value`` its number in the schedule)
   - ``name``  normalised signal name, for example ``lx``, ``rt``, ``a``, ``up``
   - ``value`` raw integer value. Sticks: -32768..32767. Triggers: 0..32767.
               Buttons: 1 (down) or 0 (up). Connection: 1 (connected) or 0 (lost).

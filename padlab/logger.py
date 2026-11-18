@@ -281,7 +281,7 @@ IDLE_MOVE = 0.08  # stick/trigger movement (share of full range) that counts as 
 
 def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         ipc: bool = False, stop_flag: dict | None = None, label: str = "",
-        connection: str = "", idle_stop_s: float | None = None) -> str:
+        connection: str = "", idle_stop_s: float | None = None, guided: bool = False) -> str:
     """Log until Ctrl+C, a stop request, ``seconds``, or ``idle_stop_s`` with no use.
     Returns the log file path.
 
@@ -331,6 +331,14 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         meta["label"] = label  # the name the owner gave this physical pad
     if connection in CONNECTIONS:
         meta["connection"] = connection  # selected by the owner; PadMaster can't detect it
+    plan = None
+    if guided:
+        from .guided import schedule
+        seed = int(time.time()) % 100000
+        plan = schedule(seed)
+        meta["guided"] = True
+        meta["guided_seed"] = seed
+        idle_stop_s = None  # the hands-off step must not stop the test
     writer = LogWriter(path, meta)
 
     say(f"Logging: {pad.name}  ({meta['mode']} mode)")
@@ -357,6 +365,9 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
     last_use = time.perf_counter()
     idle_ref: dict[str, int] = {}
     auto_stopped = False
+    plan_i = 0
+    prompt = None
+    guided_done = False
 
     def used(kind: str, name: str, value: int) -> None:
         nonlocal last_use
@@ -375,6 +386,19 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
             now = time.perf_counter()
             t_ms = (now - t0) * 1000.0
             loop_passes += 1
+            if plan is not None:
+                while plan_i < len(plan) and now - t0 >= plan[plan_i][0]:
+                    _, key, text = plan[plan_i]
+                    writer.write(t_ms, "p", key, plan_i)
+                    prompt = {"key": key, "text": text, "i": plan_i, "n": len(plan)}
+                    plan_i += 1
+                    say(f"\n  {text}")
+                    if ipc:
+                        emit({"state": "logging", "t": round(now - t0, 1), "inputs": n_events,
+                              "disconnects": disconnects, "connected": connected, "prompt": prompt})
+                if plan_i >= len(plan):
+                    guided_done = True
+                    break
             if not loop_rate_done and now - t0 >= LOOP_RATE_WINDOW_S:
                 writer.meta({"loop_hz": round(loop_passes / (now - t0), 1)})
                 loop_rate_done = True
@@ -431,8 +455,11 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
                 say(f"  {mins:6.1f} min   {n_events:9d} inputs   {disconnects} disconnects", end="\r")
                 last_status = now
             if ipc and now - last_ipc >= IPC_STATUS_EVERY_S:
-                emit({"state": "logging", "t": round(now - t0, 1), "inputs": n_events,
-                      "disconnects": disconnects, "connected": connected})
+                st = {"state": "logging", "t": round(now - t0, 1), "inputs": n_events,
+                      "disconnects": disconnects, "connected": connected}
+                if prompt:
+                    st["prompt"] = prompt
+                emit(st)
                 last_ipc = now
             if stop_flag["stop"]:
                 break
@@ -448,6 +475,8 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
     finally:
         ended_ms = (time.perf_counter() - t0) * 1000.0
         end_meta = {"ended_ms": round(ended_ms, 3)}
+        if plan is not None:
+            end_meta["guided_complete"] = guided_done
         if auto_stopped:
             end_meta["auto_stopped"] = True
             end_meta["idle_stop_s"] = idle_stop_s

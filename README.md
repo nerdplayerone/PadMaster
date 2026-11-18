@@ -86,6 +86,17 @@ python -m padlab log --name "Xbox pad A" --connection Dongle   # name and connec
 python -m padlab report FILE.csv.gz
 ```
 
+## Guided test
+
+Push **Guided test (4 min)** to give every controller the same steps. Follow the instructions on the screen:
+
+1. Put the controller down (30 s). This checks drift.
+2. Turn both sticks in slow circles, then fast circles, then push to the edge in all directions.
+3. Pull both triggers slowly, 3 times.
+4. Press the arrows and buttons that you see (about 2 minutes).
+
+The report then has a "Guided test" section. The prompt results include your own accuracy, so compare controllers with the same player.
+
 ## For a clean test
 
 - Turn off Steam Input, DS4Windows, DSX and similar tools. They change what PadMaster sees.
@@ -132,3 +143,5 @@ PadMaster is made by the owner of these channels:
 ## Licence
 
 MIT. See `LICENSE`.
+
+The controller mappings in `padlab/gamecontrollerdb.txt` come from [SDL_GameControllerDB](https://github.com/mdqinc/SDL_GameControllerDB) (zlib licence, notice kept in the file).

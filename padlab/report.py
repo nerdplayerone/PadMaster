@@ -463,6 +463,32 @@ def render(r: Report, log_name: str = "", name: str | None = None, latency: dict
                    f'{t["presses"]} pulls past 50%.</div></div>')
     out.append("</div>")
 
+    # Guided test
+    g = r.guided
+    if g:
+        from .guided import PHASES
+        names = {k: t for _, k, t in PHASES}
+        out.append("<h2>Guided test</h2><div class='card'>")
+        out.append("<div class='sub'>Every controller gets the same steps, so these results are fair to compare. "
+                   "The prompt results include your own accuracy: compare pads with the same player.</div><table>")
+        for p in g["phases"]:
+            out.append(f"<tr><td class='v'>{clock(p['t'])}</td><td>{e(names.get(p['key'], p['key']))}</td></tr>")
+        out.append("</table>")
+        rows = []
+        for kind, lab in (("card", "D-pad directions"), ("diag", "D-pad diagonals"), ("btn", "Buttons")):
+            hit, n = g[kind]
+            if n:
+                rows.append(f"<tr><td>{lab}</td><td class='v'>{hit} of {n}</td><td class='v'>{hit / n:.0%}</td></tr>")
+        if rows:
+            out.append("<h3 style='margin-top:14px'>Prompt game</h3><table><thead><tr><th>Prompt</th><th>Hit</th>"
+                       "<th>Rate</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>")
+            out.append(f"<div class='cap'>Accidental diagonals: {g['accidental_diag']}. Wrong button presses: "
+                       f"{g['wrong']}. A prompt counts as hit if the exact input came before the next prompt "
+                       f"(at most {THRESHOLDS['guided_window_ms'] / 1000:g} s later).</div>")
+        if not g["complete"]:
+            out.append("<div class='warn'>The guided test was stopped before the end. Some results can be missing.</div>")
+        out.append("</div>")
+
     # D-pad
     d = r.dpad
     out.append("<h2>D-pad</h2><div class='card'>")
@@ -478,6 +504,8 @@ def render(r: Report, log_name: str = "", name: str | None = None, latency: dict
 
     # Event list
     events = []
+    for x in (r.guided or {}).get("misses", []):
+        events.append((x["t"], "Guided miss", x["prompt"].replace("_", " ")))
     for o in r.connection["outages"]:
         events.append((o["t"], "Disconnect", f'back after {o["ms"] / 1000:.1f} s' if o["ms"] else "did not come back"))
     for x in r.buttons["double_times"]:

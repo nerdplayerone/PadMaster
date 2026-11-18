@@ -121,6 +121,15 @@ td.cb,th.cb{width:28px;padding-right:0}
 .rename-in{background:var(--panel-2);border:1px solid var(--silver);border-radius:4px;color:var(--text);font:inherit;padding:4px 6px;width:100%;max-width:280px}
 #compare{padding:20px}
 #best{padding:20px}
+main{position:relative}
+#guide{position:absolute;inset:0;z-index:20;background:var(--bg,#0b0b0c);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:30px;text-align:center}
+#guide.hidden{display:none}
+.gstep{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gtext{font-size:30px;font-weight:600;max-width:760px;line-height:1.3}
+.gtext.sym{font-size:150px;line-height:1;font-weight:700}
+.gtext.btnp{font-size:90px;line-height:1;font-weight:700}
+.gbar{width:min(520px,80%);height:6px;background:var(--line-2);border-radius:3px;overflow:hidden}
+.gbar i{display:block;height:100%;width:0;background:var(--silver)}
 .bcard{border:1px solid var(--line-2);border-radius:8px;padding:14px 16px;margin-bottom:10px;background:var(--panel)}
 .bcard.top{border-color:var(--silver)}
 .bcard h3{margin:0 0 4px;font-size:16px}
@@ -189,6 +198,7 @@ td.cb,th.cb{width:28px;padding-right:0}
  </div>
 
  <button class="big" id="go">START</button>
+ <button class="btn" id="guided" style="width:100%;margin-top:8px" title="About 4 minutes. Every controller gets the same steps, so results are fair to compare.">Guided test (4 min)</button>
 
  <div class="links">
   <button class="btn" id="last">Open last report</button>
@@ -218,6 +228,7 @@ td.cb,th.cb{width:28px;padding-right:0}
  <div class="view" id="history"></div>
  <div class="view hidden" id="compare"></div>
  <div class="view hidden" id="best"></div>
+ <div id="guide" class="hidden" role="status" aria-live="assertive"><div class="gstep" id="gstep"></div><div class="gtext" id="gtext"></div><div class="gbar"><i id="gbar"></i></div><button class="btn" id="gstop">Stop the test</button></div>
  <div class="view hidden" id="report"><div class="empty">Select a session in History to see its report.</div></div>
 </main>
 </div>
@@ -355,14 +366,24 @@ function setBusy(running){
  $("pad").disabled=running;$("padname").disabled=running;$("conn").disabled=running;$("refresh").disabled=running;
 }
 
-async function start(){
- const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value,parseFloat($("autostop").value||"0"));
+let guidedRun=false;
+function showGuide(p){
+ if(!p){$("guide").classList.add("hidden");return;}
+ $("guide").classList.remove("hidden");
+ const game=!p.key.startsWith("phase_")&&p.key!=="end";
+ $("gstep").textContent=p.key.startsWith("phase_")?`Guided test: step ${["phase_rest","phase_circles_slow","phase_circles_fast","phase_edges","phase_triggers","phase_game"].indexOf(p.key)+1} of 6`:(game?"Press what you see":"Guided test");
+ $("gtext").textContent=p.text;$("gtext").className="gtext"+(game?(p.key.startsWith("dpad_")?" sym":" btnp"):"");
+ $("gbar").style.width=Math.round(100*(p.i+1)/p.n)+"%";
+}
+async function start(guided){
+ guided=guided===true;
+ const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value,parseFloat($("autostop").value||"0"),guided);
  if(!r.ok){toast(r.message);return;}
- state="running";setBusy(true);
+ state="running";setBusy(true);guidedRun=guided;$("guided").disabled=true;
  $("s-time").textContent="0:00";$("s-inputs").textContent="0";$("s-disc").textContent="0";
- countdown=10;setPrompt("Put the controller down.",countdown);
+ countdown=guided?0:10;setPrompt(guided?"Guided test. Follow the steps on the screen.":"Put the controller down.",guided?"":countdown);
  clearInterval(cdTimer);cdTimer=setInterval(()=>{countdown--;if(countdown<=0){clearInterval(cdTimer);}},1000);
- clearInterval(poll);poll=setInterval(tick,500);
+ clearInterval(poll);poll=setInterval(tick,guided?150:500);
 }
 
 async function stop(){$("go").disabled=true;await api.stop();setPrompt("Making the report...","");}
@@ -374,13 +395,16 @@ async function tick(){
   if(s.t!==undefined){$("s-time").textContent=clock(s.t);}
   if(s.inputs!==undefined){$("s-inputs").textContent=Number(s.inputs).toLocaleString("en-GB");}
   if(s.disconnects!==undefined){$("s-disc").textContent=s.disconnects;}
+  if(guidedRun)showGuide(s.state==="stopping"?null:s.prompt);
   if(s.state==="stopping"){setPrompt("Making the report...","");}
+  else if(guidedRun&&s.connected!==false){setPrompt("Guided test. Follow the steps on the screen.","●",'live');}
   else if(s.connected===false){setPrompt("Controller lost. Turn it on again.","",'err');}
   else if(countdown>0){setPrompt("Put the controller down.",countdown);}
   else{setPrompt("Logging. Play your game.","●",'live');}
   return;
  }
  clearInterval(poll);clearInterval(cdTimer);state="idle";setBusy(false);$("go").disabled=false;
+ guidedRun=false;showGuide(null);$("guided").disabled=false;
  if(s.state==="done"){loadPadNames();
   setPrompt(s.auto_stopped?"Logging stopped: the controller was not used. Report ready.":"Report ready.","");rows=await api.history();cmpData=null;renderHistory();
   if(s.log){const name=s.log.split(/[\\/]/).pop();openReport(name);}
@@ -526,6 +550,8 @@ window.addEventListener("pywebviewready", async ()=>{
  $("tab-report").onclick=()=>showTab("report");
  $("tab-compare").onclick=()=>showTab("compare");
  $("tab-best").onclick=()=>showTab("best");
+ $("guided").onclick=()=>{if(state==="idle")start(true);};
+ $("gstop").onclick=()=>{showGuide(null);stop();};
  showTab("history");
 });
 </script>

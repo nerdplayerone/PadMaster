@@ -1102,3 +1102,61 @@ def metric_definitions() -> list[dict]:
         d["watch_value"] = THRESHOLDS[m["watch"]] if m["watch"] else None
         out.append(d)
     return out
+
+
+# ---------------------------------------------------------------- best controller
+
+def grade_metric(m: dict, v: float) -> str:
+    """OK, Watch or Problem for one Compare number, from the THRESHOLDS limits."""
+    ok, watch = THRESHOLDS[m["ok"]], THRESHOLDS[m["watch"]]
+    if m["better"] == "low":
+        if ok == watch:  # one limit only (contact bounce): Watch at most, as in the report
+            return OK if v < ok else WATCH
+        return OK if v < ok else WATCH if v < watch else PROBLEM
+    return OK if v >= ok else WATCH if v >= watch else PROBLEM
+
+
+def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list[dict]:
+    """Rank controllers for the Best controller view.
+
+    groups: controller name -> list of metric_values() dicts (one per session).
+    Each controller gets the median of its sessions for each graded check. The rule
+    (simple, so it can be said on camera): fewest Problems first, then fewest Watch,
+    then the most checks with the best value of all controllers. Controllers with
+    fewer than min_checks graded results are listed, but not ranked."""
+    graded = [m for m in METRICS if m["ok"] and m["watch"]]
+    med: dict[str, dict[str, float]] = {}
+    for name, rows in groups.items():
+        med[name] = {}
+        for m in graded:
+            vals = sorted(r[m["key"]] for r in rows if r and r.get(m["key"]) is not None)
+            if vals:
+                n = len(vals)
+                med[name][m["key"]] = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
+    out = []
+    for name, vals in med.items():
+        grades = {k: grade_metric(next(m for m in graded if m["key"] == k), v) for k, v in vals.items()}
+        wins = []
+        for m in graded:
+            k = m["key"]
+            if k not in vals:
+                continue
+            others = [med[o][k] for o in med if k in med[o]]
+            if len(others) > 1 and vals[k] == (min(others) if m["better"] == "low" else max(others)):
+                wins.append(k)
+        out.append({
+            "name": name, "sessions": len(groups[name]), "checks": len(vals),
+            "problems": [k for k, g in grades.items() if g == PROBLEM],
+            "watch": [k for k, g in grades.items() if g == WATCH],
+            "wins": wins, "values": vals, "grades": grades,
+            "ranked": len(vals) >= min_checks,
+        })
+    out.sort(key=lambda c: (not c["ranked"], len(c["problems"]), len(c["watch"]), -len(c["wins"]), c["name"]))
+    pos = 0
+    for c in out:
+        if c["ranked"]:
+            pos += 1
+            c["rank"] = pos
+        else:
+            c["rank"] = None
+    return out

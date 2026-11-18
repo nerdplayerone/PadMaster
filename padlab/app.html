@@ -120,6 +120,14 @@ td.cb,th.cb{width:28px;padding-right:0}
 .model{display:block;font-size:11px;color:var(--muted)}
 .rename-in{background:var(--panel-2);border:1px solid var(--silver);border-radius:4px;color:var(--text);font:inherit;padding:4px 6px;width:100%;max-width:280px}
 #compare{padding:20px}
+#best{padding:20px}
+.bcard{border:1px solid var(--line-2);border-radius:8px;padding:14px 16px;margin-bottom:10px;background:var(--panel)}
+.bcard.top{border-color:var(--silver)}
+.bcard h3{margin:0 0 4px;font-size:16px}
+.bcard .pos{display:inline-block;min-width:34px;font-weight:700;color:var(--text-2)}
+.bcard .sum{font-size:13px;color:var(--text-2)}
+.bcard ul{margin:6px 0 0 18px;padding:0;font-size:13px}
+.brule{font-size:13px;color:var(--text-2);margin:0 0 14px;max-width:760px}
 .cmp-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer;background:none;color:var(--text);font-size:13px}
 .chip .sw{width:10px;height:10px;border-radius:2px}
@@ -191,6 +199,7 @@ td.cb,th.cb{width:28px;padding-right:0}
  <nav>
   <button id="tab-history" class="on">History</button>
   <button id="tab-compare">Compare</button>
+  <button id="tab-best">Best controller</button>
   <button id="tab-report">Report</button>
   <span class="spacer"></span>
   <span class="note" id="note"></span>
@@ -200,6 +209,7 @@ td.cb,th.cb{width:28px;padding-right:0}
  </nav>
  <div class="view" id="history"></div>
  <div class="view hidden" id="compare"></div>
+ <div class="view hidden" id="best"></div>
  <div class="view hidden" id="report"><div class="empty">Select a session in History to see its report.</div></div>
 </main>
 </div>
@@ -217,8 +227,9 @@ function when(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return iso
  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+"  "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 
 function showTab(name){
- for(const t of ["history","compare","report"]){$("tab-"+t).classList.toggle("on",name===t);$(t).classList.toggle("hidden",name!==t);}
+ for(const t of ["history","compare","best","report"]){$("tab-"+t).classList.toggle("on",name===t);$(t).classList.toggle("hidden",name!==t);}
  if(name==="compare")renderCompare();
+ if(name==="best")renderBest();
  $("export").style.display=name==="history"?"":"none";if(typeof syncPicked==="function"&&$("ckall"))syncPicked();else $("delsel").style.display="none";$("browser").style.display=name==="report"&&current?"":"none";
 }
 
@@ -434,6 +445,26 @@ async function renderCompare(){
  }
 }
 
+async function renderBest(){
+ $("best").innerHTML='<div class="empty">Loading...</div>';
+ const d=await api.best_data(),byKey={};for(const m of d.metrics)byKey[m.key]=m;
+ const rk=d.ranking;
+ if(!rk.length){$("best").innerHTML='<div class="empty">No sessions to rank yet.</div>';return;}
+ const lab=k=>esc(byKey[k].label),val=(c,k)=>fmt(byKey[k],c.values[k]);
+ let h='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check with OK and Watch limits. The controller with the fewest Problems is first. If two are equal, the controller with fewer Watch results is first. Then the controller with the best value in more checks is first. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
+ if(rk.filter(c=>c.ranked).length<2)h+='<p class="brule">Log at least two controllers to get a ranking.</p>';
+ for(const c of rk){
+  const st=c.problems.length?"Problem":c.watch.length?"Watch":"OK";
+  h+=`<div class="bcard${c.rank===1&&rk.filter(x=>x.ranked).length>1?" top":""}"><h3><span class="pos">${c.rank?"#"+c.rank:"-"}</span>${esc(c.name)}</h3>`;
+  h+=`<div class="sum">${c.ranked?"":"Not ranked: fewer than 5 checks have a result. "}${c.sessions} session${c.sessions===1?"":"s"}, ${c.checks} checks. Problems: ${c.problems.length}. Watch: ${c.watch.length}. Best value: ${c.wins.length}. Worst result: ${st}.</div><ul>`;
+  for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
+  for(const k of c.watch)h+=`<li>Watch: ${lab(k)} (${val(c,k)})</li>`;
+  if(c.wins.length)h+=`<li>Best value: ${c.wins.map(lab).join(", ")}</li>`;
+  h+="</ul></div>";
+ }
+ $("best").innerHTML=h;
+}
+
 function barSvg(m,items,col){
  const k=m.pct?100:1,L=140,R=70,rowH=26,W=440,plotW=W-L-R;
  let max=Math.max(...items.flatMap(i=>i.vals.map(v=>v*k)));
@@ -482,6 +513,7 @@ window.addEventListener("pywebviewready", async ()=>{
  $("tab-history").onclick=()=>showTab("history");
  $("tab-report").onclick=()=>showTab("report");
  $("tab-compare").onclick=()=>showTab("compare");
+ $("tab-best").onclick=()=>showTab("best");
  showTab("history");
 });
 </script>

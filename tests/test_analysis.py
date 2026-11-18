@@ -209,3 +209,19 @@ def test_contact_bounce_is_split_from_double_inputs():
     f = {x.key: x for x in rep.findings}
     assert f["bounce"].status == WATCH and f["bounce"].value == "3"
     assert f["doubles"].value == "2"
+
+
+
+def test_rank_controllers_fewest_problems_first():
+    """Owner request (2026-11-18): a Best controller view. Fewest Problems wins,
+    then fewest Watch, then most best values. Too few checks: listed, not ranked."""
+    from padlab.analysis import rank_controllers, THRESHOLDS as T
+    good = {"l_drift": T["drift_ok"] / 2, "r_drift": T["drift_ok"] / 2, "doubles": 0.0,
+            "bounce": 0.0, "l_outer": 1.0, "r_outer": 1.0}
+    bad = dict(good, doubles=float(T["double_problem"] + 5))
+    meh = dict(good, bounce=float(T["bounce_watch"] + 1))
+    few = {"doubles": 0.0}
+    r = rank_controllers({"Bad": [bad], "Meh": [meh, meh], "Good": [good], "Few": [few]})
+    assert [c["name"] for c in r] == ["Good", "Meh", "Bad", "Few"]
+    assert [c["rank"] for c in r] == [1, 2, 3, None]
+    assert r[2]["problems"] == ["doubles"] and r[1]["watch"] == ["bounce"]

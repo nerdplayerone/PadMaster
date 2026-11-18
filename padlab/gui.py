@@ -306,6 +306,17 @@ class Api:
         from .analysis import metric_definitions
         return {"metrics": metric_definitions(), "sessions": self.history()}
 
+    def best_data(self) -> dict:
+        """Controllers ranked for the Best controller view (same groups as Compare)."""
+        from .analysis import metric_definitions, rank_controllers
+        groups: dict[str, list[dict]] = {}
+        for s in self.history():
+            if not s.get("metrics"):
+                continue
+            name = f"{s['device']} · {s['connection']}" if s.get("connection") else s["device"]
+            groups.setdefault(name, []).append(s["metrics"])
+        return {"metrics": metric_definitions(), "ranking": rank_controllers(groups)}
+
     def open_logs_folder(self) -> None:
         os.makedirs(self._out_dir, exist_ok=True)
         if os.name == "nt":

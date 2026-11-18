@@ -58,6 +58,9 @@ THRESHOLDS = {
     # Update rate and interval spread
     "timing_min_intervals": 500,
     "spread_ok_ms": 1.5, "spread_watch_ms": 4.0,
+    # Performance score (Best controller view, owner request 2026-11-18). Update rate:
+    # 125 Hz scores 0 and 1000 Hz scores 100. Each doubling adds a third (250 = 33, 500 = 67).
+    "perf_rate_low_hz": 125.0, "perf_rate_high_hz": 1000.0,
     # Stutter
     "stream_mag": 0.2,
     "stutter_min_gap_ms": 40,
@@ -1116,26 +1119,50 @@ def grade_metric(m: dict, v: float) -> str:
     return OK if v >= ok else WATCH if v >= watch else PROBLEM
 
 
+# Performance checks: how well the pad works, not only if it has a fault. Score 100 is the
+# best possible value. Score 0 is the Watch limit (or 125 Hz for the update rate).
+PERF_KEYS = ["update_rate_hz", "update_spread_ms", "l_bits", "r_bits", "l_outer", "r_outer",
+             "l_circle", "r_circle", "l_inner", "r_inner", "lt_start", "rt_start"]
+
+
+def perf_score(key: str, v: float) -> float:
+    """0 to 100 for one performance check."""
+    th = THRESHOLDS
+    if key == "update_rate_hz":
+        lo, hi = th["perf_rate_low_hz"], th["perf_rate_high_hz"]
+        x = math.log2(max(v, 1e-9) / lo) / math.log2(hi / lo)
+    else:
+        m = next(m for m in METRICS if m["key"] == key)
+        watch = th[m["watch"]]
+        best = {"bits": th["bits_cap"], "%": 1.0 if m["better"] == "high" else 0.0}.get(m["unit"], 0.0)
+        x = (v - watch) / (best - watch)
+    return round(max(0.0, min(1.0, x)) * 100, 1)
+
+
 def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list[dict]:
     """Rank controllers for the Best controller view.
 
     groups: controller name -> list of metric_values() dicts (one per session).
-    Each controller gets the median of its sessions for each graded check. The rule
-    (simple, so it can be said on camera): fewest Problems first, then fewest Watch,
-    then the most checks with the best value of all controllers. Controllers with
-    fewer than min_checks graded results are listed, but not ranked."""
+    Each controller gets the median of its sessions for each check. The rule (simple, so
+    it can be said on camera): the highest performance score (mean of PERF_KEYS scores)
+    is first. Problems and Watch results are shown and only decide a tie. Controllers
+    with fewer than min_checks graded results, or fewer than 3 performance results, are
+    listed, but not ranked."""
     graded = [m for m in METRICS if m["ok"] and m["watch"]]
     med: dict[str, dict[str, float]] = {}
     for name, rows in groups.items():
         med[name] = {}
-        for m in graded:
+        for m in METRICS:
             vals = sorted(r[m["key"]] for r in rows if r and r.get(m["key"]) is not None)
             if vals:
                 n = len(vals)
                 med[name][m["key"]] = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
     out = []
-    for name, vals in med.items():
-        grades = {k: grade_metric(next(m for m in graded if m["key"] == k), v) for k, v in vals.items()}
+    gkeys = {m["key"]: m for m in graded}
+    for name, allvals in med.items():
+        vals = {k: v for k, v in allvals.items() if k in gkeys}
+        grades = {k: grade_metric(gkeys[k], v) for k, v in vals.items()}
+        perf = {k: perf_score(k, allvals[k]) for k in PERF_KEYS if k in allvals}
         wins = []
         for m in graded:
             k = m["key"]
@@ -1148,10 +1175,12 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list
             "name": name, "sessions": len(groups[name]), "checks": len(vals),
             "problems": [k for k, g in grades.items() if g == PROBLEM],
             "watch": [k for k, g in grades.items() if g == WATCH],
-            "wins": wins, "values": vals, "grades": grades,
-            "ranked": len(vals) >= min_checks,
+            "wins": wins, "values": allvals, "grades": grades, "perf": perf,
+            "score": round(sum(perf.values()) / len(perf), 1) if len(perf) >= 3 else None,
+            "ranked": len(vals) >= min_checks and len(perf) >= 3,
         })
-    out.sort(key=lambda c: (not c["ranked"], len(c["problems"]), len(c["watch"]), -len(c["wins"]), c["name"]))
+    # Performance score first. Problems and Watch only decide a tie.
+    out.sort(key=lambda c: (not c["ranked"], -(c["score"] or 0), len(c["problems"]), len(c["watch"]), c["name"]))
     pos = 0
     for c in out:
         if c["ranked"]:

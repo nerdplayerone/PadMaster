@@ -221,7 +221,25 @@ def test_rank_controllers_fewest_problems_first():
     bad = dict(good, doubles=float(T["double_problem"] + 5))
     meh = dict(good, bounce=float(T["bounce_watch"] + 1))
     few = {"doubles": 0.0}
+    for d in (good, bad, meh):
+        d.update(update_rate_hz=500.0, l_bits=12.0, r_bits=12.0)
     r = rank_controllers({"Bad": [bad], "Meh": [meh, meh], "Good": [good], "Few": [few]})
     assert [c["name"] for c in r] == ["Good", "Meh", "Bad", "Few"]
     assert [c["rank"] for c in r] == [1, 2, 3, None]
     assert r[2]["problems"] == ["doubles"] and r[1]["watch"] == ["bounce"]
+
+
+
+def test_performance_score_ranks_before_faults():
+    """Owner request (2026-11-18): rank by performance, not only by faults.
+    A 1000 Hz pad with full reach beats a 125 Hz pad; faults only decide a tie."""
+    from padlab.analysis import rank_controllers, perf_score
+    assert perf_score("update_rate_hz", 125) == 0 and perf_score("update_rate_hz", 1000) == 100
+    assert round(perf_score("update_rate_hz", 500)) == 67
+    assert perf_score("l_outer", 1.0) == 100 and perf_score("l_bits", 8.0) == 0
+    base = {"doubles": 0.0, "bounce": 0.0, "l_drift": 0.0, "r_drift": 0.0, "l_bits": 12.0}
+    fast = dict(base, update_rate_hz=1000.0, l_outer=1.0, r_outer=1.0, bounce=3.0)
+    slow = dict(base, update_rate_hz=125.0, l_outer=0.92, r_outer=0.92)
+    r = rank_controllers({"Slow": [slow], "Fast": [fast]})
+    assert [c["name"] for c in r] == ["Fast", "Slow"]
+    assert r[0]["score"] > r[1]["score"] and r[0]["watch"] == ["bounce"]

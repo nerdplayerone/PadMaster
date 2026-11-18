@@ -127,6 +127,14 @@ td.cb,th.cb{width:28px;padding-right:0}
 .bcard .pos{display:inline-block;min-width:34px;font-weight:700;color:var(--text-2)}
 .bcard .sum{font-size:13px;color:var(--text-2)}
 .bcard ul{margin:6px 0 0 18px;padding:0;font-size:13px}
+.bscore{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}
+.bscore b{font-size:28px}
+.bscore span{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em}
+.pgrid{display:grid;gap:4px;margin:8px 0 2px;max-width:640px}
+.prow{display:grid;grid-template-columns:minmax(150px,240px) 1fr 70px;gap:10px;align-items:center;font-size:12px;color:var(--text-2)}
+.prow span:last-child{text-align:right;color:var(--text)}
+.pbar{height:6px;background:var(--line-2);border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--silver);border-radius:3px}
 .brule{font-size:13px;color:var(--text-2);margin:0 0 14px;max-width:760px}
 .cmp-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer;background:none;color:var(--text);font-size:13px}
@@ -451,12 +459,16 @@ async function renderBest(){
  const rk=d.ranking;
  if(!rk.length){$("best").innerHTML='<div class="empty">No sessions to rank yet.</div>';return;}
  const lab=k=>esc(byKey[k].label),val=(c,k)=>fmt(byKey[k],c.values[k]);
- let h='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check with OK and Watch limits. The controller with the fewest Problems is first. If two are equal, the controller with fewer Watch results is first. Then the controller with the best value in more checks is first. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
+ let h='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check. The performance score (0 to 100) is the mean of the performance checks: update rate, update interval spread, stick resolution, outer reach, circularity, centre deadzone and trigger start deadzone. 100 is the best possible value. 0 is the Watch limit (for the update rate: 125 Hz is 0, 1000 Hz is 100). The highest score is first. Faults (Problem and Watch) are shown for each controller and decide a tie. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
  if(rk.filter(c=>c.ranked).length<2)h+='<p class="brule">Log at least two controllers to get a ranking.</p>';
  for(const c of rk){
   const st=c.problems.length?"Problem":c.watch.length?"Watch":"OK";
+  const pk=Object.keys(c.perf);
   h+=`<div class="bcard${c.rank===1&&rk.filter(x=>x.ranked).length>1?" top":""}"><h3><span class="pos">${c.rank?"#"+c.rank:"-"}</span>${esc(c.name)}</h3>`;
-  h+=`<div class="sum">${c.ranked?"":"Not ranked: fewer than 5 checks have a result. "}${c.sessions} session${c.sessions===1?"":"s"}, ${c.checks} checks. Problems: ${c.problems.length}. Watch: ${c.watch.length}. Best value: ${c.wins.length}. Worst result: ${st}.</div><ul>`;
+  h+=`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
+  h+=`<div class="sum">${c.ranked?"":"Not ranked: too few checks have a result. "}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}). Best value in ${c.wins.length} checks.</div>`;
+  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span>${val(c,k)}</span></div>`;h+="</div>";}
+  h+="<ul>";
   for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
   for(const k of c.watch)h+=`<li>Watch: ${lab(k)} (${val(c,k)})</li>`;
   if(c.wins.length)h+=`<li>Best value: ${c.wins.map(lab).join(", ")}</li>`;

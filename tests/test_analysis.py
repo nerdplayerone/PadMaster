@@ -243,3 +243,21 @@ def test_performance_score_ranks_before_faults():
     r = rank_controllers({"Slow": [slow], "Fast": [fast]})
     assert [c["name"] for c in r] == ["Fast", "Slow"]
     assert r[0]["score"] > r[1]["score"] and r[0]["watch"] == ["bounce"]
+
+
+
+def test_report_card_shows_score_and_meters():
+    """Owner request (2026-11-18): a visual report card at the top of the report."""
+    from padlab.report import render, _meter
+    from padlab.analysis import analyse, METRICS, THRESHOLDS
+    import os, tempfile
+    from tests.synth import build
+    from padlab.logfile import read_log
+    path = os.path.join(tempfile.mkdtemp(), "padlab_synth.csv.gz")
+    build(path)
+    html_ = render(analyse(read_log(path)))
+    assert "Report card" in html_ and "Performance score" in html_ and 'class="mt"' in html_
+    assert html_.index("Report card") < html_.index("<h2>Results</h2>")
+    m = next(x for x in METRICS if x["key"] == "l_drift")
+    assert "Problem" in _meter(m, THRESHOLDS["drift_watch"] * 2)
+    assert "OK" in _meter(m, 0.0)

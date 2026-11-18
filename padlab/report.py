@@ -84,7 +84,122 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--text-secondary);font-
  background:linear-gradient(180deg,#f5f5f7,#c4c4ca);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 .promo .pl a:hover{filter:brightness(1.08)}
 @media print{.promo .pl a{color:#000;border:1px solid #000;background:none}}
+.rc{display:grid;grid-template-columns:220px 1fr;gap:18px;margin:18px 0}
+@media (max-width:760px){.rc{grid-template-columns:1fr}}
+.rc-score{background:var(--surface-1);border:1px solid var(--line);border-radius:6px;padding:18px;text-align:center}
+.rc-score .big{font-size:44px;font-weight:700;fill:var(--text-primary);font-variant-numeric:tabular-nums}
+.rc-score .lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-top:4px}
+.rc-counts{display:flex;justify-content:center;gap:14px;margin-top:14px;font-size:13px;color:var(--text-secondary)}
+.rc-counts b{display:block;font-size:20px;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.rc-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.rc-g{background:var(--surface-1);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.rc-g h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);margin:0 0 10px}
+.mt{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin-bottom:10px;font-size:13px}
+.mt .nm{color:var(--text-secondary)}
+.mt .vl{font-weight:600;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.mt svg{grid-column:1 / -1;display:block;width:100%;height:12px}
+.mt .st{grid-column:1 / -1}
+.z-ok{fill:var(--good);opacity:.35}.z-watch{fill:var(--warning);opacity:.35}.z-problem{fill:var(--critical);opacity:.35}
+.z-perf{fill:var(--line)}.z-fill{fill:var(--silver)}
+.mk{fill:var(--text-primary);stroke:var(--surface-1);stroke-width:2}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:12}.ring-fg{fill:none;stroke:var(--silver);stroke-width:12;stroke-linecap:round}
 """
+
+
+def fmt_metric(m: dict, v: float) -> str:
+    x = v * 100 if m["pct"] else v
+    if m["unit"] == "count":
+        return str(round(x))
+    if m["unit"] == "Hz":
+        return f"{round(x)} Hz"
+    if m["unit"] == "bits":
+        return "12+ bits" if x >= 12 else f"{x:.1f} bits"
+    if m["unit"] == "ms":
+        return f"{x:.1f} ms"
+    return f"{x:.1f}%"
+
+
+def _meter(m: dict, v: float) -> str:
+    """One check as a bar: OK, Watch and Problem zones, and a marker at the value.
+    Checks without limits (update rate) show a 0 to 100 performance bar."""
+    from .analysis import grade_metric, perf_score
+    W = 300.0
+    tip = f"{m['label']}: {fmt_metric(m, v)}"
+    m = dict(m, label=m["label"].split(": ", 1)[-1].capitalize() if m["label"].startswith(("Left stick", "Right stick")) else m["label"])
+    if not (m["ok"] and m["watch"]):
+        sc = perf_score(m["key"], v) if m["key"] == "update_rate_hz" else None
+        if sc is None:
+            return ""
+        w = W * sc / 100
+        return (f'<div class="mt"><span class="nm">{e(m["label"])}</span><span class="vl">{e(fmt_metric(m, v))}</span>'
+                f'<svg viewBox="0 0 {W:.0f} 12" preserveAspectRatio="none" role="img" aria-label="{e(tip)}"><title>{e(tip)}, score {sc:.0f} of 100</title>'
+                f'<rect class="z-perf" x="0" y="3" width="{W:.0f}" height="6" rx="3"/>'
+                f'<rect class="z-fill" x="0" y="3" width="{w:.1f}" height="6" rx="3"/></svg>'
+                f'<span class="st">{badge("info")}</span></div>')
+    ok, watch = THRESHOLDS[m["ok"]], THRESHOLDS[m["watch"]]
+    if m["better"] == "low":
+        lo, hi = 0.0, max(watch * 1.6, ok * 2, v * 1.08, 1e-9)
+        zones = [(lo, ok, OK), (ok, watch, WATCH), (watch, hi, PROBLEM)] if watch > ok else [(lo, ok, OK), (ok, hi, WATCH)]
+    else:
+        hi = THRESHOLDS["bits_cap"] if m["unit"] == "bits" else 1.0
+        lo = min(watch - (ok - watch), v)
+        zones = [(lo, watch, PROBLEM), (watch, ok, WATCH), (ok, hi, OK)]
+    sx = lambda x: W * (min(max(x, lo), hi) - lo) / (hi - lo)
+    rects = "".join(f'<rect class="z-{st}" x="{sx(a):.1f}" y="3" width="{max(sx(b) - sx(a), 0):.1f}" height="6"/>'
+                    for a, b, st in zones)
+    st = grade_metric(m, v)
+    return (f'<div class="mt"><span class="nm">{e(m["label"])}</span><span class="vl">{e(fmt_metric(m, v))}</span>'
+            f'<svg viewBox="0 0 {W:.0f} 12" preserveAspectRatio="none" role="img" aria-label="{e(tip)}"><title>{e(tip)}</title>{rects}'
+            f'<rect class="mk" x="{max(sx(v) - 2, 0):.1f}" y="0" width="4" height="12" rx="2"/></svg>'
+            f'<span class="st">{badge(st)}</span></div>')
+
+
+def _ring(score: float | None) -> str:
+    r, c = 70, 2 * math.pi * 70
+    frac = 0 if score is None else score / 100
+    txt = "-" if score is None else f"{score:.0f}"
+    return (f'<svg viewBox="0 0 180 180" width="180" height="180" role="img" aria-label="Performance score {txt} of 100">'
+            f'<circle class="ring-bg" cx="90" cy="90" r="{r}"/>'
+            f'<circle class="ring-fg" cx="90" cy="90" r="{r}" stroke-dasharray="{c * frac:.1f} {c:.1f}" transform="rotate(-90 90 90)"/>'
+            f'<text class="big" x="90" y="104" text-anchor="middle">{txt}</text></svg>')
+
+
+RC_GROUPS = [
+    ("Left stick", ["l_drift", "l_noise", "l_inner", "l_axial", "l_outer", "l_circle", "l_bits", "l_centre"]),
+    ("Right stick", ["r_drift", "r_noise", "r_inner", "r_axial", "r_outer", "r_circle", "r_bits", "r_centre"]),
+    ("Triggers", ["lt_start", "rt_start"]),
+    ("Buttons and D-pad", ["doubles", "bounce", "dpad_flicker", "dpad_roll_skip"]),
+    ("Connection", ["update_rate_hz", "update_spread_ms", "disconnects"]),
+]
+
+
+def report_card(r: Report) -> str:
+    """The visual summary at the top of the report: one score and one bar per check."""
+    from .analysis import METRICS, PERF_KEYS, metric_values, perf_score
+    vals = metric_values(r)
+    perf = [perf_score(k, vals[k]) for k in PERF_KEYS if vals.get(k) is not None]
+    score = sum(perf) / len(perf) if len(perf) >= 3 else None
+    counts = summary_counts(r.findings)
+    by = {m["key"]: m for m in METRICS}
+    out = ['<h2>Report card</h2><div class="rc"><div class="rc-score">', _ring(score),
+           '<div class="lbl">Performance score</div>',
+           '<div class="rc-counts">' + "".join(f'<span><b>{counts.get(st, 0)}</b>{badge(st)}</span>'
+                                              for st in (PROBLEM, WATCH, OK)) + '</div>',
+           '<div class="cap">The score is the mean of the performance checks (update rate, interval spread, '
+           'resolution, outer reach, circularity, centre and trigger deadzones). 100 is the best possible '
+           'value. 0 is the Watch limit.</div></div><div class="rc-groups">']
+    for title, keys in RC_GROUPS:
+        rows = "".join(_meter(by[k], vals[k]) for k in keys if vals.get(k) is not None)
+        if title == "Triggers":
+            for n, lab in (("lt", "Left trigger"), ("rt", "Right trigger")):
+                t = r.triggers.get(n, {})
+                if t.get("enough") and t.get("digital"):
+                    rows += (f'<div class="mt"><span class="nm">{lab}</span><span class="vl">Digital</span>'
+                             f'<span class="st">{badge("info")}</span></div>')
+        out.append(f'<div class="rc-g"><h3>{e(title)}</h3>' + (rows or '<div class="sub">No result.</div>') + "</div>")
+    out.append('</div></div><div class="cap">Coloured zones: OK, Watch and Problem limits (PadMaster defaults, '
+               'not industry standards). The white mark is this session. Hover a bar to see the value.</div>')
+    return "".join(out)
 
 
 def e(s) -> str:
@@ -293,10 +408,7 @@ def render(r: Report, log_name: str = "", name: str | None = None, latency: dict
     if s["active_min"] < 10:
         out.append('<div class="warn">Short session. Some checks need more play time to give a result.</div>')
 
-    out.append('<div class="tiles">')
-    for st, label in ((PROBLEM, "Problems"), (WATCH, "Watch"), (OK, "OK"), (NODATA, "No data")):
-        out.append(f'<div class="tile t-{st}"><div class="n">{counts.get(st, 0)}</div><div class="l">{badge(st)}</div></div>')
-    out.append("</div>")
+    out.append(report_card(r))
 
     out.append('<h2>Results</h2><div class="card"><table><thead><tr><th>Status</th><th>Check</th><th>Result</th>'
                '<th>What it means</th></tr></thead><tbody>')

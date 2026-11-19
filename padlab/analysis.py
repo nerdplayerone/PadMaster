@@ -1187,6 +1187,12 @@ def perf_score(key: str, v: float) -> float:
     return round(max(0.0, min(1.0, x)) * 100, 1)
 
 
+# Built-in price weighting (owner request, 2026-11-19): 20%. Reason for camera: performance
+# stays 80% of the score. A controller that costs two times as much loses 10 points, so it
+# must be 12.5 performance points better to come out ahead. The user can change it (0 to 50%).
+PRICE_WEIGHT_DEFAULT = 0.2
+
+
 def price_score(price: float, cheapest: float) -> float:
     """Price score, 0 to 100: the cheapest priced controller gets 100. A controller that
     costs two times as much gets 50 (cheapest / price). Simple, so it can be said on camera."""
@@ -1239,12 +1245,15 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5,
     # a controller with no price is listed, but not ranked (no fair score without a price).
     prices = {k: float(v) for k, v in (prices or {}).items() if v and float(v) > 0}
     w = max(0.0, min(1.0, float(price_weight or 0)))
+    if len([n for n in prices if n in groups]) < 2:
+        w = 0.0  # fewer than two prices: nothing to weigh, rank by performance only
     cheap = min((prices[c["name"]] for c in out if c["name"] in prices and c["ranked"]), default=None)
     for c in out:
         p = prices.get(c["name"])
         c["price"] = p
         c["price_score"] = price_score(p, cheap) if p and cheap else None
         c["overall"] = c["score"]
+        c["weight"] = w
         if w > 0:
             if c["price_score"] is None:
                 c["ranked"] = False

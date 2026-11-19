@@ -314,7 +314,9 @@ class Api:
         from .history import load_settings
         st = load_settings(self._out_dir)
         dev_prices = st.get("prices") if isinstance(st.get("prices"), dict) else {}
-        weight = st.get("price_weight", 0) or 0
+        from .analysis import PRICE_WEIGHT_DEFAULT
+        weight = st.get("price_weight", PRICE_WEIGHT_DEFAULT)
+        weight = PRICE_WEIGHT_DEFAULT if weight is None else weight
         groups: dict[str, list[dict]] = {}
         prices: dict[str, float] = {}
         for s in self.history():
@@ -324,7 +326,7 @@ class Api:
             groups.setdefault(name, []).append(s["metrics"])
             if dev_prices.get(s["device"]):
                 prices[name] = dev_prices[s["device"]]
-        return {"metrics": metric_definitions(), "price_weight": weight,
+        return {"metrics": metric_definitions(), "price_weight": weight, "price_weight_default": PRICE_WEIGHT_DEFAULT,
                 "ranking": rank_controllers(groups, prices=prices, price_weight=weight)}
 
     def set_price(self, name: str, price) -> dict:

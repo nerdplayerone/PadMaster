@@ -286,3 +286,18 @@ def test_price_weighting_changes_the_order_and_needs_a_price(tmp_path):
 def test_price_score_rule():
     from padlab.analysis import price_score
     assert price_score(50, 50) == 100 and price_score(100, 50) == 50
+
+
+
+def test_built_in_weighting_needs_two_prices(tmp_path):
+    """Built-in 20% weighting: with fewer than two prices it is not used, so nobody loses a rank."""
+    from padlab.analysis import PRICE_WEIGHT_DEFAULT, analyse, metric_values, rank_controllers
+    from padlab.logfile import read_log
+    from tests.synth import build
+    path = str(tmp_path / "padlab_20261119_100000.csv.gz")
+    build(path)
+    base = metric_values(analyse(read_log(path)))
+    groups = {"A": [dict(base, update_rate_hz=1000)], "B": [dict(base, update_rate_hz=250)]}
+    assert PRICE_WEIGHT_DEFAULT == 0.2
+    r = rank_controllers(groups, min_checks=1, prices={"A": 80}, price_weight=PRICE_WEIGHT_DEFAULT)
+    assert all(c["ranked"] and c["weight"] == 0 for c in r) and r[0]["name"] == "A"

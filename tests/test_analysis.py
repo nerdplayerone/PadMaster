@@ -263,41 +263,43 @@ def test_report_card_shows_score_and_meters():
     assert "OK" in _meter(m, 0.0)
 
 
-def test_price_weighting_changes_the_order_and_needs_a_price(tmp_path):
-    """Owner request (2026-11-19): price field and a price weighting in Best controller."""
-    from padlab.analysis import analyse, metric_values, rank_controllers
+
+
+def _priced_groups(tmp_path, rates):
+    from padlab.analysis import analyse, metric_values
     from padlab.logfile import read_log
     from tests.synth import build
     path = str(tmp_path / "padlab_20261119_100000.csv.gz")
     build(path)
     base = metric_values(analyse(read_log(path)))
-    groups = {"Fast": [dict(base, update_rate_hz=1000)], "Cheap": [dict(base, update_rate_hz=250)],
-              "NoPrice": [dict(base, update_rate_hz=500)]}
-    prices = {"Fast": 100, "Cheap": 25}
-    plain = rank_controllers(groups, min_checks=1, prices=prices)
-    assert plain[0]["name"] == "Fast" and plain[0]["overall"] == plain[0]["score"]
-    assert [c["ranked"] for c in plain] == [True, True, True]
-    w = rank_controllers(groups, min_checks=1, prices=prices, price_weight=0.5)
-    by = {c["name"]: c for c in w}
-    assert by["Cheap"]["price_score"] == 100 and by["Fast"]["price_score"] == 25
+    return {n: [dict(base, update_rate_hz=r)] for n, r in rates.items()}
+
+
+def test_price_rule_lets_a_great_cheap_pad_win(tmp_path):
+    """Owner request (2026-11-19): a cheap pad that is very good ranks above an expensive pad
+    that is only as good as its price leads you to expect. Each price doubling = 10 points."""
+    from padlab.analysis import rank_controllers
+    g = _priced_groups(tmp_path, {"Pro": 1000, "Budget": 500, "NoPrice": 250})
+    prices = {"Pro": 120, "Budget": 30}
+    plain = rank_controllers(g, min_checks=1, prices=prices)
+    assert plain[0]["name"] == "Pro" and all(c["ranked"] for c in plain)
+    r = rank_controllers(g, min_checks=1, prices=prices, price_points=10)
+    by = {c["name"]: c for c in r}
+    assert by["Budget"]["price_bar"] == 0 and by["Pro"]["price_bar"] == 20  # two doublings
+    assert by["Pro"]["overall"] == round(by["Pro"]["score"] - 20, 1)
     assert by["NoPrice"]["ranked"] is False and by["NoPrice"]["rank"] is None
-    assert w[0]["name"] == "Cheap" and w[0]["rank"] == 1
-
-def test_price_score_rule():
-    from padlab.analysis import price_score
-    assert price_score(50, 50) == 100 and price_score(100, 50) == 50
+    gap = by["Pro"]["score"] - by["Budget"]["score"]
+    assert (r[0]["name"] == "Budget") == (gap < 20)
 
 
+def test_price_rule_needs_two_prices(tmp_path):
+    from padlab.analysis import PRICE_POINTS_DEFAULT, rank_controllers
+    g = _priced_groups(tmp_path, {"A": 1000, "B": 250})
+    assert PRICE_POINTS_DEFAULT == 10
+    r = rank_controllers(g, min_checks=1, prices={"A": 80}, price_points=PRICE_POINTS_DEFAULT)
+    assert all(c["ranked"] and c["points"] == 0 for c in r) and r[0]["name"] == "A"
 
-def test_built_in_weighting_needs_two_prices(tmp_path):
-    """Built-in 20% weighting: with fewer than two prices it is not used, so nobody loses a rank."""
-    from padlab.analysis import PRICE_WEIGHT_DEFAULT, analyse, metric_values, rank_controllers
-    from padlab.logfile import read_log
-    from tests.synth import build
-    path = str(tmp_path / "padlab_20261119_100000.csv.gz")
-    build(path)
-    base = metric_values(analyse(read_log(path)))
-    groups = {"A": [dict(base, update_rate_hz=1000)], "B": [dict(base, update_rate_hz=250)]}
-    assert PRICE_WEIGHT_DEFAULT == 0.2
-    r = rank_controllers(groups, min_checks=1, prices={"A": 80}, price_weight=PRICE_WEIGHT_DEFAULT)
-    assert all(c["ranked"] and c["weight"] == 0 for c in r) and r[0]["name"] == "A"
+
+def test_price_bar_rule():
+    from padlab.analysis import price_bar
+    assert price_bar(30, 30, 10) == 0 and price_bar(60, 30, 10) == 10 and price_bar(120, 30, 10) == 20

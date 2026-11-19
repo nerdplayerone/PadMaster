@@ -314,9 +314,9 @@ class Api:
         from .history import load_settings
         st = load_settings(self._out_dir)
         dev_prices = st.get("prices") if isinstance(st.get("prices"), dict) else {}
-        from .analysis import PRICE_WEIGHT_DEFAULT
-        weight = st.get("price_weight", PRICE_WEIGHT_DEFAULT)
-        weight = PRICE_WEIGHT_DEFAULT if weight is None else weight
+        from .analysis import PRICE_POINTS_DEFAULT
+        points = st.get("price_points", PRICE_POINTS_DEFAULT)
+        points = PRICE_POINTS_DEFAULT if points is None else points
         groups: dict[str, list[dict]] = {}
         prices: dict[str, float] = {}
         for s in self.history():
@@ -326,8 +326,8 @@ class Api:
             groups.setdefault(name, []).append(s["metrics"])
             if dev_prices.get(s["device"]):
                 prices[name] = dev_prices[s["device"]]
-        return {"metrics": metric_definitions(), "price_weight": weight, "price_weight_default": PRICE_WEIGHT_DEFAULT,
-                "ranking": rank_controllers(groups, prices=prices, price_weight=weight)}
+        return {"metrics": metric_definitions(), "price_points": points, "price_points_default": PRICE_POINTS_DEFAULT,
+                "ranking": rank_controllers(groups, prices=prices, price_points=points)}
 
     def set_price(self, name: str, price) -> dict:
         """Price of a controller (the same for all its connections). Empty or 0 removes it."""
@@ -345,9 +345,9 @@ class Api:
         save_setting(self._out_dir, "prices", prices)
         return {"ok": True}
 
-    def set_price_weight(self, weight) -> None:
+    def set_price_points(self, points) -> None:
         from .history import save_setting
-        save_setting(self._out_dir, "price_weight", max(0.0, min(1.0, float(weight))))
+        save_setting(self._out_dir, "price_points", max(0.0, min(20.0, float(points))))
 
     def open_logs_folder(self) -> None:
         os.makedirs(self._out_dir, exist_ok=True)

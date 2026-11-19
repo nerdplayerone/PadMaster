@@ -1187,20 +1187,21 @@ def perf_score(key: str, v: float) -> float:
     return round(max(0.0, min(1.0, x)) * 100, 1)
 
 
-# Built-in price weighting (owner request, 2026-11-19): 20%. Reason for camera: performance
-# stays 80% of the score. A controller that costs two times as much loses 10 points, so it
-# must be 12.5 performance points better to come out ahead. The user can change it (0 to 50%).
-PRICE_WEIGHT_DEFAULT = 0.2
+# Price rule (owner request, 2026-11-19): "the bar goes up with the price". For each
+# doubling of the price above the cheapest priced controller, a controller must be
+# PRICE_POINTS_DEFAULT performance points better to tie. A very good cheap pad can beat an
+# expensive pad that is only as good as its price leads you to expect. The user can change
+# the points (0 to 20). 0 ranks by performance only.
+PRICE_POINTS_DEFAULT = 10
 
 
-def price_score(price: float, cheapest: float) -> float:
-    """Price score, 0 to 100: the cheapest priced controller gets 100. A controller that
-    costs two times as much gets 50 (cheapest / price). Simple, so it can be said on camera."""
-    return round(100.0 * cheapest / price, 1)
+def price_bar(price: float, cheapest: float, points: float) -> float:
+    """Points taken off for the price: points x the number of price doublings above the cheapest."""
+    return round(points * math.log2(price / cheapest), 1) if price > cheapest else 0.0
 
 
 def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5,
-                     prices: dict[str, float] | None = None, price_weight: float = 0.0) -> list[dict]:
+                     prices: dict[str, float] | None = None, price_points: float = 0.0) -> list[dict]:
     """Rank controllers for the Best controller view.
 
     groups: controller name -> list of metric_values() dicts (one per session).
@@ -1240,26 +1241,25 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5,
             "score": round(sum(perf.values()) / len(perf), 1) if len(perf) >= 3 else None,
             "ranked": len(vals) >= min_checks and len(perf) >= 3,
         })
-    # Price weighting (owner request, 2026-11-19). Off (0) by default. With a weight w, the
-    # overall score = (1 - w) x performance score + w x price score. When the weight is on,
-    # a controller with no price is listed, but not ranked (no fair score without a price).
+    # Price rule: value score = performance score - price bar (see PRICE_POINTS_DEFAULT).
+    # When the rule is on, a controller with no price is listed, but not ranked.
     prices = {k: float(v) for k, v in (prices or {}).items() if v and float(v) > 0}
-    w = max(0.0, min(1.0, float(price_weight or 0)))
+    pts = max(0.0, min(20.0, float(price_points or 0)))
     if len([n for n in prices if n in groups]) < 2:
-        w = 0.0  # fewer than two prices: nothing to weigh, rank by performance only
+        pts = 0.0  # fewer than two prices: nothing to compare, rank by performance only
     cheap = min((prices[c["name"]] for c in out if c["name"] in prices and c["ranked"]), default=None)
     for c in out:
         p = prices.get(c["name"])
         c["price"] = p
-        c["price_score"] = price_score(p, cheap) if p and cheap else None
+        c["points"] = pts
+        c["price_bar"] = price_bar(p, cheap, pts) if p and cheap else None
         c["overall"] = c["score"]
-        c["weight"] = w
-        if w > 0:
-            if c["price_score"] is None:
+        if pts > 0:
+            if c["price_bar"] is None:
                 c["ranked"] = False
                 c["overall"] = None
             elif c["score"] is not None:
-                c["overall"] = round((1 - w) * c["score"] + w * c["price_score"], 1)
+                c["overall"] = round(c["score"] - c["price_bar"], 1)
     # Overall score first. Problems and Watch only decide a tie.
     out.sort(key=lambda c: (not c["ranked"], -(c["overall"] or 0), len(c["problems"]), len(c["watch"]), c["name"]))
     pos = 0

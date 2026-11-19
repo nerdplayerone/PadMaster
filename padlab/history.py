@@ -100,9 +100,9 @@ CSV_COLUMNS = [
 ]
 
 
-def _summarise(path: str) -> dict:
-    log = read_log(path)
-    rep = analyse(log)
+def _summarise(path: str, rep=None) -> dict:
+    if rep is None:
+        rep = analyse(read_log(path))
     counts = summary_counts(rep.findings)
     m, s = rep.meta, rep.session
     report = path.replace(".csv.gz", "").replace(".csv", "") + "_report.html"
@@ -139,8 +139,10 @@ def _load_index(out_dir: str) -> dict:
     return {"version": INDEX_VERSION, "sessions": {}}
 
 
-def update_index(out_dir: str) -> list[dict]:
-    """Bring the cache up to date with the logs on disk. Returns sessions, newest first."""
+def update_index(out_dir: str, known: dict | None = None) -> list[dict]:
+    """Bring the cache up to date with the logs on disk. Returns sessions, newest first.
+    ``known``: log path -> Report already made (no second analysis of a new long log)."""
+    known = {os.path.basename(k): v for k, v in (known or {}).items()}
     data = _load_index(out_dir)
     old = data["sessions"]
     names = load_names(out_dir)
@@ -155,7 +157,7 @@ def update_index(out_dir: str) -> list[dict]:
             new[name] = cached
             continue
         try:
-            row = _summarise(path)
+            row = _summarise(path, known.get(name))
         except Exception as exc:  # a damaged log must not hide the others
             row = {"started": "", "device": "Unreadable log", "log_file": name,
                    "report_file": "", "error": str(exc)}

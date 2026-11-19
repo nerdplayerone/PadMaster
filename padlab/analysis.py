@@ -169,6 +169,20 @@ def norm(v: int) -> float:
     return max(-1.0, min(1.0, v / AXIS_MAX))
 
 
+def norm_samples(samples) -> list[tuple[float, float, float]]:
+    """(x, y, magnitude) for each sample, normalised once. Long sessions have millions of
+    samples, and each check used to normalise them again (user report, 2026-11-19)."""
+    out = []
+    hyp = math.hypot
+    for _, x, y in samples:
+        nx = x / AXIS_MAX
+        ny = y / AXIS_MAX
+        nx = 1.0 if nx > 1.0 else -1.0 if nx < -1.0 else nx
+        ny = 1.0 if ny > 1.0 else -1.0 if ny < -1.0 else ny
+        out.append((nx, ny, hyp(nx, ny)))
+    return out
+
+
 # ---------------------------------------------------------------- sticks
 
 def stick_samples(log: Log, xn: str, yn: str) -> list[tuple[float, int, int]]:
@@ -191,8 +205,10 @@ def stick_samples(log: Log, xn: str, yn: str) -> list[tuple[float, int, int]]:
     return out if seen else []
 
 
-def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float) -> dict | None:
+def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float, nm=None) -> dict | None:
     """Mean, max and sample range of samples[i:j], counting only the time between lo and hi."""
+    if nm is None:
+        nm = norm_samples(samples)
     n = len(samples)
     sx = sy = wsum = 0.0
     max_mag = 0.0
@@ -203,11 +219,12 @@ def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float) -
         w = min(t_next, hi) - max(tk, lo)
         if w <= 0:
             continue
-        nxk, nyk = norm(samples[k][1]), norm(samples[k][2])
+        nxk, nyk, mk = nm[k]
         sx += nxk * w
         sy += nyk * w
         wsum += w
-        max_mag = max(max_mag, math.hypot(nxk, nyk))
+        if mk > max_mag:
+            max_mag = mk
         k0 = k if k0 is None else k0
         k1 = k + 1
     if wsum <= 0:
@@ -216,23 +233,24 @@ def window_stats(samples, i: int, j: int, lo: float, hi: float, end_ms: float) -
     return {"x": mx, "y": -my, "mean_mag": math.hypot(mx, my), "max_mag": max_mag, "i0": k0, "i1": k1}
 
 
-def rest_windows(samples, end_ms: float) -> list[dict]:
+def rest_windows(samples, end_ms: float, nm=None) -> list[dict]:
     th = THRESHOLDS
+    if nm is None:
+        nm = norm_samples(samples)
+    radius, tol = th["rest_radius"], th["rest_tolerance"]
     windows = []
     n = len(samples)
     i = 0
     while i < n:
-        t0, x0, y0 = samples[i]
-        nx0, ny0 = norm(x0), norm(y0)
-        if math.hypot(nx0, ny0) >= th["rest_radius"]:
+        t0 = samples[i][0]
+        nx0, ny0, m0 = nm[i]
+        if m0 >= radius:
             i += 1
             continue
         j = i
         while j < n:
-            _, xj, yj = samples[j]
-            nxj, nyj = norm(xj), norm(yj)
-            if (abs(nxj - nx0) > th["rest_tolerance"] or abs(nyj - ny0) > th["rest_tolerance"]
-                    or math.hypot(nxj, nyj) >= th["rest_radius"]):
+            nxj, nyj, mj = nm[j]
+            if abs(nxj - nx0) > tol or abs(nyj - ny0) > tol or mj >= radius:
                 break
             j += 1
         t_end = samples[j][0] if j < n else end_ms
@@ -241,7 +259,7 @@ def rest_windows(samples, end_ms: float) -> list[dict]:
             # Use only the middle of the window. The first and last samples can be the end of a
             # return or the start of the next push (the thumb touches the stick first).
             lo, hi = t0 + th["rest_trim_ms"], t_end - th["rest_trim_ms"]
-            ws = window_stats(samples, i, j, lo, hi, end_ms)
+            ws = window_stats(samples, i, j, lo, hi, end_ms, nm)
             if ws:
                 windows.append({"t": t0, "dur": dur, "t_end": t_end, "i_start": i, "j": j, **ws})
         i = max(j, i + 1)
@@ -258,16 +276,17 @@ def analyse_stick(log: Log, side: str) -> dict:
         return res
     res["enough"] = True
     end = log.duration_ms
+    nm = norm_samples(s)
 
     # Rest / drift
-    wins = rest_windows(s, end)
+    wins = rest_windows(s, end, nm)
     handsoff = [w for w in wins if w["t"] < th["handsoff_window_ms"]]
     if handsoff:
         # Use only the start of the session for the hands-off check. A long rest window can end
         # with the player picking up the pad and touching the stick.
         w0 = handsoff[0]
         hi = min(w0["t_end"] - th["rest_trim_ms"], th["handsoff_window_ms"])
-        ws = window_stats(s, w0["i_start"], w0["j"], w0["t"] + th["rest_trim_ms"], hi, end)
+        ws = window_stats(s, w0["i_start"], w0["j"], w0["t"] + th["rest_trim_ms"], hi, end, nm)
         handsoff = [{**w0, **ws}] if ws else []
     res["rest_windows"] = len(wins)
     res["handsoff"] = handsoff[0] if handsoff else None
@@ -282,13 +301,14 @@ def analyse_stick(log: Log, side: str) -> dict:
     res["safe_deadzone"] = float("nan") if math.isnan(basis) else math.ceil((basis + 0.02) * 100) / 100
 
     # Inner (radial) deadzone: smallest non-zero position the pad ever reports.
-    nz = [math.hypot(norm(x), norm(y)) for _, x, y in s if x or y]
+    nz = [q[2] for (_, x, y), q in zip(s, nm) if x or y]
     res["inner_dz"] = min(nz) if nz else float("nan")
 
     # Axial band: smallest non-zero value on one axis while the other axis is pushed.
     def band(a_idx: int) -> tuple[float, float, int]:
         b_idx = 2 if a_idx == 1 else 1
-        vals = [abs(norm(smp[a_idx])) for smp in s if abs(norm(smp[b_idx])) > th["axial_other_axis"]]
+        a, b, lim = a_idx - 1, b_idx - 1, th["axial_other_axis"]
+        vals = [abs(q[a]) for q in nm if abs(q[b]) > lim]
         if len(vals) < 50:
             return float("nan"), float("nan"), len(vals)
         nonzero = [v for v in vals if v > 0]
@@ -306,10 +326,10 @@ def analyse_stick(log: Log, side: str) -> dict:
     n_sec = th["outer_sectors"]
     reach = [0.0] * n_sec
     hit = [False] * n_sec
-    for _, x, y in s:
-        nx, ny = norm(x), -norm(y)
-        m = math.hypot(nx, ny)
-        if m < th["outer_min_mag"]:
+    min_mag = th["outer_min_mag"]
+    for nx, ny, m in nm:
+        ny = -ny
+        if m < min_mag:
             continue
         ang = (math.degrees(math.atan2(ny, nx)) + 360) % 360
         k = int(ang // (360 / n_sec)) % n_sec
@@ -329,21 +349,20 @@ def analyse_stick(log: Log, side: str) -> dict:
     # Heatmap (sample counts on a 41 x 41 grid, up = up).
     g = 41
     grid = [[0] * g for _ in range(g)]
-    for _, x, y in s:
-        gx = min(g - 1, int((norm(x) + 1) / 2 * g))
-        gy = min(g - 1, int((norm(y) + 1) / 2 * g))  # SDL y: down is +, so row 0 = up
+    for nx, ny, _ in nm:
+        gx = min(g - 1, int((nx + 1) / 2 * g))
+        gy = min(g - 1, int((ny + 1) / 2 * g))  # SDL y: down is +, so row 0 = up
         grid[gy][gx] += 1
     res["heatmap"] = grid
 
     # Stutter: long gaps during continuous movement, with a big jump across the gap.
     stream = []
+    smag = th["stream_mag"]
     for i in range(1, len(s)):
-        t1, x1, y1 = s[i - 1]
-        t2, x2, y2 = s[i]
-        m1 = math.hypot(norm(x1), norm(y1))
-        m2 = math.hypot(norm(x2), norm(y2))
-        if m1 > th["stream_mag"] and m2 > th["stream_mag"]:
-            stream.append((i, t2 - t1, math.hypot(norm(x2) - norm(x1), norm(y2) - norm(y1))))
+        x1, y1, m1 = nm[i - 1]
+        x2, y2, m2 = nm[i]
+        if m1 > smag and m2 > smag:
+            stream.append((i, s[i][0] - s[i - 1][0], math.hypot(x2 - x1, y2 - y1)))
     dts = [d for _, d, _ in stream if d > 0]
     med = percentile(dts, 0.5) if dts else float("nan")
     res["update_ms"] = med
@@ -372,11 +391,11 @@ def analyse_stick(log: Log, side: str) -> dict:
     res.update(_stick_resolution(s))
     res.update(_circularity(res["reach"]))
     res.update(_rest_noise(s, res["handsoff"]))
-    res.update(_centre_return(s, wins))
+    res.update(_centre_return(s, wins, nm))
     return res
 
 
-def _centre_return(s, wins) -> dict:
+def _centre_return(s, wins, nm=None) -> dict:
     """Rest position after each push past centre_from (from the parallel PadMaster branch)."""
     import bisect
     th = THRESHOLDS
@@ -384,7 +403,8 @@ def _centre_return(s, wins) -> dict:
     returns = []
     for w in wins:
         k = bisect.bisect_left(times, w["t"] - th["centre_lookback_ms"])
-        if any(math.hypot(norm(s[q][1]), norm(s[q][2])) > th["centre_from"] for q in range(k, w["i0"])):
+        if any((nm[q][2] if nm else math.hypot(norm(s[q][1]), norm(s[q][2]))) > th["centre_from"]
+               for q in range(k, w["i0"])):
             returns.append((w["x"], w["y"]))
     out = {"centre_returns": len(returns)}
     if len(returns) >= th["centre_min_returns"]:

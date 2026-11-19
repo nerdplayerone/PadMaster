@@ -37,7 +37,9 @@ def latency_for(log_path: str, meta: dict) -> dict:
     return res
 
 
-def make_report(log_path: str, open_it: bool = True, quiet: bool = False) -> str:
+def make_report(log_path: str, open_it: bool = True, quiet: bool = False, keep: dict | None = None) -> str:
+    """Write the HTML report. If ``keep`` is a dict, the log and the analysis are put in it,
+    so the caller can use them again without a second read (long sessions are slow to read)."""
     from .analysis import analyse
     from .logfile import read_log
     from .report import render
@@ -46,6 +48,8 @@ def make_report(log_path: str, open_it: bool = True, quiet: bool = False) -> str
 
     log = read_log(log_path)
     rep = analyse(log)
+    if keep is not None:
+        keep.update(log=log, rep=rep)
     html_path = log_path.replace(".csv.gz", "").replace(".csv", "") + "_report.html"
     name = display_name(log_path, log.meta)
     lat = latency_for(log_path, log.meta)
@@ -126,11 +130,11 @@ def main(argv: list[str] | None = None) -> int:
             emit({"state": "done", "report": "", "log": ""})
             return 0
         try:
-            report = make_report(path, open_it=False, quiet=True)
+            done: dict = {}
+            report = make_report(path, open_it=False, quiet=True, keep=done)
             from .history import update_index
-            update_index(args.out)
-            from .logfile import read_log
-            auto = bool(read_log(path).meta.get("auto_stopped"))
+            update_index(args.out, known={path: done["rep"]})
+            auto = bool(done["log"].meta.get("auto_stopped"))
             emit({"state": "done", "report": report, "log": path, "auto_stopped": auto})
         except Exception as exc:  # report the error to the app window
             emit({"state": "error", "message": f"The report failed: {exc}", "log": path})

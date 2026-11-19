@@ -32,7 +32,7 @@ PADDLES = ("p1", "p2", "p3", "p4")
 AXIS_MAX = 32767.0
 
 
-@dataclass
+@dataclass(slots=True)  # slots: about half the memory for long sessions (user report, 2026-11-19)
 class Event:
     t: float  # ms
     kind: str
@@ -91,6 +91,7 @@ def _iter_lines(path: str) -> Iterator[str]:
 
 def read_log(path: str) -> Log:
     log = Log()
+    names: dict[str, str] = {}
     for line in _iter_lines(path):
         line = line.strip()
         if not line:
@@ -105,7 +106,10 @@ def read_log(path: str) -> Log:
         if len(parts) != 4:
             continue  # a cut-off last line after a crash
         try:
-            log.events.append(Event(float(parts[0]), parts[1], parts[2], int(parts[3])))
+            # Share one string object per kind and name. Millions of rows reuse the same few names.
+            k = names.setdefault(parts[1], parts[1])
+            n = names.setdefault(parts[2], parts[2])
+            log.events.append(Event(float(parts[0]), k, n, int(parts[3])))
         except ValueError:
             continue
     log.events.sort(key=lambda e: e.t)

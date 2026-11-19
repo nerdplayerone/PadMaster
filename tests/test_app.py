@@ -415,3 +415,52 @@ def test_controller_mapping_file_is_bundled_and_used():
     root = os.path.dirname(os.path.dirname(logger.MAPPING_FILE))
     wf = open(os.path.join(root, ".github", "workflows", "build.yml"), encoding="utf-8").read()
     assert wf.count("gamecontrollerdb.txt:padlab") == 2
+
+
+
+def test_stop_analyses_the_log_only_once(monkeypatch, tmp_path):
+    """User report (2026-11-19): the report takes a long time after long sessions.
+    One cause: the log was read and analysed again for History, and read a third time."""
+    import os
+    from padlab import analysis, cli, history, logfile
+    from tests.synth import build
+    path = os.path.join(str(tmp_path), "padlab_20261119_100000.csv.gz")
+    build(path)
+    calls = {"read": 0, "analyse": 0}
+    real_read, real_an = logfile.read_log, analysis.analyse
+
+    def read(p):
+        calls["read"] += 1
+        return real_read(p)
+
+    def an(log):
+        calls["analyse"] += 1
+        return real_an(log)
+    for mod in (cli, history):
+        monkeypatch.setattr(mod, "read_log", read, raising=False)
+        monkeypatch.setattr(mod, "analyse", an, raising=False)
+    monkeypatch.setattr(logfile, "read_log", read)
+    monkeypatch.setattr(analysis, "analyse", an)
+    done: dict = {}
+    cli.make_report(path, open_it=False, quiet=True, keep=done)
+    rows = history.update_index(str(tmp_path), known={path: done["rep"]})
+    assert calls == {"read": 1, "analyse": 1}
+    assert rows and rows[0]["log_file"] == os.path.basename(path) and rows[0]["metrics"]
+
+
+def test_stick_analysis_is_fast_on_long_sessions():
+    """User report (2026-11-19). 300,000 stick samples must take well under 3 s."""
+    import math
+    import time
+    from padlab.analysis import analyse_stick
+    from padlab.logfile import Event, Log
+    ev, t = [], 0.0
+    for i in range(300_000):
+        a = i / 200
+        ev.append(Event(t, "a", "lx", int(math.cos(a) * 30000)))
+        ev.append(Event(t, "a", "ly", int(math.sin(a) * 30000)))
+        t += 4
+    log = Log(meta={"device": "Pad"}, events=ev)
+    s = time.perf_counter()
+    res = analyse_stick(log, "l")
+    assert res["enough"] and time.perf_counter() - s < 3.0

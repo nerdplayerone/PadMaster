@@ -261,3 +261,28 @@ def test_report_card_shows_score_and_meters():
     m = next(x for x in METRICS if x["key"] == "l_drift")
     assert "Problem" in _meter(m, THRESHOLDS["drift_watch"] * 2)
     assert "OK" in _meter(m, 0.0)
+
+
+def test_price_weighting_changes_the_order_and_needs_a_price(tmp_path):
+    """Owner request (2026-11-19): price field and a price weighting in Best controller."""
+    from padlab.analysis import analyse, metric_values, rank_controllers
+    from padlab.logfile import read_log
+    from tests.synth import build
+    path = str(tmp_path / "padlab_20261119_100000.csv.gz")
+    build(path)
+    base = metric_values(analyse(read_log(path)))
+    groups = {"Fast": [dict(base, update_rate_hz=1000)], "Cheap": [dict(base, update_rate_hz=250)],
+              "NoPrice": [dict(base, update_rate_hz=500)]}
+    prices = {"Fast": 100, "Cheap": 25}
+    plain = rank_controllers(groups, min_checks=1, prices=prices)
+    assert plain[0]["name"] == "Fast" and plain[0]["overall"] == plain[0]["score"]
+    assert [c["ranked"] for c in plain] == [True, True, True]
+    w = rank_controllers(groups, min_checks=1, prices=prices, price_weight=0.5)
+    by = {c["name"]: c for c in w}
+    assert by["Cheap"]["price_score"] == 100 and by["Fast"]["price_score"] == 25
+    assert by["NoPrice"]["ranked"] is False and by["NoPrice"]["rank"] is None
+    assert w[0]["name"] == "Cheap" and w[0]["rank"] == 1
+
+def test_price_score_rule():
+    from padlab.analysis import price_score
+    assert price_score(50, 50) == 100 and price_score(100, 50) == 50

@@ -1187,7 +1187,14 @@ def perf_score(key: str, v: float) -> float:
     return round(max(0.0, min(1.0, x)) * 100, 1)
 
 
-def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list[dict]:
+def price_score(price: float, cheapest: float) -> float:
+    """Price score, 0 to 100: the cheapest priced controller gets 100. A controller that
+    costs two times as much gets 50 (cheapest / price). Simple, so it can be said on camera."""
+    return round(100.0 * cheapest / price, 1)
+
+
+def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5,
+                     prices: dict[str, float] | None = None, price_weight: float = 0.0) -> list[dict]:
     """Rank controllers for the Best controller view.
 
     groups: controller name -> list of metric_values() dicts (one per session).
@@ -1227,8 +1234,25 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5) -> list
             "score": round(sum(perf.values()) / len(perf), 1) if len(perf) >= 3 else None,
             "ranked": len(vals) >= min_checks and len(perf) >= 3,
         })
-    # Performance score first. Problems and Watch only decide a tie.
-    out.sort(key=lambda c: (not c["ranked"], -(c["score"] or 0), len(c["problems"]), len(c["watch"]), c["name"]))
+    # Price weighting (owner request, 2026-11-19). Off (0) by default. With a weight w, the
+    # overall score = (1 - w) x performance score + w x price score. When the weight is on,
+    # a controller with no price is listed, but not ranked (no fair score without a price).
+    prices = {k: float(v) for k, v in (prices or {}).items() if v and float(v) > 0}
+    w = max(0.0, min(1.0, float(price_weight or 0)))
+    cheap = min((prices[c["name"]] for c in out if c["name"] in prices and c["ranked"]), default=None)
+    for c in out:
+        p = prices.get(c["name"])
+        c["price"] = p
+        c["price_score"] = price_score(p, cheap) if p and cheap else None
+        c["overall"] = c["score"]
+        if w > 0:
+            if c["price_score"] is None:
+                c["ranked"] = False
+                c["overall"] = None
+            elif c["score"] is not None:
+                c["overall"] = round((1 - w) * c["score"] + w * c["price_score"], 1)
+    # Overall score first. Problems and Watch only decide a tie.
+    out.sort(key=lambda c: (not c["ranked"], -(c["overall"] or 0), len(c["problems"]), len(c["watch"]), c["name"]))
     pos = 0
     for c in out:
         if c["ranked"]:

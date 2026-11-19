@@ -311,13 +311,41 @@ class Api:
     def best_data(self) -> dict:
         """Controllers ranked for the Best controller view (same groups as Compare)."""
         from .analysis import metric_definitions, rank_controllers
+        from .history import load_settings
+        st = load_settings(self._out_dir)
+        dev_prices = st.get("prices") if isinstance(st.get("prices"), dict) else {}
+        weight = st.get("price_weight", 0) or 0
         groups: dict[str, list[dict]] = {}
+        prices: dict[str, float] = {}
         for s in self.history():
             if not s.get("metrics"):
                 continue
             name = f"{s['device']} · {s['connection']}" if s.get("connection") else s["device"]
             groups.setdefault(name, []).append(s["metrics"])
-        return {"metrics": metric_definitions(), "ranking": rank_controllers(groups)}
+            if dev_prices.get(s["device"]):
+                prices[name] = dev_prices[s["device"]]
+        return {"metrics": metric_definitions(), "price_weight": weight,
+                "ranking": rank_controllers(groups, prices=prices, price_weight=weight)}
+
+    def set_price(self, name: str, price) -> dict:
+        """Price of a controller (the same for all its connections). Empty or 0 removes it."""
+        from .history import load_settings, save_setting
+        device = str(name).split(" · ")[0].strip()
+        try:
+            value = round(float(str(price).replace(",", ".").strip() or 0), 2)
+        except ValueError:
+            return {"ok": False, "message": "Type the price as a number, for example 59.99."}
+        prices = dict(load_settings(self._out_dir).get("prices") or {})
+        if value > 0:
+            prices[device] = value
+        else:
+            prices.pop(device, None)
+        save_setting(self._out_dir, "prices", prices)
+        return {"ok": True}
+
+    def set_price_weight(self, weight) -> None:
+        from .history import save_setting
+        save_setting(self._out_dir, "price_weight", max(0.0, min(1.0, float(weight))))
 
     def open_logs_folder(self) -> None:
         os.makedirs(self._out_dir, exist_ok=True)

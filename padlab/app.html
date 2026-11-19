@@ -147,6 +147,8 @@ main{position:relative}
 .bcard .sum{font-size:13px;color:var(--text-2)}
 .bcard ul{margin:6px 0 0 18px;padding:0;font-size:13px}
 .bscore{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}
+.bprice{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 12px}.bprice input{accent-color:#d9d9de;width:180px}.bprice .sub{flex-basis:100%}
+.bpr{margin:0 0 6px;font-size:13px;color:var(--text-2,#b9b9c2)}.bpr .pin{width:90px;margin-left:6px;background:#1b1b1e;color:inherit;border:1px solid #2e2e33;border-radius:4px;padding:3px 6px;font:inherit}
 .bscore b{font-size:28px}
 .bscore span{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em}
 .pgrid{display:grid;gap:4px;margin:8px 0 2px;max-width:640px}
@@ -531,14 +533,18 @@ async function renderBest(){
  const rk=d.ranking;
  if(!rk.length){$("best").innerHTML='<div class="empty">No sessions to rank yet.</div>';return;}
  const lab=k=>esc(byKey[k].label),val=(c,k)=>fmt(byKey[k],c.values[k]);
- let h='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check. The performance score (0 to 100) is the mean of the performance checks: update rate, update interval spread, stick resolution, outer reach, circularity, centre deadzone and trigger start deadzone. 100 is the best possible value. 0 is the Watch limit (for the update rate: 125 Hz is 0, 1000 Hz is 100). The highest score is first. Faults (Problem and Watch) are shown for each controller and decide a tie. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
+ const w=d.price_weight||0;
+ let h=`<div class="bprice"><label for="pw">Price weighting: <b id="pwv">${Math.round(w*100)}%</b></label><input id="pw" type="range" min="0" max="50" step="5" value="${Math.round(w*100)}"><span class="sub">0% ranks by performance only. With a weighting, overall score = performance score x (100% - weighting) + price score x weighting. The cheapest controller gets a price score of 100. A controller that costs two times as much gets 50. Controllers without a price are not ranked when the weighting is on.</span></div>`;
+ h+='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check. The performance score (0 to 100) is the mean of the performance checks: update rate, update interval spread, stick resolution, outer reach, circularity, centre deadzone and trigger start deadzone. 100 is the best possible value. 0 is the Watch limit (for the update rate: 125 Hz is 0, 1000 Hz is 100). The highest score is first. Faults (Problem and Watch) are shown for each controller and decide a tie. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
  if(rk.filter(c=>c.ranked).length<2)h+='<p class="brule">Log at least two controllers to get a ranking.</p>';
  for(const c of rk){
   const st=c.problems.length?"Problem":c.watch.length?"Watch":"OK";
   const pk=Object.keys(c.perf);
   h+=`<div class="bcard${c.rank===1&&rk.filter(x=>x.ranked).length>1?" top":""}"><h3><span class="pos">${c.rank?"#"+c.rank:"-"}</span>${esc(c.name)}</h3>`;
-  h+=`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
-  h+=`<div class="sum">${c.ranked?"":"Not ranked: too few checks have a result. "}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}). Best value in ${c.wins.length} checks.</div>`;
+  h+=w>0?`<div class="bscore"><b>${c.overall==null?"-":Math.round(c.overall)}</b><span>Overall score</span></div><div class="sum">Performance score ${c.score==null?"-":Math.round(c.score)}. Price score ${c.price_score==null?"-":Math.round(c.price_score)}.</div>`
+   :`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
+  h+=`<div class="bpr"><label>Price <input class="pin" data-n="${esc(c.name)}" inputmode="decimal" placeholder="none" value="${c.price??""}"></label></div>`;
+  h+=`<div class="sum">${c.ranked?"":(w>0&&c.price==null&&c.score!=null?"Not ranked: add a price. ":"Not ranked: too few checks have a result. ")}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}). Best value in ${c.wins.length} checks.</div>`;
   if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span>${val(c,k)}</span></div>`;h+="</div>";}
   h+="<ul>";
   for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
@@ -547,6 +553,9 @@ async function renderBest(){
   h+="</ul></div>";
  }
  $("best").innerHTML=h;
+ $("pw").oninput=e=>$("pwv").textContent=e.target.value+"%";
+ $("pw").onchange=async e=>{await api.set_price_weight(e.target.value/100);renderBest();};
+ $("best").querySelectorAll(".pin").forEach(i=>i.onchange=async()=>{const r=await api.set_price(i.dataset.n,i.value);if(!r.ok)toast(r.message);renderBest();});
 }
 
 function barSvg(m,items,col){

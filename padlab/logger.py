@@ -38,7 +38,10 @@ CONTROLLER_BUTTONS = {
     15: "misc", 16: "p1", 17: "p2", 18: "p3", 19: "p4", 20: "touchpad",
 }
 
-POLL_SLEEP_S = 0.0005  # about 1 kHz loop. Sets the timing precision of the log.
+# Sets the timing precision of the log. Windows rounds short sleeps up: 0.0005 s gave about
+# 950 loops a second, so pads above about 950 Hz looked slower. 0.0001 s gives about 1900
+# loops a second at the same CPU use (about 2%, tested on the owner PC, 2026-11-22).
+POLL_SLEEP_S = 0.0001
 FLUSH_EVERY_S = 1.0
 STATUS_EVERY_S = 5.0
 LOOP_RATE_WINDOW_S = 10.0  # measure loop passes per second over the first 10 s

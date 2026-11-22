@@ -114,7 +114,7 @@ This test shows if Steam Input changes how often the PC gets new values from the
 4. Do step 2 again with the name "Xbox pad A, Steam on".
 5. Open **Compare**. Look at **Update rate** and **Update spread** for the two sessions.
 
-Use the same pad, the same connection and the same USB port for both sessions. If the update rate shows "at the limit", the real rate can be higher than PadMaster can see (about 500 Hz). When Steam Input is on, PadMaster can see Steam's virtual controller and not the real pad (inference, not tested yet). The result then shows what Steam passes on to games.
+Use the same pad, the same connection and the same USB port for both sessions. If the update rate shows "at the limit", the real rate can be higher than PadMaster can see. PadMaster checks for input about 1900 times per second on a typical PC, so it can measure rates up to about 1900 Hz. A pad that reports at 4000 or 8000 Hz shows "at the limit". When Steam Input is on, PadMaster can see Steam's virtual controller and not the real pad (inference, not tested yet). The result then shows what Steam passes on to games.
 
 ## How it works
 

@@ -62,8 +62,10 @@ THRESHOLDS = {
     # A prompt counts as hit if the exact input comes before the next prompt, at most this late.
     "guided_window_ms": 1500,
     # Performance score (Best controller view, owner request 2026-11-18). Update rate:
-    # 125 Hz scores 0 and 1000 Hz scores 100. Each doubling adds a third (250 = 33, 500 = 67).
-    "perf_rate_low_hz": 125.0, "perf_rate_high_hz": 1000.0,
+    # 125 Hz scores 0 and 2000 Hz scores 100. Each doubling adds a quarter (250 = 25, 500 = 50,
+    # 1000 = 75). Owner request (2026-11-22): pads can report faster than 1000 Hz. 2000 Hz is
+    # about the fastest rate PadMaster can measure (its loop runs about 1900 times a second).
+    "perf_rate_low_hz": 125.0, "perf_rate_high_hz": 2000.0,
     # Stutter
     "stream_mag": 0.2,
     "stutter_min_gap_ms": 40,

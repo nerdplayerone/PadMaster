@@ -234,8 +234,9 @@ def test_performance_score_ranks_before_faults():
     """Owner request (2026-11-18): rank by performance, not only by faults.
     A 1000 Hz pad with full reach beats a 125 Hz pad; faults only decide a tie."""
     from padlab.analysis import rank_controllers, perf_score
-    assert perf_score("update_rate_hz", 125) == 0 and perf_score("update_rate_hz", 1000) == 100
-    assert round(perf_score("update_rate_hz", 500)) == 67
+    assert perf_score("update_rate_hz", 125) == 0 and perf_score("update_rate_hz", 2000) == 100
+    assert perf_score("update_rate_hz", 1000) == 75 and perf_score("update_rate_hz", 500) == 50
+    assert perf_score("update_rate_hz", 8000) == 100  # capped: above what PadMaster can measure
     assert perf_score("l_outer", 1.0) == 100 and perf_score("l_bits", 8.0) == 0
     base = {"doubles": 0.0, "bounce": 0.0, "l_drift": 0.0, "r_drift": 0.0, "l_bits": 12.0}
     fast = dict(base, update_rate_hz=1000.0, l_outer=1.0, r_outer=1.0, bounce=3.0)

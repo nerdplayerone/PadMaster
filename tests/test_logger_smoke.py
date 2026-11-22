@@ -132,3 +132,10 @@ def test_auto_stop_after_no_use_but_not_for_stick_noise(monkeypatch, tmp_path):
     log = read_log(logger.run(str(tmp_path), 0, idle_stop_s=0.3))
     assert log.meta.get("auto_stopped") is True
     assert n["i"] < 400
+
+
+def test_loop_sleep_allows_rates_above_1000_hz():
+    """Owner report (2026-11-22): pads can report faster than 1000 Hz. A 0.5 ms sleep gave
+    only about 950 loops a second on Windows, so the loop sleep must stay below that."""
+    from padlab.logger import POLL_SLEEP_S
+    assert POLL_SLEEP_S <= 0.0001

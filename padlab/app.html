@@ -158,6 +158,46 @@ main{position:relative}
 .prow .pv{text-align:right;color:var(--text)}
 .pbar{height:6px;background:var(--line-2);border-radius:3px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--silver);border-radius:3px}
+.pbar i.g-ok{background:var(--good)}.pbar i.g-watch{background:var(--warning)}.pbar i.g-problem{background:var(--critical)}
+.gkey{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--text-2);margin:0 0 12px}
+.gkey span{display:inline-flex;align-items:center;gap:6px}.gkey i{width:10px;height:10px;border-radius:2px;display:inline-block}
+/* Chart tab */
+.ch-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.ch-bar label{font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:8px}
+.ch-bar select{flex:none;min-width:240px}
+.ch-card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.ch-card h4{margin:0 0 2px;font-size:15px}
+.ch-rows{display:grid;gap:6px;margin-top:14px;position:relative}
+.ch-row{display:grid;grid-template-columns:minmax(140px,260px) 1fr 84px;gap:12px;align-items:center;font-size:13px;cursor:default;border-radius:4px;padding:2px 0}
+.ch-row:hover,.ch-row:focus-visible{background:var(--panel-2);outline:none}
+.ch-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2)}
+.ch-row .v{text-align:right;font-variant-numeric:tabular-nums}
+.ch-track{position:relative;height:14px}
+.ch-fill{position:absolute;left:0;top:0;bottom:0;border-radius:0 4px 4px 0;background:var(--silver);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.ch-fill.g-ok{background:var(--good)}.ch-fill.g-watch{background:var(--warning)}.ch-fill.g-problem{background:var(--critical)}
+.ch-lim{position:absolute;top:-3px;bottom:-3px;border-left:1px dashed var(--muted);transition:left .45s}
+.ch-scat{position:relative;height:420px;margin:18px 8px 34px 56px;border-left:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.ch-dot{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--silver);border:2px solid var(--panel);transition:left .45s cubic-bezier(.2,.8,.2,1),top .45s cubic-bezier(.2,.8,.2,1);cursor:default}
+.ch-dot.g-ok{background:var(--good)}.ch-dot.g-watch{background:var(--warning)}.ch-dot.g-problem{background:var(--critical)}
+.ch-dot:focus-visible{outline:2px solid var(--silver);outline-offset:2px}
+.ch-lab{position:absolute;font-size:11px;color:var(--text-2);white-space:nowrap;transform:translate(10px,-50%);pointer-events:none;transition:left .45s,top .45s}
+.ch-tick{position:absolute;font-size:11px;color:var(--muted)}
+.ch-ax{position:absolute;font-size:12px;color:var(--text-2)}
+@media (prefers-reduced-motion:reduce){.ch-fill,.ch-lim,.ch-dot,.ch-lab{transition:none}}
+/* Loading animation: a small controller, the face buttons light up one by one */
+.loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 0;color:var(--text-2);font-size:13px;letter-spacing:.08em}
+.loading svg{width:168px;height:112px}
+.loading .body{fill:none;stroke:var(--silver);stroke-width:3;stroke-linejoin:round}
+.loading .fb{fill:var(--line-2);animation:padblink 1.2s infinite}
+.loading .fb:nth-of-type(2){animation-delay:.3s}.loading .fb:nth-of-type(3){animation-delay:.6s}.loading .fb:nth-of-type(4){animation-delay:.9s}
+.loading .dp{fill:var(--silver);opacity:.8}
+.loading .stk{fill:none;stroke:var(--muted);stroke-width:2}
+.loading .stk-in{fill:var(--silver);animation:padstick 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes padblink{0%,60%,100%{fill:var(--line-2)}20%{fill:var(--text)}}
+@keyframes padstick{0%,100%{transform:translate(0,0)}25%{transform:translate(3px,-2px)}50%{transform:translate(0,3px)}75%{transform:translate(-3px,-1px)}}
+.loading .dots::after{content:"";animation:paddots 1.2s steps(4) infinite}
+@keyframes paddots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@media (prefers-reduced-motion:reduce){.loading .fb,.loading .stk-in,.loading .dots::after{animation:none}}
 .brule{font-size:13px;color:var(--text-2);margin:0 0 14px;max-width:760px}
 .cmp-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer;background:none;color:var(--text);font-size:13px}
@@ -234,6 +274,7 @@ main{position:relative}
   <button id="tab-history" class="on">History</button>
   <button id="tab-compare">Compare</button>
   <button id="tab-best">Best controller</button>
+  <button id="tab-chart">Chart</button>
   <button id="tab-report">Report</button>
   <span class="spacer"></span>
   <span class="note" id="note"></span>
@@ -244,6 +285,7 @@ main{position:relative}
  <div class="view" id="history"></div>
  <div class="view hidden" id="compare"></div>
  <div class="view hidden" id="best"></div>
+ <div class="view hidden" id="chart"></div>
  <div id="guide" class="hidden" role="status" aria-live="assertive"><div class="gstep" id="gstep"></div><div class="gtext" id="gtext"></div><div class="gbar"><i id="gbar"></i></div><button class="btn" id="gstop">Stop the test</button></div>
  <div class="view hidden" id="report"><div class="empty">Select a session in History to see its report.</div></div>
 </main>
@@ -261,10 +303,21 @@ function toast(t){if(!t)return;const el=$("toast");el.textContent=t;el.style.dis
 function when(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return iso;
  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+"  "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 
+function loader(text){
+ return `<div class="loading" role="status"><svg viewBox="0 0 120 80" aria-hidden="true">
+  <path class="body" d="M30 14h60c14 0 22 10 25 26l3 18c2 12-10 18-18 10l-10-10H30L20 68c-8 8-20 2-18-10l3-18C8 24 16 14 30 14z"/>
+  <rect class="dp" x="22" y="30" width="16" height="5" rx="1"/><rect class="dp" x="27.5" y="24.5" width="5" height="16" rx="1"/>
+  <circle class="fb" cx="92" cy="25" r="4"/><circle class="fb" cx="101" cy="33" r="4"/><circle class="fb" cx="92" cy="41" r="4"/><circle class="fb" cx="83" cy="33" r="4"/>
+  <circle class="stk" cx="47" cy="47" r="7"/><circle class="stk-in" cx="47" cy="47" r="3.5"/>
+  <circle class="stk" cx="73" cy="47" r="7"/><circle class="stk-in" cx="73" cy="47" r="3.5"/></svg>
+  <div>${esc(text)}<span class="dots"></span></div></div>`;
+}
+
 function showTab(name){
- for(const t of ["history","compare","best","report"]){$("tab-"+t).classList.toggle("on",name===t);$(t).classList.toggle("hidden",name!==t);}
+ for(const t of ["history","compare","best","chart","report"]){$("tab-"+t).classList.toggle("on",name===t);$(t).classList.toggle("hidden",name!==t);}
  if(name==="compare")renderCompare();
  if(name==="best")renderBest();
+ if(name==="chart")renderChart();
  $("export").style.display=name==="history"?"":"none";if(typeof syncPicked==="function"&&$("ckall"))syncPicked();else $("delsel").style.display="none";$("browser").style.display=name==="report"&&current?"":"none";
 }
 
@@ -320,7 +373,7 @@ async function deleteSessions(list){
 
 async function openReport(log){
  current=log;renderHistory();showTab("report");
- $("report").innerHTML='<div class="empty">Making the report...</div>';
+ $("report").innerHTML=loader("Making the report");
  const res=await api.report_html(log);
  if(!res.ok){$("report").innerHTML=`<div class="empty">${esc(res.message)}</div>`;return;}
  current=log;currentPath=res.path;
@@ -499,7 +552,7 @@ function tipShow(ev,html){const t=$("tip");t.innerHTML=html;t.style.display="blo
 function tipHide(){$("tip").style.display="none";}
 
 async function renderCompare(){
- if(!cmpData){$("compare").innerHTML='<div class="empty">Loading...</div>';cmpData=await api.compare_data();}
+ if(!cmpData){$("compare").innerHTML=loader("Loading");cmpData=await api.compare_data();}
  const sessions=cmpData.sessions.filter(s=>s.metrics);
  if(!sessions.length){$("compare").innerHTML='<div class="empty">No sessions to compare yet.</div>';return;}
  const names=[];for(const s of [...sessions].reverse())if(!names.includes(grp(s)))names.push(grp(s));
@@ -537,13 +590,14 @@ async function renderCompare(){
 }
 
 async function renderBest(){
- $("best").innerHTML='<div class="empty">Loading...</div>';
+ $("best").innerHTML=loader("Ranking the controllers");
  const d=await api.best_data(),byKey={};for(const m of d.metrics)byKey[m.key]=m;
  const rk=d.ranking;
  if(!rk.length){$("best").innerHTML='<div class="empty">No sessions to rank yet.</div>';return;}
  const lab=k=>esc(byKey[k].label),val=(c,k)=>fmt(byKey[k],c.values[k]);
  const w=d.price_points||0,on=rk.some(c=>c.points>0),dw=d.price_points_default||0;
  let h=`<div class="bprice"><label for="pw">Price rule: <b id="pwv">${w}</b> points for each price doubling</label><input id="pw" type="range" min="0" max="20" step="1" value="${w}">${w!==dw?`<button id="pwreset">Use the default (${dw})</button>`:""}<span class="sub">${on?"":"The price rule is not used yet: add a price to at least two controllers. "}The bar goes up with the price. Value score = performance score - price bar. The cheapest controller has no price bar. For each doubling of the price, a controller must be ${w} performance points better to tie. So a very good cheap controller can beat an expensive controller that is only as good as its price leads you to expect. 0 ranks by performance only. Controllers without a price are not ranked when the rule is on.</span></div>`;
+ h+='<div class="gkey"><span><i style="background:var(--good)"></i>OK</span><span><i style="background:var(--warning)"></i>Watch</span><span><i style="background:var(--critical)"></i>Problem</span><span><i style="background:var(--silver)"></i>No limit (information)</span><span>Bar length: performance score of the check</span></div>';
  h+='<p class="brule">How PadMaster ranks: each controller gets the median of its sessions for each check. The performance score (0 to 100) is the mean of the performance checks: update rate, update interval spread, stick resolution, outer reach, circularity, centre deadzone and trigger start deadzone. 100 is the best possible value. 0 is the Watch limit (for the update rate: 125 Hz is 0, 2000 Hz is 100, about the fastest rate PadMaster can measure). The highest score is first. Faults (Problem and Watch) are shown for each controller and decide a tie. The limits are PadMaster defaults, not industry standards. Compare controllers only with the same player, game and connection.</p>';
  if(rk.filter(c=>c.ranked).length<2)h+='<p class="brule">Log at least two controllers to get a ranking.</p>';
  for(const c of rk){
@@ -554,7 +608,7 @@ async function renderBest(){
    :`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
   h+=`<div class="bpr"><label>Price <input class="pin" data-n="${esc(c.name)}" inputmode="decimal" placeholder="none" value="${c.price??""}"></label></div>`;
   h+=`<div class="sum">${c.ranked?"":(c.points>0&&c.price==null&&c.score!=null?"Not ranked: add a price. ":"Not ranked: too few checks have a result. ")}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}).</div>`;
-  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span class="pv">${val(c,k)}</span><span class="star"${c.wins.includes(k)?' title="Better than all other controllers">&#9733;':' aria-hidden="true">'}</span></div>`;h+="</div>";}
+  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i class="${c.grades[k]?"g-"+c.grades[k]:""}" style="width:${c.perf[k]}%"></i></span><span class="pv">${val(c,k)}</span><span class="star"${c.wins.includes(k)?' title="Better than all other controllers">&#9733;':' aria-hidden="true">'}</span></div>`;h+="</div>";}
   h+="<ul>";
   for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
   for(const k of c.watch)h+=`<li>Watch: ${lab(k)} (${val(c,k)})</li>`;
@@ -565,6 +619,90 @@ async function renderBest(){
  $("pw").oninput=e=>$("pwv").textContent=e.target.value;
  $("pw").onchange=async e=>{await api.set_price_points(+e.target.value);renderBest();};
  $("best").querySelectorAll(".pin").forEach(i=>i.onchange=async()=>{const r=await api.set_price(i.dataset.n,i.value);if(!r.ok)toast(r.message);renderBest();});
+}
+
+let chartX="score",chartY="";
+async function renderChart(){
+ if(!$("chart").dataset.ready)$("chart").innerHTML=loader("Loading");
+ const d=await api.best_data(),rk=d.ranking.filter(c=>c.sessions);
+ if(!rk.length){$("chart").innerHTML='<div class="empty">No sessions yet. Log a controller first.</div>';return;}
+ const ms={score:{key:"score",label:"Performance score",unit:"",better:"high",pct:false,score:true},
+  overall:{key:"overall",label:"Value score (performance with the price rule)",unit:"",better:"high",pct:false,score:true},
+  price:{key:"price",label:"Price",unit:"",better:"low",pct:false}};
+ for(const m of d.metrics)ms[m.key]=m;
+ const val=(c,k)=>k==="score"?c.score:k==="overall"?c.overall:k==="price"?c.price:c.values[k];
+ const show=(m,v)=>v==null||isNaN(v)?"-":m.score?String(Math.round(v)):m.key==="price"?(+v).toFixed(2):fmt(m,v);
+ const gradeOf=(c,k)=>(k==="score"||k==="overall")?(c.problems.length?"g-problem":c.watch.length?"g-watch":"g-ok"):c.grades&&c.grades[k]?"g-"+c.grades[k]:"";
+ if(!ms[chartX])chartX="score";if(chartY&&!ms[chartY])chartY="";
+ const opts=sel=>Object.values(ms).map(m=>`<option value="${esc(m.key)}"${m.key===sel?" selected":""}>${esc(m.label)}</option>`).join("");
+ let h=`<div class="ch-bar"><label>Show <select id="chx">${opts(chartX)}</select></label>
+  <label>Against <select id="chy"><option value="">Nothing (bar chart)</option>${opts(chartY)}</select></label></div>`;
+ const mx=ms[chartX];
+ h+='<div class="gkey"><span><i style="background:var(--good)"></i>OK</span><span><i style="background:var(--warning)"></i>Watch</span><span><i style="background:var(--critical)"></i>Problem</span><span><i style="background:var(--silver)"></i>No limit</span></div>';
+ h+=`<div class="ch-card" id="chcard"></div>`;
+ if(!$("chart").dataset.ready){$("chart").innerHTML=h;$("chart").dataset.ready="1";}
+ else{$("chx").innerHTML=opts(chartX);$("chy").innerHTML='<option value="">Nothing (bar chart)</option>'+opts(chartY);}
+ $("chx").onchange=e=>{chartX=e.target.value;renderChart();};
+ $("chy").onchange=e=>{chartY=e.target.value;renderChart();};
+ const card=$("chcard");
+ const k=mx.pct?100:1;
+ if(!chartY){
+  const items=rk.map(c=>({c,v:val(c,chartX)})).filter(i=>i.v!=null&&!isNaN(i.v));
+  items.sort((a,b)=>mx.better==="low"?a.v-b.v:b.v-a.v);
+  const lims=[mx.ok_value,mx.watch_value].filter(x=>x!=null).map(x=>x*k);
+  let max=Math.max(...items.map(i=>i.v*k),...lims,mx.score?100:0);if(!(max>0))max=1;max*=1.05;
+  const hint=mx.score?"0 to 100. Higher is better. Bar colour: the worst result of the controller.":mx.key==="price"?"The price you typed in Best controller.":mx.ok_value==null?"Information only.":(mx.better==="low"?"Lower is better. Dashed lines: OK and Watch limits.":"Higher is better. Dashed lines: OK and Watch limits.");
+  if(!card.querySelector(".ch-rows")||card.dataset.mode!=="bar"){card.dataset.mode="bar";card.innerHTML='<h4></h4><div class="hint"></div><div class="ch-rows"></div><div class="none hidden"></div>';}
+  card.querySelector("h4").textContent=mx.label;card.querySelector(".hint").textContent=hint;
+  const box=card.querySelector(".ch-rows"),none=card.querySelector(".none");
+  none.classList.toggle("hidden",!!items.length);none.textContent="No controller has a result for this yet.";
+  const keep=new Map([...box.children].map(r=>[r.dataset.n,r]));
+  items.forEach((it,i)=>{
+   let r=keep.get(it.c.name);
+   if(!r){r=document.createElement("div");r.className="ch-row";r.tabIndex=0;r.dataset.n=it.c.name;
+    r.innerHTML='<span class="nm"></span><span class="ch-track"><i class="ch-fill" style="width:0"></i></span><span class="v"></span>';}
+   keep.delete(it.c.name);box.appendChild(r);
+   r.querySelector(".nm").textContent=(it.c.rank?"#"+it.c.rank+"  ":"")+it.c.name;
+   r.querySelector(".v").textContent=show(mx,it.v);
+   const f=r.querySelector(".ch-fill");f.className="ch-fill "+gradeOf(it.c,chartX);
+   requestAnimationFrame(()=>{f.style.width=(100*it.v*k/max)+"%";});
+   r.querySelectorAll(".ch-lim").forEach(x=>x.remove());
+   for(const L of lims){const l=document.createElement("i");l.className="ch-lim";l.style.left=(100*L/max)+"%";r.querySelector(".ch-track").appendChild(l);}
+   const tip=`<b>${esc(it.c.name)}</b><br>${esc(mx.label)}: ${esc(show(mx,it.v))}<br><span style="color:#85858f">${it.c.sessions} session${it.c.sessions===1?"":"s"}${it.c.rank?", rank #"+it.c.rank:""}</span>`;
+   r.onmousemove=e=>tipShow(e,tip);r.onmouseleave=tipHide;r.onfocus=e=>{const b=r.getBoundingClientRect();tipShow({clientX:b.right-120,clientY:b.top},tip);};r.onblur=tipHide;
+  });
+  for(const r of keep.values())r.remove();
+  return;
+ }
+ // Scatter: one dot per controller.
+ const my=ms[chartY],ky=my.pct?100:1;
+ const items=rk.map(c=>({c,x:val(c,chartX),y:val(c,chartY)})).filter(i=>i.x!=null&&!isNaN(i.x)&&i.y!=null&&!isNaN(i.y));
+ card.dataset.mode="scatter";
+ if(!items.length){card.innerHTML=`<h4>${esc(mx.label)} against ${esc(my.label)}</h4><div class="none">No controller has both results yet.</div>`;return;}
+ const rng=(vals,m)=>{let lo=Math.min(...vals),hi=Math.max(...vals);if(m.score){lo=Math.min(lo,0);hi=Math.max(hi,100);}if(lo===hi){lo-=1;hi+=1;}const pad=(hi-lo)*.08;return[lo-pad,hi+pad];};
+ const [x0,x1]=rng(items.map(i=>i.x*k),mx),[y0,y1]=rng(items.map(i=>i.y*ky),my);
+ const X=v=>100*(v*k-x0)/(x1-x0),Y=v=>100-100*(v*ky-y0)/(y1-y0);
+ if(!card.querySelector(".ch-scat")){card.innerHTML='<h4></h4><div class="hint">Each dot is one controller. Dot colour: result of the first measure.</div><div class="ch-scat"></div>';}
+ card.querySelector("h4").textContent=`${mx.label} against ${my.label}`;
+ const sc=card.querySelector(".ch-scat");
+ sc.querySelectorAll(".ch-tick,.ch-ax").forEach(x=>x.remove());
+ for(let i=0;i<=4;i++){const vx=x0+(x1-x0)*i/4,vy=y0+(y1-y0)*i/4;
+  sc.insertAdjacentHTML("beforeend",`<span class="ch-tick" style="left:${i*25}%;bottom:-20px;transform:translateX(-50%)">${(+vx.toFixed(vx>=100||mx.score?0:2))}</span><span class="ch-tick" style="left:-48px;top:${100-i*25}%;transform:translateY(-50%)">${(+vy.toFixed(vy>=100||my.score?0:2))}</span>`);}
+ sc.insertAdjacentHTML("beforeend",`<span class="ch-ax" style="right:0;bottom:-34px">${esc(mx.label)}${mx.pct?" (%)":""} &rarr;</span><span class="ch-ax" style="left:4px;top:-18px">&uarr; ${esc(my.label)}${my.pct?" (%)":""}</span>`);
+ const keep=new Map([...sc.querySelectorAll(".ch-dot")].map(d=>[d.dataset.n,d]));
+ const labs=new Map([...sc.querySelectorAll(".ch-lab")].map(d=>[d.dataset.n,d]));
+ for(const it of items){
+  let dt=keep.get(it.c.name),lb=labs.get(it.c.name);
+  if(!dt){dt=document.createElement("span");dt.className="ch-dot";dt.tabIndex=0;dt.dataset.n=it.c.name;dt.style.left="0%";dt.style.top="100%";sc.appendChild(dt);
+   lb=document.createElement("span");lb.className="ch-lab";lb.dataset.n=it.c.name;lb.textContent=it.c.name;lb.style.left="0%";lb.style.top="100%";sc.appendChild(lb);}
+  keep.delete(it.c.name);labs.delete(it.c.name);
+  dt.className="ch-dot "+gradeOf(it.c,chartX);
+  lb.style.transform=X(it.x)>65?"translate(calc(-100% - 10px),-50%)":"";
+  requestAnimationFrame(()=>{dt.style.left=lb.style.left=X(it.x)+"%";dt.style.top=lb.style.top=Y(it.y)+"%";});
+  const tip=`<b>${esc(it.c.name)}</b><br>${esc(mx.label)}: ${esc(show(mx,it.x))}<br>${esc(my.label)}: ${esc(show(my,it.y))}`;
+  dt.onmousemove=e=>tipShow(e,tip);dt.onmouseleave=tipHide;dt.onfocus=()=>{const b=dt.getBoundingClientRect();tipShow({clientX:b.right,clientY:b.top},tip);};dt.onblur=tipHide;
+ }
+ for(const d of keep.values())d.remove();for(const d of labs.values())d.remove();
 }
 
 function barSvg(m,items,col){
@@ -616,6 +754,7 @@ window.addEventListener("pywebviewready", async ()=>{
  $("tab-report").onclick=()=>showTab("report");
  $("tab-compare").onclick=()=>showTab("compare");
  $("tab-best").onclick=()=>showTab("best");
+ $("tab-chart").onclick=()=>showTab("chart");
  $("guided").onclick=()=>{if(state==="idle")start(true);};
  $("gstop").onclick=()=>{showGuide(null);stop();};
  showTab("history");

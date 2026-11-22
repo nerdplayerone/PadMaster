@@ -518,3 +518,13 @@ def test_app_passes_trigger_stops_to_the_logger(tmp_path):
         raise OSError("not started in the test")
     Api(str(tmp_path), popen=popen).start(0, "Pad", "Wired", 0, False, False, True)
     assert "--trigger-stops" in seen["cmd"]
+
+
+def test_app_has_chart_tab_coloured_best_bars_and_loader():
+    """Owner request (2026-11-22): a Chart tab, OK/Watch/Problem colours in Best controller,
+    and a loading animation that respects reduced motion."""
+    import pathlib
+    h = (pathlib.Path(__file__).parent.parent / "padlab" / "app.html").read_text(encoding="utf-8")
+    assert 'id="tab-chart"' in h and "async function renderChart()" in h
+    assert 'g-"+c.grades[k]' in h and ".pbar i.g-ok" in h
+    assert 'loader("Making the report")' in h and ".loading .fb,.loading .stk-in" in h

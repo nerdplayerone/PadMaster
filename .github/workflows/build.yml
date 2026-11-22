@@ -40,9 +40,17 @@ jobs:
           path: |
             dist/PadMaster.exe
             dist/PadMaster-console.exe
+      - name: Release notes from CHANGELOG.md
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v h="## $v" 'index($0,h)==1{f=1;next} /^## /{if(f)exit} f' CHANGELOG.md > release_notes.md
+          echo "Release notes:" && cat release_notes.md
       - name: Attach to release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           # Only the app goes in the release. The console build stays in the run artefacts for debugging.
           files: dist/PadMaster.exe
+          body_path: release_notes.md

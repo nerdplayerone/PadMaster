@@ -1,6 +1,6 @@
 # Patch notes
 
-## Next version (not released yet)
+## 0.1.8 (2026-11-22)
 
 ### New
 
@@ -9,7 +9,7 @@
 - **Update now.** When a new version is available, click **Update now**. PadMaster downloads the new PadMaster.exe from the GitHub release, checks it against the checksum that GitHub publishes, and replaces itself in the same folder, with the same name. Then it opens again. It downloads nothing until you click. This works from the version after 0.1.7: download that version manually one time.
 - **High-rate mode.** For controllers that report at 4000 to 8000 Hz. Select it before you click Start. It keeps one CPU core busy while it logs, so games can run slower on some PCs.
 - **Chart tab.** Select a measure (performance score, value score, price or any check) to see all your controllers in one chart. Select a second measure to see one against the other. The chart changes smoothly when you change a measure. Move the mouse pointer on a bar or dot to see the values.
-- **Loading animation.** A small controller shows while a report or a tab loads.
+- **Loading animation.** A small controller in a silver CRT screen style shows while a report or a tab loads. The D-pad and the face buttons light up in turn, the sticks move on their own, and a faint reflection glows behind it. With reduced motion turned on in Windows, it does not move.
 - **Trigger stops option.** If the trigger stops are on, select **Trigger stops are on** before you click Start. PadMaster then does not grade the triggers, and does not use them in Compare or Best controller.
 
 ### Changed

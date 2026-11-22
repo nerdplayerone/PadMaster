@@ -13,8 +13,8 @@
 - **Trigger stops option.** If the trigger stops are on, select **Trigger stops are on** before you click Start. PadMaster then does not grade the triggers, and does not use them in Compare or Best controller.
 
 ### Changed
-- **Colours in Best controller.** The bars now show the result of each check: green for OK, orange for Watch and red for Problem. Grey means that the check has no limit. The bar length is still the performance score of the check, so a short green bar is a result that is OK but not the best possible.
 
+- **Colours in Best controller.** The bars now show the result of each check: green for OK, orange for Watch and red for Problem. Grey means that the check has no limit. The bar length is still the performance score of the check, so a short green bar is a result that is OK but not the best possible.
 - **Update rates above 1000 Hz.** PadMaster now checks for input about 1900 times per second (before: about 950), so it can measure rates up to about 1900 Hz. The update rate score is now 100 at 2000 Hz (before: 1000 Hz). Each doubling adds 25 points: 250 Hz = 25, 500 Hz = 50, 1000 Hz = 75. Update rate scores, and so performance scores, are lower than before.
 - **Faster reports.** PadMaster now does the stick checks during play. On a 55-minute test session, the time from Stop to the report went from about 24 seconds to about 2 seconds. The results are the same as before.
 - **Quick Test In-App.** The guided test button now has this name, and it is grey.

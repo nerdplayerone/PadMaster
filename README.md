@@ -6,6 +6,16 @@ You don't need to do test routines. Play as normal, then read the report.
 
 ![Sample report](docs/sample_report.png)
 
+### Screenshots
+
+All screenshots use sample data, not a real test.
+
+| Best controller | Chart |
+|---|---|
+| ![Best controller: controllers ranked by value score, with the price rule](docs/images/app_best_controller.png) | ![Chart: performance score of each controller](docs/images/app_chart.png) |
+
+![History: each logged session with its results](docs/images/app_history.png)
+
 > **Status: early version (0.1.8).** Tested on real hardware with the pads in the list below. Other pads can work, but they are not tested. Please report problems in Issues.
 
 ### Tested pads

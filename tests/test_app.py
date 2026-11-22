@@ -528,3 +528,13 @@ def test_app_has_chart_tab_coloured_best_bars_and_loader():
     assert 'id="tab-chart"' in h and "async function renderChart()" in h
     assert 'g-"+c.grades[k]' in h and ".pbar i.g-ok" in h
     assert 'loader("Making the report")' in h and ".loading .main,.loading .scr,.loading .fb,.loading .da,.loading .stk-in" in h
+
+
+def test_chart_empty_message_hides_and_no_brand_placeholder():
+    """Regression: the Chart tab showed "No controller has a result for this yet." under real bars,
+    because no CSS rule hid .none.hidden in the chart card. The name box also showed a brand."""
+    import pathlib
+    h = (pathlib.Path(__file__).parent.parent / "padlab" / "app.html").read_text(encoding="utf-8")
+    assert ".ch-card .none.hidden{display:none}" in h
+    assert "#chart{padding:20px}" in h
+    assert "Xbox" not in h

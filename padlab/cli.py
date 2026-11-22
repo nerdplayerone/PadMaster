@@ -78,7 +78,7 @@ def main(argv: list[str] | None = None) -> int:
     lg.add_argument("--out", default=default_out_dir(), help="folder for logs and reports")
     lg.add_argument("--seconds", type=float, default=None, help="stop after this many seconds")
     lg.add_argument("--no-open", action="store_true", help="do not open the report")
-    lg.add_argument("--name", default="", help="your name for this controller, for example 'Xbox pad A'")
+    lg.add_argument("--name", default="", help="your name for this controller, for example 'Pad A'")
     lg.add_argument("--connection", default="", choices=["", "Wired", "Dongle", "Bluetooth"],
                     help="how the controller is connected")
     lg.add_argument("--auto-stop", type=float, default=0,

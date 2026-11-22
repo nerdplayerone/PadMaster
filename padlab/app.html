@@ -162,6 +162,8 @@ main{position:relative}
 .gkey{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--text-2);margin:0 0 12px}
 .gkey span{display:inline-flex;align-items:center;gap:6px}.gkey i{width:10px;height:10px;border-radius:2px;display:inline-block}
 /* Chart tab */
+#chart{padding:20px}
+.ch-card .none{font-size:12px;color:var(--muted);padding:8px 0}.ch-card .none.hidden{display:none}
 .ch-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
 .ch-bar label{font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:8px}
 .ch-bar select{flex:none;min-width:240px}
@@ -250,7 +252,7 @@ main{position:relative}
   <div class="row"><select id="pad" aria-label="Controller"><option>Looking for controllers...</option></select>
   <button class="btn" id="refresh" title="Refresh the controller list" aria-label="Refresh the controller list">&#x21bb;</button></div>
   <div class="label" style="margin-top:10px"><label for="padname">Which controller is this?</label></div>
-  <div class="row"><input id="padname" list="padnames" maxlength="60" placeholder="For example: Xbox pad A" autocomplete="off"><datalist id="padnames"></datalist></div>
+  <div class="row"><input id="padname" list="padnames" maxlength="60" placeholder="For example: Pad A" autocomplete="off"><datalist id="padnames"></datalist></div>
   <div class="hint">Type a new name, or select a name you used before.</div>
   <div class="label" style="margin-top:10px"><label for="conn">Connection</label></div>
   <div class="row"><select id="conn"><option value="">Not set</option><option>Wired</option><option>Dongle</option><option>Bluetooth</option></select></div>

@@ -26,6 +26,7 @@ select{flex:1;background:var(--panel-2);border:1px solid var(--line-2);border-ra
 .btn{background:transparent;border:1px solid var(--line-2);border-radius:6px;padding:8px 12px;cursor:pointer}
 .btn:hover{background:var(--panel-2);border-color:var(--silver)}
 .btn:focus-visible,.big:focus-visible,select:focus-visible{outline:2px solid var(--silver);outline-offset:2px}
+#guided{background:#2c2c31;border-color:#4a4a52;color:#f2f2f5;font-weight:600}#guided:hover{background:#3a3a40;border-color:var(--silver)}#guided:disabled{opacity:.5;cursor:default}
 .big{width:100%;border:0;border-radius:6px;padding:14px;font-size:16px;font-weight:600;letter-spacing:.14em;cursor:pointer;
  background:var(--silver);color:#0b0b0c}
 .big:hover{background:#ffffff}
@@ -197,7 +198,7 @@ main{position:relative}
   <div class="hint">Type a new name, or select a name you used before.</div>
   <div class="label" style="margin-top:10px"><label for="conn">Connection</label></div>
   <div class="row"><select id="conn"><option value="">Not set</option><option>Wired</option><option>Dongle</option><option>Bluetooth</option></select></div>
-  <label class="check" style="margin-top:10px;display:block" title="For pads that report faster than about 1900 Hz. PadMaster checks for input without a pause, so it keeps one CPU core busy. Games can run slower on some PCs."><input type="checkbox" id="highrate"> High-rate mode (up to 8000 Hz, uses one CPU core)</label>
+  <label class="check" style="margin-top:10px;display:block" title="For pads that report faster than about 1900 Hz. PadMaster checks for input without a pause, so it keeps one CPU core busy. Games can run slower on some PCs."><input type="checkbox" id="highrate"> High-rate mode (8000 Hz pads)</label>
   <div class="label" style="margin-top:10px"><label for="autostop">Auto stop</label></div>
   <div class="row"><select id="autostop" title="Stop logging when the controller is not used for this time"><option value="0">Off</option><option value="5">After 5 min with no use</option><option value="10">After 10 min with no use</option><option value="20">After 20 min with no use</option><option value="30">After 30 min with no use</option></select></div>
  </div>
@@ -211,7 +212,7 @@ main{position:relative}
  </div>
 
  <button class="big" id="go">START</button>
- <button class="btn" id="guided" style="width:100%;margin-top:8px" title="About 4 minutes. Every controller gets the same steps, so results are fair to compare.">Guided test (4 min)</button>
+ <button class="btn" id="guided" style="width:100%;margin-top:8px" title="About 4 minutes. Every controller gets the same steps, so results are fair to compare.">Quick Test In-App (about 4 min)</button>
 
  <div class="links">
   <button class="btn" id="last">Open last report</button>

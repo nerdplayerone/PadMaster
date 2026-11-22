@@ -88,7 +88,7 @@ python -m padlab report FILE.csv.gz
 
 ## Guided test
 
-Push **Guided test (4 min)** to give every controller the same steps. Follow the instructions on the screen:
+Push **Quick Test In-App (about 4 min)** to start the guided test. It gives every controller the same steps. Follow the instructions on the screen:
 
 1. Put the controller down (30 s). This checks drift.
 2. Turn both sticks in slow circles, then fast circles, then push to the edge in all directions.

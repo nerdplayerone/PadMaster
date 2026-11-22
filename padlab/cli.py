@@ -80,6 +80,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="stop after this many minutes with no controller use (0: off)")
     lg.add_argument("--guided", action="store_true",
                     help="guided test: about 4 minutes of on-screen steps, then stop")
+    lg.add_argument("--high-rate", action="store_true",
+                    help="measure pads up to about 8000 Hz (keeps one CPU core busy)")
     lg.add_argument("--ipc", action="store_true", help="for the app window: JSON status lines, stop with a 'stop' line")
 
     rp = sub.add_parser("report", help="make a report from a log file")
@@ -132,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
     from .logger import emit, run
     path = run(args.out, pad_index=args.pad, seconds=args.seconds, ipc=args.ipc, label=args.name, connection=args.connection,
                idle_stop_s=(args.auto_stop * 60) or None,
-               guided=args.guided)
+               guided=args.guided, high_rate=args.high_rate)
     if args.ipc:
         if not path:
             emit({"state": "done", "report": "", "log": ""})

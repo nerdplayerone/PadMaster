@@ -139,3 +139,40 @@ def test_loop_sleep_allows_rates_above_1000_hz():
     only about 950 loops a second on Windows, so the loop sleep must stay below that."""
     from padlab.logger import POLL_SLEEP_S
     assert POLL_SLEEP_S <= 0.0001
+
+
+def test_high_rate_mode_has_no_pause_and_is_recorded(monkeypatch, tmp_path):
+    """Owner request (2026-11-22): optional high-rate mode for 4000 to 8000 Hz pads."""
+    import sys
+    from padlab.logfile import read_log
+    import types
+    pg, sdl2, ctrl = make_fake_pygame([], True)
+    pg.event = types.SimpleNamespace(get=lambda: [], pump=lambda: None)
+    monkeypatch.setitem(sys.modules, "pygame", pg)
+    monkeypatch.setitem(sys.modules, "pygame._sdl2", sdl2)
+    monkeypatch.setitem(sys.modules, "pygame._sdl2.controller", ctrl)
+    from padlab import logger
+    pauses = []
+    real = logger.time.sleep
+    monkeypatch.setattr(logger.time, "sleep", lambda s: (pauses.append(s), real(0)))
+    log = read_log(logger.run(str(tmp_path), 0, seconds=0.05, high_rate=True))
+    assert log.meta.get("high_rate") is True
+    assert pauses and set(pauses) == {0.0}
+
+
+def test_app_passes_high_rate_to_the_logger(tmp_path):
+    from padlab.gui import Api
+    seen = {}
+
+    class P:
+        stdout = stdin = stderr = None
+
+        def poll(self):
+            return None
+
+    def popen(cmd, **k):
+        seen["cmd"] = cmd
+        raise OSError("not started in the test")
+    api = Api(str(tmp_path), popen=popen)
+    api.start(0, "Pad", "Wired", 0, False, True)
+    assert "--high-rate" in seen["cmd"]

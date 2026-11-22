@@ -284,7 +284,8 @@ IDLE_MOVE = 0.08  # stick/trigger movement (share of full range) that counts as 
 
 def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         ipc: bool = False, stop_flag: dict | None = None, label: str = "",
-        connection: str = "", idle_stop_s: float | None = None, guided: bool = False) -> str:
+        connection: str = "", idle_stop_s: float | None = None, guided: bool = False,
+        high_rate: bool = False) -> str:
     """Log until Ctrl+C, a stop request, ``seconds``, or ``idle_stop_s`` with no use.
     Returns the log file path.
 
@@ -334,6 +335,11 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         meta["label"] = label  # the name the owner gave this physical pad
     if connection in CONNECTIONS:
         meta["connection"] = connection  # selected by the owner; PadMaster can't detect it
+    # High-rate mode (owner request, 2026-11-22): no pause in the loop, so pads that report
+    # at 4000 to 8000 Hz can be measured. It keeps one CPU core busy (about 98%, tested).
+    pause = 0.0 if high_rate else POLL_SLEEP_S
+    if high_rate:
+        meta["high_rate"] = True
     plan = None
     if guided:
         from .guided import schedule
@@ -472,7 +478,7 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
                 auto_stopped = True
                 say(f"\n  No controller use for {idle_stop_s / 60:g} min. Logging stops.")
                 break
-            time.sleep(POLL_SLEEP_S)
+            time.sleep(pause)
     except KeyboardInterrupt:
         pass
     finally:

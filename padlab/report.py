@@ -390,7 +390,8 @@ def render(r: Report, log_name: str = "", name: str | None = None, latency: dict
                f'<h1>{e(title)}</h1></div></div>')
     if title != model:
         out.append(f'<div class="sub">Controller model: {e(model)}</div>')
-    out.append(f'<div class="sub">Connection: {e(m.get("connection") or "not recorded")}</div>')
+    out.append(f'<div class="sub">Connection: {e(m.get("connection") or "not recorded")}'
+               f'{". High-rate mode: on" if m.get("high_rate") else ""}</div>')
     from .analysis import guid_info
     ids = guid_info(m.get("guid"))
     bits = []

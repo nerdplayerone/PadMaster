@@ -89,6 +89,24 @@ def _iter_lines(path: str) -> Iterator[str]:
             return
 
 
+def read_header(path: str) -> dict:
+    """Metadata from the start of the log only. Fast for any log length: it stops at the
+    first data row (user report, 2026-11-22: reading a long log only for its name was slow).
+    Metadata written later (loop rate, end time) is not included: use read_log for that."""
+    meta: dict = {}
+    for line in _iter_lines(path):
+        line = line.strip()
+        if not line:
+            continue
+        if not line.startswith("#"):
+            break
+        try:
+            meta.update(json.loads(line[1:].strip()))
+        except json.JSONDecodeError:
+            pass
+    return meta
+
+
 def read_log(path: str) -> Log:
     log = Log()
     names: dict[str, str] = {}

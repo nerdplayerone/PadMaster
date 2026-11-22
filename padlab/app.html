@@ -154,8 +154,8 @@ main{position:relative}
 .bscore b{font-size:28px}
 .bscore span{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em}
 .pgrid{display:grid;gap:4px;margin:8px 0 2px;max-width:640px}
-.prow{display:grid;grid-template-columns:minmax(150px,240px) 1fr 70px;gap:10px;align-items:center;font-size:12px;color:var(--text-2)}
-.prow span:last-child{text-align:right;color:var(--text)}
+.prow{display:grid;grid-template-columns:minmax(150px,240px) 1fr 70px 14px;gap:10px;align-items:center;font-size:12px;color:var(--text-2)}
+.prow .pv{text-align:right;color:var(--text)}
 .pbar{height:6px;background:var(--line-2);border-radius:3px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--silver);border-radius:3px}
 .brule{font-size:13px;color:var(--text-2);margin:0 0 14px;max-width:760px}
@@ -552,7 +552,7 @@ async function renderBest(){
    :`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
   h+=`<div class="bpr"><label>Price <input class="pin" data-n="${esc(c.name)}" inputmode="decimal" placeholder="none" value="${c.price??""}"></label></div>`;
   h+=`<div class="sum">${c.ranked?"":(c.points>0&&c.price==null&&c.score!=null?"Not ranked: add a price. ":"Not ranked: too few checks have a result. ")}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}).</div>`;
-  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span>${val(c,k)}${c.wins.includes(k)?' <span class="star" title="Better than all other controllers">&#9733;</span>':""}</span></div>`;h+="</div>";}
+  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span class="pv">${val(c,k)}</span><span class="star"${c.wins.includes(k)?' title="Better than all other controllers">&#9733;':' aria-hidden="true">'}</span></div>`;h+="</div>";}
   h+="<ul>";
   for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
   for(const k of c.watch)h+=`<li>Watch: ${lab(k)} (${val(c,k)})</li>`;

@@ -464,3 +464,23 @@ def test_stick_analysis_is_fast_on_long_sessions():
     s = time.perf_counter()
     res = analyse_stick(log, "l")
     assert res["enough"] and time.perf_counter() - s < 3.0
+
+
+def test_opening_a_report_does_not_read_the_whole_log(monkeypatch, tmp_path):
+    """User report (2026-11-22): the report is slow after long sessions. Opening the report
+    and the latency question read the whole log again only for its name."""
+    import os
+    from padlab import cli, logfile
+    from padlab.gui import Api
+    from tests.synth import build
+    path = os.path.join(str(tmp_path), "padlab_20261122_100000.csv.gz")
+    build(path)
+    cli.make_report(path, open_it=False, quiet=True)
+    calls = []
+    real = logfile.read_log
+    monkeypatch.setattr(logfile, "read_log", lambda p: calls.append(p) or real(p))
+    api = Api(str(tmp_path))
+    assert api.report_html(os.path.basename(path))["ok"]
+    assert api.latency_status(os.path.basename(path))["ok"]
+    assert calls == []
+    assert logfile.read_header(path).get("device")

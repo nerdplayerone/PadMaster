@@ -54,12 +54,12 @@ def report_is_stale(report: str, log_path: str) -> bool:
         return True
     import html as _html
     from .history import display_name
-    from .logfile import read_log
+    from .logfile import read_header, read_log
     with open(report, encoding="utf-8") as fh:
         head = fh.read(3000)
     if f'name="padlab-analysis" content="{ANALYSIS_VERSION}"' not in head:
         return True
-    meta = read_log(log_path).meta
+    meta = read_header(log_path)
     if f'name="padlab-name" content="{_html.escape(display_name(log_path, meta))}"' not in head:
         return True
     from .cli import latency_for
@@ -238,11 +238,11 @@ class Api:
         """Gamepadla match for this session: chosen, auto, ask or none, with suggestions."""
         from .cli import latency_for
         from .history import display_name
-        from .logfile import read_log
+        from .logfile import read_header, read_log
         log_path = os.path.join(self._out_dir, os.path.basename(log_file))
         if not os.path.isfile(log_path):
             return {"ok": False}
-        meta = read_log(log_path).meta
+        meta = read_header(log_path)
         res = latency_for(log_path, meta)
         return {"ok": True, "state": res["state"], "controller": display_name(log_path, meta),
                 "match": (res["entry"] or {}).get("name", ""), "suggest": res["suggest"]}
@@ -255,7 +255,7 @@ class Api:
         """Save the owner's choice for this controller: a Gamepadla page URL, or 'none'."""
         from .history import load_settings, model_key, save_setting
         from .latency import NONE, by_url
-        from .logfile import read_log
+        from .logfile import read_header, read_log
         log_path = os.path.join(self._out_dir, os.path.basename(log_file))
         if not os.path.isfile(log_path):
             return {"ok": False, "message": "The log file is missing."}
@@ -263,7 +263,7 @@ class Api:
             return {"ok": False, "message": "That controller is not in the Gamepadla data."}
         choices = load_settings(self._out_dir).get("latency_map", {})
         choices = choices if isinstance(choices, dict) else {}
-        choices[model_key(read_log(log_path).meta)] = url
+        choices[model_key(read_header(log_path))] = url
         save_setting(self._out_dir, "latency_map", choices)
         return self.report_html(log_file)
 
@@ -275,9 +275,9 @@ class Api:
         log_path = os.path.join(self._out_dir, lf)
         if not os.path.isfile(log_path):
             return {"ok": False, "message": "The log file is missing."}
-        from .logfile import read_log
+        from .logfile import read_header, read_log
         try:
-            meta = read_log(log_path).meta
+            meta = read_header(log_path)
         except Exception as exc:
             return {"ok": False, "message": f"PadMaster can't read the log: {exc}"}
         from .history import display_name, load_settings, save_setting

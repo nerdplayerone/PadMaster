@@ -3,7 +3,9 @@
 The window is a local web page shown with pywebview (Microsoft Edge WebView2 on
 Windows). It loads nothing from the internet. The only network use is the update
 check: one request to GitHub for the latest version number (on click, or once a day
-at start if the user leaves that on). It sends no user data.
+at start if the user leaves that on), and Update now: on a click only, it downloads
+PadMaster.exe from the owner's GitHub release and replaces this exe (see updater.py).
+It sends no user data.
 
 The SDL logger runs in a separate process (``padlab log --ipc``). It writes one JSON
 status line per second to stdout. The window stops it with a ``stop`` line on stdin.
@@ -420,7 +422,40 @@ class Api:
             return {"state": "error", "current": __version__, "message": "No release found."}
         newer = _version_tuple(tag) > _version_tuple(__version__)
         return {"state": "update" if newer else "latest", "current": __version__, "latest": tag,
+                "in_place": bool(getattr(sys, "frozen", False)),
                 "url": url if url.startswith(branding.RELEASES_URL) else branding.RELEASES_URL}
+
+    def update_now(self, fetch=None, download=None, start=None) -> dict:
+        """Download the latest PadMaster.exe, check it, and replace this app with it.
+        Only in the .exe, only on a click, and not while logging (owner decision, 2026-11-22)."""
+        import urllib.request
+        from . import updater
+        if not getattr(sys, "frozen", False) and start is None:
+            return {"ok": False, "message": "Update in place works only in PadMaster.exe."}
+        if self._proc and self._proc.poll() is None:
+            return {"ok": False, "message": "Stop logging first. Then update."}
+        try:
+            if fetch is None:
+                req = urllib.request.Request(branding.LATEST_API, headers={
+                    "User-Agent": "PadMaster", "Accept": "application/vnd.github+json"})
+                with urllib.request.urlopen(req, timeout=8) as r:
+                    data = json.loads(r.read().decode("utf-8"))
+            else:
+                data = fetch()
+            tag = str(data.get("tag_name", "")).lstrip("v")
+            if not tag or _version_tuple(tag) <= _version_tuple(__version__):
+                return {"ok": False, "message": f"You have the latest version ({__version__})."}
+            url, size, sha = updater.pick_asset(data)
+            dest = updater.temp_path(tag)
+            (download or updater.download)(url, dest, size, sha)
+            (start or updater.start_replace)(dest, sys.executable)
+        except updater.UpdateError as exc:
+            return {"ok": False, "message": str(exc)}
+        except Exception:
+            return {"ok": False, "message": "PadMaster can't get the update. Check your internet connection."}
+        if self._window is not None:
+            threading.Timer(0.8, self._window.destroy).start()
+        return {"ok": True, "message": f"PadMaster {tag} is ready. PadMaster closes and opens again."}
 
     def set_auto_update(self, on: bool) -> None:
         from .history import save_setting

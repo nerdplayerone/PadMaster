@@ -72,7 +72,7 @@ To delete sessions, tick them in **History** and click **Delete selected**, or c
 
 **Report a bug** opens a draft with your PadMaster version, Windows version and controller name. Read it, add what happened, then send it. Attach the log file if you can.
 
-**Updates:** PadMaster asks GitHub for the latest version number once a day when it starts. It sends no data about you. To stop this, clear **Check for updates when PadMaster starts**. **Check for updates** does the same check at any time. PadMaster does not install updates itself.
+**Updates:** PadMaster asks GitHub for the latest version number once a day when it starts. It sends no data about you. To stop this, clear **Check for updates when PadMaster starts**. **Check for updates** does the same check at any time. When a new version is available, click **Update now**. PadMaster downloads the new PadMaster.exe from the GitHub release and checks it against the checksum that GitHub publishes. Then PadMaster closes, replaces its own file (same folder, same name) and opens again. It downloads nothing until you click. Your logs, controller names and settings do not change. Tip: keep PadMaster.exe in its own folder, not in Downloads.
 
 ### Option B: Python
 

@@ -296,7 +296,10 @@ function syncPicked(){
 async function checkUpdate(auto){
  const m=$("updmsg");if(!auto){m.className="upd";m.textContent="Checking...";}
  const r=await api.check_update(auto);
- if(r.state==="update"){m.className="upd new";m.innerHTML=`PadMaster ${esc(r.latest)} is available. You have ${esc(r.current)}. <a id="getupd">Download it</a>`;$("getupd").onclick=()=>api.open_link(r.url);}
+ if(r.state==="update"){m.className="upd new";
+  m.innerHTML=`PadMaster ${esc(r.latest)} is available. You have ${esc(r.current)}. `+(r.in_place?`<a id="doupd">Update now</a> or <a id="getupd">see what is new</a>`:`<a id="getupd">Download it</a>`);
+  $("getupd").onclick=()=>api.open_link(r.url);
+  if(r.in_place)$("doupd").onclick=async()=>{m.textContent="Downloading the update...";const u=await api.update_now();m.textContent=u.message;};}
  else if(auto){return;}
  else if(r.state==="latest"){m.textContent=`You have the latest version (${r.current}).`;}
  else{m.textContent=r.message||"";}

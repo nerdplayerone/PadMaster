@@ -94,6 +94,14 @@ def main(argv: list[str] | None = None) -> int:
     ck = sub.add_parser("check", help="show each input live, to confirm the mapping")
     ck.add_argument("--pad", type=int, default=0, help="controller index (see 'padlab list')")
 
+    raw = list(sys.argv[1:] if argv is None else argv)
+    if raw[:1] == ["--self-replace"] and len(raw) >= 2:  # in-place update, see updater.py
+        from .updater import self_replace
+        return self_replace(raw[1])
+    if raw[:1] == ["--updated-from"] and len(raw) >= 2:
+        from .updater import cleanup_later
+        cleanup_later(raw[1])
+        argv = raw[2:]
     args = p.parse_args(argv)
 
     if args.cmd == "check":

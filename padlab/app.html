@@ -186,8 +186,14 @@ main{position:relative}
 @media (prefers-reduced-motion:reduce){.ch-fill,.ch-lim,.ch-dot,.ch-lab{transition:none}}
 /* Loading animation: a small controller, the face buttons light up one by one */
 .loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 0;color:var(--text-2);font-size:13px;letter-spacing:.08em}
-.loading svg{width:150px;height:105px}
-.loading .body{fill:none;stroke:var(--silver);stroke-width:2.6;stroke-linejoin:round}
+.loading .crt{position:relative;width:170px;height:120px;display:flex;align-items:center;justify-content:center;animation:crtflick 4s infinite}
+.loading svg{width:150px;height:105px;filter:drop-shadow(-0.9px 0 0 rgba(255,70,110,.55)) drop-shadow(0.9px 0 0 rgba(80,220,255,.55)) drop-shadow(0 0 5px rgba(170,225,255,.5)) drop-shadow(0 9px 7px rgba(0,0,0,.85))}
+.loading .crt::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(11,11,12,0) 0,rgba(11,11,12,0) 2px,rgba(11,11,12,.55) 3px)}
+.loading .crt::before{content:"";position:absolute;left:0;right:0;height:22px;top:-22px;pointer-events:none;background:linear-gradient(to bottom,rgba(170,225,255,0),rgba(170,225,255,.13),rgba(170,225,255,0));animation:crtscan 3.2s linear infinite}
+@keyframes crtscan{to{top:120px}}
+@keyframes crtflick{0%,46%,48%,72%,100%{opacity:1}47%{opacity:.82}73%{opacity:.94}}
+.loading .txt{text-shadow:-0.6px 0 rgba(255,70,110,.5),0.6px 0 rgba(80,220,255,.5),0 0 6px rgba(170,225,255,.35)}
+.loading .body{fill:rgba(170,225,255,.05);stroke:#e4ecf2;stroke-width:2.6;stroke-linejoin:round}
 .loading .fb,.loading .da{fill:var(--line-2);animation:padblink 1.2s infinite}
 .loading .fb2{animation-delay:.3s}.loading .fb3{animation-delay:.6s}.loading .fb4{animation-delay:.9s}
 .loading .da{animation-duration:1.6s}.loading .da2{animation-delay:.4s}.loading .da3{animation-delay:.8s}.loading .da4{animation-delay:1.2s}
@@ -200,7 +206,7 @@ main{position:relative}
 @keyframes stickr{0%,100%{transform:translate(0,0)}30%{transform:translate(-2px,-2px)}55%{transform:translate(2.5px,-.5px)}80%{transform:translate(0,2.4px)}}
 .loading .dots::after{content:"";animation:paddots 1.2s steps(4) infinite}
 @keyframes paddots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
-@media (prefers-reduced-motion:reduce){.loading .fb,.loading .da,.loading .stk-in,.loading .dots::after{animation:none}}
+@media (prefers-reduced-motion:reduce){.loading .fb,.loading .da,.loading .stk-in,.loading .dots::after,.loading .crt{animation:none}.loading .crt::before{display:none}}
 .brule{font-size:13px;color:var(--text-2);margin:0 0 14px;max-width:760px}
 .cmp-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer;background:none;color:var(--text);font-size:13px}
@@ -307,15 +313,15 @@ function when(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return iso
  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+"  "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 
 function loader(text){
- return `<div class="loading" role="status"><svg viewBox="0 0 100 70" aria-hidden="true">
+ return `<div class="loading" role="status"><div class="crt"><svg viewBox="0 0 100 70" aria-hidden="true">
   <path class="body" d="M30 8H70C82 8 88 12 91 22L97 50C99 63 87 69 79 60L71 51C66 48 34 48 29 51L21 60C13 69 1 63 3 50L9 22C12 12 18 8 30 8Z"/>
   <rect class="dc" x="23.5" y="22.5" width="4" height="4"/>
   <rect class="da" x="23.5" y="18" width="4" height="4.2" rx="1"/><rect class="da da2" x="27.8" y="22.5" width="4.2" height="4" rx="1"/>
   <rect class="da da3" x="23.5" y="26.8" width="4" height="4.2" rx="1"/><rect class="da da4" x="19" y="22.5" width="4.2" height="4" rx="1"/>
   <circle class="fb" cx="74" cy="18.5" r="3"/><circle class="fb fb2" cx="80.5" cy="24.5" r="3"/><circle class="fb fb3" cx="74" cy="30.5" r="3"/><circle class="fb fb4" cx="67.5" cy="24.5" r="3"/>
   <circle class="stk" cx="38" cy="38" r="6"/><circle class="stk-in sl" cx="38" cy="38" r="3"/>
-  <circle class="stk" cx="62" cy="38" r="6"/><circle class="stk-in sr" cx="62" cy="38" r="3"/></svg>
-  <div>${esc(text)}<span class="dots"></span></div></div>`;
+  <circle class="stk" cx="62" cy="38" r="6"/><circle class="stk-in sr" cx="62" cy="38" r="3"/></svg></div>
+  <div class="txt">${esc(text)}<span class="dots"></span></div></div>`;
 }
 
 function showTab(name){

@@ -56,17 +56,28 @@ class Log:
 class LogWriter:
     """Writes rows to a gzip CSV. Call ``flush`` often so a crash loses little data."""
 
-    def __init__(self, path: str, meta: dict):
+    def __init__(self, path: str, meta: dict, tap=None):
+        """``tap``: optional object with add(t, kind, name, value) and add_meta(meta). It gets
+        each row with the same values that read_log will read back (time rounded to 0.001 ms)."""
         self.path = path
+        self.tap = tap
+        if tap is not None:
+            tap.add_meta(meta)
         self._fh: TextIO = gzip.open(path, "wt", encoding="utf-8", newline="")
         self._fh.write("# " + json.dumps(meta) + "\n")
         self._buf: list[str] = []
 
     def write(self, t_ms: float, kind: str, name: str, value: int) -> None:
-        self._buf.append(f"{t_ms:.3f},{kind},{name},{int(value)}\n")
+        ts = f"{t_ms:.3f}"
+        self._buf.append(f"{ts},{kind},{name},{int(value)}\n")
+        if self.tap is not None:
+            self.tap.add(float(ts), kind, name, int(value))
 
     def meta(self, meta: dict) -> None:
-        self._buf.append("# " + json.dumps(meta) + "\n")
+        line = json.dumps(meta)
+        self._buf.append("# " + line + "\n")
+        if self.tap is not None:
+            self.tap.add_meta(json.loads(line))  # the same values read_log gets
 
     def flush(self) -> None:
         if self._buf:

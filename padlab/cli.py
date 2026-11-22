@@ -37,7 +37,8 @@ def latency_for(log_path: str, meta: dict) -> dict:
     return res
 
 
-def make_report(log_path: str, open_it: bool = True, quiet: bool = False, keep: dict | None = None) -> str:
+def make_report(log_path: str, open_it: bool = True, quiet: bool = False, keep: dict | None = None,
+                live=None) -> str:
     """Write the HTML report. If ``keep`` is a dict, the log and the analysis are put in it,
     so the caller can use them again without a second read (long sessions are slow to read)."""
     from .analysis import analyse
@@ -46,8 +47,12 @@ def make_report(log_path: str, open_it: bool = True, quiet: bool = False, keep: 
 
     from .history import display_name
 
-    log = read_log(log_path)
-    rep = analyse(log)
+    if live is not None:
+        log = live.as_log()  # analysed during play: no second read of a long log
+        rep = analyse(log, live)
+    else:
+        log = read_log(log_path)
+        rep = analyse(log)
     if keep is not None:
         keep.update(log=log, rep=rep)
     html_path = log_path.replace(".csv.gz", "").replace(".csv", "") + "_report.html"
@@ -141,7 +146,9 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         try:
             done: dict = {}
-            report = make_report(path, open_it=False, quiet=True, keep=done)
+            from . import logger as _lg
+            live = _lg.last_live if _lg.last_live is not None and _lg.last_live.meta.get("ended_ms") is not None else None
+            report = make_report(path, open_it=False, quiet=True, keep=done, live=live)
             from .history import update_index
             update_index(args.out, known={path: done["rep"]})
             auto = bool(done["log"].meta.get("auto_stopped"))

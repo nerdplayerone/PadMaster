@@ -315,3 +315,38 @@ def test_star_only_for_strictly_best_results(tmp_path):
     assert "update_rate_hz" in r["Fast"]["wins"] and "update_rate_hz" not in r["Slow"]["wins"]
     assert not (set(r["Fast"]["wins"]) & set(r["Slow"]["wins"]))
     assert r["Slow"]["wins"] == []  # every other value is the same: ties give no star
+
+
+def _replay_live(src, out):
+    """Write a log again through LogWriter with a LiveAnalysis tap (as the logger does)."""
+    from padlab.analysis import LiveAnalysis
+    from padlab.logfile import LogWriter, read_header, read_log
+    log = read_log(src)
+    head = read_header(src)
+    live = LiveAnalysis()
+    w = LogWriter(out, head, tap=live)
+    for e in log.events:
+        w.write(e.t, e.kind, e.name, e.value)
+    w.meta({k: v for k, v in log.meta.items() if k not in head} or {"ended_ms": log.duration_ms})
+    w.close()
+    return live
+
+
+def test_live_analysis_gives_the_same_report(tmp_path, monkeypatch):
+    """User report (2026-11-22): the report took too long after long sessions. The stick
+    checks now run during play. The result must be the same as a full analysis of the file,
+    also when the sample buffer is trimmed often."""
+    from padlab import analysis
+    from padlab.logfile import read_log
+    from padlab.report import render
+    from tests.synth import build
+    src = str(tmp_path / "padlab_20261122_100000.csv.gz")
+    build(src)
+    for trim in (analysis.StickAnalyser.TRIM_AT, 40):
+        monkeypatch.setattr(analysis.StickAnalyser, "TRIM_AT", trim)
+        out = str(tmp_path / f"replay_{trim}.csv.gz")
+        live = _replay_live(src, out)
+        a = analysis.analyse(live.as_log(), live)
+        b = analysis.analyse(read_log(out))
+        assert render(a) == render(b)
+        assert a.sticks["l"]["enough"] and a.session == b.session

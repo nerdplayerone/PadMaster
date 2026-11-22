@@ -12,6 +12,7 @@ tune them. They are judgement calls, not industry standards.
 from __future__ import annotations
 
 import math
+from array import array
 from dataclasses import dataclass, field
 from typing import Iterable
 
@@ -20,6 +21,7 @@ from .logfile import (
     DPAD_BUTTONS,
     FACE_AND_SHOULDER,
     PADDLES,
+    Event,
     Log,
 )
 
@@ -268,133 +270,332 @@ def rest_windows(samples, end_ms: float, nm=None) -> list[dict]:
     return windows
 
 
+class LiveAnalysis:
+    """Analysis that runs during logging (user report, 2026-11-22). The logger gives it each
+    row (see the LogWriter tap). Stick rows go to two StickAnalysers. Other rows (buttons,
+    triggers, D-pad, prompts, connection) are kept: they are few, and their checks are fast.
+    At Stop, analyse(live.as_log(), live) gives the same Report as analyse(read_log(path))."""
+
+    STICK = {"lx": "l", "ly": "l", "rx": "r", "ry": "r"}
+
+    def __init__(self):
+        self.meta: dict = {}
+        self.events: list[Event] = []
+        self.sticks = {"l": StickAnalyser("lx", "ly"), "r": StickAnalyser("rx", "ry")}
+        self.stick_inputs = 0
+        self.stick_minutes: set[int] = set()
+        self.n = 0
+        self.last_t = 0.0
+
+    def add_meta(self, meta: dict) -> None:
+        self.meta.update(meta)
+
+    def add(self, t: float, kind: str, name: str, value: int) -> None:
+        self.n += 1
+        self.last_t = t
+        side = self.STICK.get(name) if kind == "a" else None
+        if side:
+            self.sticks[side].feed(t, name, value)
+            self.stick_inputs += 1
+            self.stick_minutes.add(int(t // 60000))
+        else:
+            self.events.append(Event(t, kind, name, value))
+
+    def duration_ms(self) -> float:
+        if not self.n:
+            return 0.0
+        end = self.meta.get("ended_ms")
+        return float(end) if end is not None else self.last_t
+
+    def as_log(self) -> Log:
+        return _LiveLog(meta=self.meta, events=self.events, live=self)
+
+
+@dataclass
+class _LiveLog(Log):
+    live: "LiveAnalysis | None" = None
+
+    @property
+    def duration_ms(self) -> float:
+        return self.live.duration_ms()
+
+
 def analyse_stick(log: Log, side: str) -> dict:
-    th = THRESHOLDS
-    xn, yn = f"{side}x", f"{side}y"
-    s = stick_samples(log, xn, yn)
-    res: dict = {"samples": len(s)}
-    if len(s) < th["min_stick_samples"]:
-        res["enough"] = False
-        return res
-    res["enough"] = True
-    end = log.duration_ms
-    nm = norm_samples(s)
+    """All stick checks for one stick ("l" or "r"). See StickAnalyser."""
+    an = StickAnalyser(f"{side}x", f"{side}y")
+    for e in log.events:
+        if e.kind == "a":
+            an.feed(e.t, e.name, e.value)
+    return an.finish(log.duration_ms)
 
-    # Rest / drift
-    wins = rest_windows(s, end, nm)
-    handsoff = [w for w in wins if w["t"] < th["handsoff_window_ms"]]
-    if handsoff:
-        # Use only the start of the session for the hands-off check. A long rest window can end
-        # with the player picking up the pad and touching the stick.
-        w0 = handsoff[0]
-        hi = min(w0["t_end"] - th["rest_trim_ms"], th["handsoff_window_ms"])
-        ws = window_stats(s, w0["i_start"], w0["j"], w0["t"] + th["rest_trim_ms"], hi, end, nm)
-        handsoff = [{**w0, **ws}] if ws else []
-    res["rest_windows"] = len(wins)
-    res["handsoff"] = handsoff[0] if handsoff else None
-    res["rest_typical"] = percentile([w["mean_mag"] for w in wins], 0.5) if wins else float("nan")
-    res["rest_worst"] = percentile([w["max_mag"] for w in wins], 0.9) if wins else float("nan")
-    res["rest_points"] = [(w["x"], w["y"]) for w in wins][:400]
-    res["rest_all_zero"] = bool(wins) and all(w["max_mag"] == 0 for w in wins)
-    if handsoff:
-        basis = handsoff[0]["max_mag"]
-    else:
-        basis = res["rest_worst"]
-    res["safe_deadzone"] = float("nan") if math.isnan(basis) else math.ceil((basis + 0.02) * 100) / 100
 
-    # Inner (radial) deadzone: smallest non-zero position the pad ever reports.
-    nz = [q[2] for (_, x, y), q in zip(s, nm) if x or y]
-    res["inner_dz"] = min(nz) if nz else float("nan")
+class StickAnalyser:
+    """Stick checks, one sample at a time (user report, 2026-11-22: the report took too long
+    after long sessions). The logger feeds it during play, so at Stop only the last steps run.
+    The normal report (analyse_stick) uses the same class, so both give the same results.
 
-    # Axial band: smallest non-zero value on one axis while the other axis is pushed.
-    def band(a_idx: int) -> tuple[float, float, int]:
-        b_idx = 2 if a_idx == 1 else 1
-        a, b, lim = a_idx - 1, b_idx - 1, th["axial_other_axis"]
-        vals = [abs(q[a]) for q in nm if abs(q[b]) > lim]
-        if len(vals) < 50:
-            return float("nan"), float("nan"), len(vals)
-        nonzero = [v for v in vals if v > 0]
-        zero_share = 1 - len(nonzero) / len(vals)
-        return (min(nonzero) if nonzero else 1.0), zero_share, len(vals)
+    It keeps only what the checks need: running minimums, maximums and counts, the stream
+    intervals, the set of raw values, and the samples since the start of the current rest
+    window search (plus centre_lookback_ms before it)."""
 
-    bx, zx, cx = band(1)
-    by, zy, cy = band(2)
-    res["axial_x"], res["axial_zero_share_x"] = bx, zx
-    res["axial_y"], res["axial_zero_share_y"] = by, zy
-    candidates = [b for b, z in ((bx, zx), (by, zy)) if not math.isnan(b) and z > 0.05]
-    res["axial_band"] = max(candidates) if candidates else (0.0 if not (math.isnan(bx) and math.isnan(by)) else float("nan"))
+    TRIM_AT = 50000  # drop old buffered samples when this many can go
 
-    # Outer reach by direction.
-    n_sec = th["outer_sectors"]
-    reach = [0.0] * n_sec
-    hit = [False] * n_sec
-    min_mag = th["outer_min_mag"]
-    for nx, ny, m in nm:
-        ny = -ny
-        if m < min_mag:
-            continue
-        ang = (math.degrees(math.atan2(ny, nx)) + 360) % 360
-        k = int(ang // (360 / n_sec)) % n_sec
-        hit[k] = True
-        reach[k] = max(reach[k], m)
-    covered = [reach[k] for k in range(n_sec) if hit[k]]
-    res["reach"] = [reach[k] if hit[k] else None for k in range(n_sec)]
-    res["reach_covered"] = len(covered)
-    if len(covered) >= th["outer_min_covered"]:
-        capped = [min(1.0, r) for r in covered]
-        res["outer_avg"] = sum(capped) / len(capped)
-        res["outer_min"] = min(capped)
-        res["outer_full_share"] = sum(1 for r in covered if r >= 0.98) / len(covered)
-    else:
-        res["outer_avg"] = res["outer_min"] = res["outer_full_share"] = float("nan")
+    def __init__(self, xn: str, yn: str):
+        th = THRESHOLDS
+        self.xn, self.yn = xn, yn
+        self.x = self.y = 0
+        self.pending: tuple[float, int, int] | None = None
+        self.n = 0                       # samples committed
+        self.base = 0                    # absolute index of buf[0]
+        self.buf: list[tuple[float, int, int]] = []
+        self.nmb: list[tuple[float, float, float]] = []
+        self.i = 0                       # rest window search position (absolute)
+        self.j = 0                       # search progress for the window that starts at i
+        self.wins: list[dict] = []
+        self.handsoff: dict | None = None
+        self.handsoff_done = False
+        self.noise: dict | None = None
+        self.returns: list[tuple[float, float]] = []
+        self.inner = math.inf
+        self.band = {1: [0, 0, math.inf], 2: [0, 0, math.inf]}  # count, nonzero, min nonzero
+        self.n_sec = th["outer_sectors"]
+        self.reach = [0.0] * self.n_sec
+        self.hit = [False] * self.n_sec
+        self.grid = [[0] * 41 for _ in range(41)]
+        self.vals = ({}, {})              # raw x values, raw y values (dict keeps it fast)
+        self.prev: tuple[float, float, float, float] | None = None  # t, nx, ny, mag
+        self.st_idx = array("q")
+        self.st_dt = array("d")
+        self.st_jump = array("d")
+        self.cand: list[int] = []         # stream positions that can be stutters
+        self.cand_t: list[float] = []
 
-    # Heatmap (sample counts on a 41 x 41 grid, up = up).
-    g = 41
-    grid = [[0] * g for _ in range(g)]
-    for nx, ny, _ in nm:
-        gx = min(g - 1, int((nx + 1) / 2 * g))
-        gy = min(g - 1, int((ny + 1) / 2 * g))  # SDL y: down is +, so row 0 = up
-        grid[gy][gx] += 1
-    res["heatmap"] = grid
+    # -- input
+    def feed(self, t: float, name: str, value: int) -> None:
+        if name == self.xn:
+            self.x = value
+        elif name == self.yn:
+            self.y = value
+        else:
+            return
+        p = self.pending
+        if p is not None and p[0] != t:
+            self._commit(p)
+        self.pending = (t, self.x, self.y)
 
-    # Stutter: long gaps during continuous movement, with a big jump across the gap.
-    stream = []
-    smag = th["stream_mag"]
-    for i in range(1, len(s)):
-        x1, y1, m1 = nm[i - 1]
-        x2, y2, m2 = nm[i]
-        if m1 > smag and m2 > smag:
-            stream.append((i, s[i][0] - s[i - 1][0], math.hypot(x2 - x1, y2 - y1)))
-    dts = [d for _, d, _ in stream if d > 0]
-    med = percentile(dts, 0.5) if dts else float("nan")
-    res["update_ms"] = med
-    stutters = []
-    motion_ms = 0.0
-    if dts:
-        gap_limit = max(th["stutter_min_gap_ms"], th["stutter_gap_x_median"] * med)
-        for idx, (i, dt, jump) in enumerate(stream):
-            if dt <= 3 * med:
-                motion_ms += dt
-            if dt > gap_limit and jump > th["stutter_jump"]:
-                prev_ok = idx > 0 and stream[idx - 1][0] == i - 1 and stream[idx - 1][1] <= 3 * med
-                next_ok = idx + 1 < len(stream) and stream[idx + 1][0] == i + 1 and stream[idx + 1][1] <= 3 * med
+    def _commit(self, smp: tuple[float, int, int]) -> None:
+        th = THRESHOLDS
+        t, x, y = smp
+        nx = x / AXIS_MAX
+        ny = y / AXIS_MAX
+        nx = 1.0 if nx > 1.0 else -1.0 if nx < -1.0 else nx
+        ny = 1.0 if ny > 1.0 else -1.0 if ny < -1.0 else ny
+        m = math.hypot(nx, ny)
+        idx = self.n
+        self.n += 1
+        self.buf.append(smp)
+        self.nmb.append((nx, ny, m))
+        self.vals[0][x] = 1
+        self.vals[1][y] = 1
+        if (x or y) and m < self.inner:
+            self.inner = m
+        lim = th["axial_other_axis"]
+        for a, va, vb in ((1, nx, ny), (2, ny, nx)):
+            if abs(vb) > lim:
+                b = self.band[a]
+                b[0] += 1
+                av = abs(va)
+                if av > 0:
+                    b[1] += 1
+                    if av < b[2]:
+                        b[2] = av
+        if m >= th["outer_min_mag"]:
+            ang = (math.degrees(math.atan2(-ny, nx)) + 360) % 360
+            k = int(ang // (360 / self.n_sec)) % self.n_sec
+            self.hit[k] = True
+            if m > self.reach[k]:
+                self.reach[k] = m
+        g = 41
+        self.grid[min(g - 1, int((ny + 1) / 2 * g))][min(g - 1, int((nx + 1) / 2 * g))] += 1
+        pv = self.prev
+        smag = th["stream_mag"]
+        if pv is not None and pv[3] > smag and m > smag:
+            dt = t - pv[0]
+            jump = math.hypot(nx - pv[1], ny - pv[2])
+            if dt > th["stutter_min_gap_ms"] and jump > th["stutter_jump"]:
+                self.cand.append(len(self.st_idx))
+                self.cand_t.append(t)
+            self.st_idx.append(idx)
+            self.st_dt.append(dt)
+            self.st_jump.append(jump)
+        self.prev = (t, nx, ny, m)
+        self._scan(None)
+
+    # -- rest windows (same rule as rest_windows, run on the buffer)
+    def _scan(self, end_ms: float | None) -> None:
+        th = THRESHOLDS
+        radius, tol = th["rest_radius"], th["rest_tolerance"]
+        buf, nmb, base = self.buf, self.nmb, self.base
+        n = len(buf)
+        i = self.i
+        while i - base < n:
+            li = i - base
+            nx0, ny0, m0 = nmb[li]
+            if m0 >= radius:
+                i += 1
+                continue
+            j = max(self.j, i) - base
+            while j < n:
+                nxj, nyj, mj = nmb[j]
+                if abs(nxj - nx0) > tol or abs(nyj - ny0) > tol or mj >= radius:
+                    break
+                j += 1
+            if j >= n and end_ms is None:
+                self.j = j + base  # the window can still grow: wait for more samples
+                break
+            t0 = buf[li][0]
+            t_end = buf[j][0] if j < n else end_ms
+            dur = t_end - t0
+            if dur >= th["rest_min_ms"] and dur > 0:
+                lo, hi = t0 + th["rest_trim_ms"], t_end - th["rest_trim_ms"]
+                ws = window_stats(buf, li, j, lo, hi, end_ms if end_ms is not None else t_end, nmb)
+                if ws:
+                    ws["i0"] += base
+                    ws["i1"] += base
+                    w = {"t": t0, "dur": dur, "t_end": t_end, "i_start": i, "j": j + base, **ws}
+                    self.wins.append(w)
+                    self._window_done(w, li, j, end_ms)
+            i = max(j + base, i + 1)
+            self.j = i
+        self.i = i
+        self._trim()
+
+    def _window_done(self, w: dict, li: int, lj: int, end_ms: float | None) -> None:
+        import bisect
+        th = THRESHOLDS
+        buf, nmb, base = self.buf, self.nmb, self.base
+        if not self.handsoff_done and w["t"] < th["handsoff_window_ms"]:
+            self.handsoff_done = True
+            hi = min(w["t_end"] - th["rest_trim_ms"], th["handsoff_window_ms"])
+            ws = window_stats(buf, li, lj, w["t"] + th["rest_trim_ms"], hi,
+                              end_ms if end_ms is not None else w["t_end"], nmb)
+            if ws:
+                ws["i0"] += base
+                ws["i1"] += base
+                self.handsoff = {**w, **ws}
+                self.noise = _rest_noise(buf, self.handsoff)
+        times_k = bisect.bisect_left(buf, w["t"] - th["centre_lookback_ms"], 0, w["i0"] - base, key=lambda s: s[0])
+        cf = th["centre_from"]
+        if any(nmb[q][2] > cf for q in range(times_k, w["i0"] - base)):
+            self.returns.append((w["x"], w["y"]))
+
+    def _trim(self) -> None:
+        # Keep centre_lookback_ms before the search position (for the centre return check).
+        li = self.i - self.base
+        if li < self.TRIM_AT:
+            return
+        # A later window starts at a sample at or after buf[li] (or after the newest sample).
+        ref_t = self.buf[li][0] if li < len(self.buf) else self.buf[-1][0]
+        keep_t = ref_t - THRESHOLDS["centre_lookback_ms"]
+        cut = 0
+        while cut < li and self.buf[cut][0] < keep_t:
+            cut += 1
+        if cut >= self.TRIM_AT // 2:
+            del self.buf[:cut]
+            del self.nmb[:cut]
+            self.base += cut
+
+    # -- result
+    def finish(self, end_ms: float) -> dict:
+        th = THRESHOLDS
+        if self.pending is not None:
+            self._commit(self.pending)
+            self.pending = None
+        res: dict = {"samples": self.n}
+        if self.n < th["min_stick_samples"]:
+            res["enough"] = False
+            return res
+        res["enough"] = True
+        self._scan(end_ms)
+        wins = self.wins
+        res["rest_windows"] = len(wins)
+        res["handsoff"] = self.handsoff
+        res["rest_typical"] = percentile([w["mean_mag"] for w in wins], 0.5) if wins else float("nan")
+        res["rest_worst"] = percentile([w["max_mag"] for w in wins], 0.9) if wins else float("nan")
+        res["rest_points"] = [(w["x"], w["y"]) for w in wins][:400]
+        res["rest_all_zero"] = bool(wins) and all(w["max_mag"] == 0 for w in wins)
+        basis = self.handsoff["max_mag"] if self.handsoff else res["rest_worst"]
+        res["safe_deadzone"] = float("nan") if math.isnan(basis) else math.ceil((basis + 0.02) * 100) / 100
+        res["inner_dz"] = self.inner if self.inner != math.inf else float("nan")
+
+        def band(a: int) -> tuple[float, float, int]:
+            cnt, nz, mn = self.band[a]
+            if cnt < 50:
+                return float("nan"), float("nan"), cnt
+            return (mn if nz else 1.0), 1 - nz / cnt, cnt
+
+        bx, zx, _ = band(1)
+        by, zy, _ = band(2)
+        res["axial_x"], res["axial_zero_share_x"] = bx, zx
+        res["axial_y"], res["axial_zero_share_y"] = by, zy
+        candidates = [b for b, z in ((bx, zx), (by, zy)) if not math.isnan(b) and z > 0.05]
+        res["axial_band"] = max(candidates) if candidates else (0.0 if not (math.isnan(bx) and math.isnan(by)) else float("nan"))
+
+        n_sec, reach, hit = self.n_sec, self.reach, self.hit
+        covered = [reach[k] for k in range(n_sec) if hit[k]]
+        res["reach"] = [reach[k] if hit[k] else None for k in range(n_sec)]
+        res["reach_covered"] = len(covered)
+        if len(covered) >= th["outer_min_covered"]:
+            capped = [min(1.0, r) for r in covered]
+            res["outer_avg"] = sum(capped) / len(capped)
+            res["outer_min"] = min(capped)
+            res["outer_full_share"] = sum(1 for r in covered if r >= 0.98) / len(covered)
+        else:
+            res["outer_avg"] = res["outer_min"] = res["outer_full_share"] = float("nan")
+        res["heatmap"] = self.grid
+
+        st_idx, st_dt, st_jump = self.st_idx, self.st_dt, self.st_jump
+        dts = [d for d in st_dt if d > 0]
+        med = percentile(dts, 0.5) if dts else float("nan")
+        res["update_ms"] = med
+        stutters = []
+        motion_ms = 0.0
+        if dts:
+            lim3 = 3 * med
+            for d in st_dt:  # the same order of additions as before (exact same result)
+                if d <= lim3:
+                    motion_ms += d
+            gap_limit = max(th["stutter_min_gap_ms"], th["stutter_gap_x_median"] * med)
+            ns = len(st_idx)
+            for p, pt in zip(self.cand, self.cand_t):
+                dt, jump, i = st_dt[p], st_jump[p], st_idx[p]
+                if not (dt > gap_limit and jump > th["stutter_jump"]):
+                    continue
+                prev_ok = p > 0 and st_idx[p - 1] == i - 1 and st_dt[p - 1] <= lim3
+                next_ok = p + 1 < ns and st_idx[p + 1] == i + 1 and st_dt[p + 1] <= lim3
                 speed_ok = False
                 if prev_ok:
-                    _, pdt, pjump = stream[idx - 1]
+                    pdt, pjump = st_dt[p - 1], st_jump[p - 1]
                     expected = (pjump / pdt) * dt if pdt > 0 else 0.0
                     speed_ok = jump >= th["stutter_speed_match"] * expected
                 if prev_ok and next_ok and speed_ok:
-                    stutters.append({"t": s[i][0], "gap_ms": dt, "jump": jump})
-    res["stutters"] = stutters
-    res["motion_min"] = motion_ms / 60000
-    # Intervals during steady movement (pauses removed), for the update-rate check.
-    res["move_intervals"] = [d for d in dts if d <= 3 * med] if dts else []
+                    stutters.append({"t": pt, "gap_ms": dt, "jump": jump})
+        res["stutters"] = stutters
+        res["motion_min"] = motion_ms / 60000
+        res["move_intervals"] = [d for d in dts if d <= 3 * med] if dts else []
 
-    res.update(_stick_resolution(s))
-    res.update(_circularity(res["reach"]))
-    res.update(_rest_noise(s, res["handsoff"]))
-    res.update(_centre_return(s, wins, nm))
-    return res
+        res.update(_resolution_from_values(sorted(self.vals[0]), sorted(self.vals[1])))
+        res.update(_circularity(res["reach"]))
+        res.update(self.noise if self.noise is not None else _rest_noise([], None))
+        returns = self.returns
+        out = {"centre_returns": len(returns)}
+        if len(returns) >= th["centre_min_returns"]:
+            out["centre_err"] = percentile([math.hypot(x, y) for x, y in returns], 0.9)
+            out["centre_spread"] = max(math.hypot(a[0] - b[0], a[1] - b[1]) for a in returns for b in returns)
+        else:
+            out["centre_err"] = out["centre_spread"] = float("nan")
+        res.update(out)
+        return res
 
 
 def _centre_return(s, wins, nm=None) -> dict:
@@ -423,10 +624,14 @@ def _stick_resolution(s) -> dict:
     In a long session the stick passes through most positions, so neighbouring values
     in the sorted list are one step apart. Steps from centre = 32767 / step.
     """
+    return _resolution_from_values(sorted({smp[1] for smp in s}), sorted({smp[2] for smp in s}))
+
+
+def _resolution_from_values(vx: list[int], vy: list[int]) -> dict:
+    """_stick_resolution from the sorted distinct raw values of each axis."""
     th = THRESHOLDS
     out: dict = {}
-    for idx, axis in ((1, "x"), (2, "y")):
-        vals = sorted({smp[idx] for smp in s})
+    for vals, axis in ((vx, "x"), (vy, "y")):
         gaps = [b - a for a, b in zip(vals, vals[1:]) if 0 < b - a <= th["resolution_max_gap"]]
         # Need values over at least half the full range. Count gaps, not values: a coarse
         # stick has few values, and that is the fault this check must find.
@@ -1052,9 +1257,19 @@ def _drop_flicker_doubles(r: Report) -> None:
         r.buttons[kind + "_total"] = sum(r.buttons[kind + "s"].values())
 
 
-def analyse(log: Log) -> Report:
-    r = Report(meta=log.meta, session=session_info(log))
-    r.sticks = {"l": analyse_stick(log, "l"), "r": analyse_stick(log, "r")}
+def analyse(log: Log, live: "LiveAnalysis | None" = None) -> Report:
+    """Full analysis. With ``live`` (from the logger), the stick checks are already done."""
+    if live is None:
+        r = Report(meta=log.meta, session=session_info(log))
+        r.sticks = {"l": analyse_stick(log, "l"), "r": analyse_stick(log, "r")}
+    else:
+        si = session_info(log)
+        others = {int(e.t // 60000) for e in log.events if e.kind in ("a", "b")}
+        si["inputs"] += live.stick_inputs
+        si["active_min"] = len(others | live.stick_minutes)
+        r = Report(meta=log.meta, session=si)
+        end = live.duration_ms()
+        r.sticks = {k: an.finish(end) for k, an in live.sticks.items()}
     r.triggers = {"lt": analyse_trigger(log, "lt"), "rt": analyse_trigger(log, "rt")}
     r.buttons = analyse_buttons(log)
     r.dpad = analyse_dpad(log)

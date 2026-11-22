@@ -282,6 +282,10 @@ CONNECTIONS = ("Wired", "Dongle", "Bluetooth")
 IDLE_MOVE = 0.08  # stick/trigger movement (share of full range) that counts as use
 
 
+# The LiveAnalysis of the last run() in this process (None before the first run).
+last_live = None
+
+
 def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         ipc: bool = False, stop_flag: dict | None = None, label: str = "",
         connection: str = "", idle_stop_s: float | None = None, guided: bool = False,
@@ -348,7 +352,10 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         meta["guided"] = True
         meta["guided_seed"] = seed
         idle_stop_s = None  # the hands-off step must not stop the test
-    writer = LogWriter(path, meta)
+    global last_live
+    from .analysis import LiveAnalysis
+    last_live = LiveAnalysis()  # the stick checks run during play; see cli.make_report
+    writer = LogWriter(path, meta, tap=last_live)
 
     say(f"Logging: {pad.name}  ({meta['mode']} mode)")
     if not pad.mapped:

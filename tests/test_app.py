@@ -484,3 +484,26 @@ def test_opening_a_report_does_not_read_the_whole_log(monkeypatch, tmp_path):
     assert api.latency_status(os.path.basename(path))["ok"]
     assert calls == []
     assert logfile.read_header(path).get("device")
+
+
+def test_ipc_stop_uses_the_live_analysis(monkeypatch, tmp_path):
+    """At Stop the logger's live analysis is used: the long log is not read again."""
+    import os
+    from padlab import cli, logfile, logger
+    from tests.test_analysis import _replay_live
+    from tests.synth import build
+    src = os.path.join(str(tmp_path), "src.csv.gz")
+    build(src)
+    path = os.path.join(str(tmp_path), "padlab_20261122_110000.csv.gz")
+    live = _replay_live(src, path)
+    monkeypatch.setattr(logger, "last_live", live)
+    monkeypatch.setattr(logger, "run", lambda *a, **k: path)
+    reads = []
+    real = logfile.read_log
+    monkeypatch.setattr(logfile, "read_log", lambda p: reads.append(p) or real(p))
+    monkeypatch.setattr(cli, "read_log", lambda p: reads.append(p) or real(p), raising=False)
+    out = []
+    monkeypatch.setattr(logger, "emit", lambda d: out.append(d))
+    cli.main(["log", "--ipc", "--out", str(tmp_path)])
+    assert out[-1]["state"] == "done" and out[-1]["report"]
+    assert path not in reads

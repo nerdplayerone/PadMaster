@@ -1227,13 +1227,16 @@ def rank_controllers(groups: dict[str, list[dict]], min_checks: int = 5,
         vals = {k: v for k, v in allvals.items() if k in gkeys}
         grades = {k: grade_metric(gkeys[k], v) for k, v in vals.items()}
         perf = {k: perf_score(k, allvals[k]) for k in PERF_KEYS if k in allvals}
+        # Star (owner request, 2026-11-22): checks where this controller is better than every
+        # other controller. A tie gives no star, so the stars show what makes a pad different.
         wins = []
-        for m in graded:
+        for m in METRICS:
             k = m["key"]
-            if k not in vals:
+            if k not in allvals or m.get("better") not in ("low", "high"):
                 continue
-            others = [med[o][k] for o in med if k in med[o]]
-            if len(others) > 1 and vals[k] == (min(others) if m["better"] == "low" else max(others)):
+            others = [med[o][k] for o in med if o != name and k in med[o]]
+            v = allvals[k]
+            if others and all((v < x) if m["better"] == "low" else (v > x) for x in others):
                 wins.append(k)
         out.append({
             "name": name, "sessions": len(groups[name]), "checks": len(vals),

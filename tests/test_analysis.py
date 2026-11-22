@@ -304,3 +304,14 @@ def test_price_rule_needs_two_prices(tmp_path):
 def test_price_bar_rule():
     from padlab.analysis import price_bar
     assert price_bar(30, 30, 10) == 0 and price_bar(60, 30, 10) == 10 and price_bar(120, 30, 10) == 20
+
+
+def test_star_only_for_strictly_best_results(tmp_path):
+    """Owner request (2026-11-22): a star next to a result that beats all other controllers.
+    A tie gives no star."""
+    from padlab.analysis import rank_controllers
+    g = _priced_groups(tmp_path, {"Fast": 946, "Slow": 246})
+    r = {c["name"]: c for c in rank_controllers(g, min_checks=1)}
+    assert "update_rate_hz" in r["Fast"]["wins"] and "update_rate_hz" not in r["Slow"]["wins"]
+    assert not (set(r["Fast"]["wins"]) & set(r["Slow"]["wins"]))
+    assert r["Slow"]["wins"] == []  # every other value is the same: ties give no star

@@ -147,6 +147,7 @@ main{position:relative}
 .bcard .pos{display:inline-block;min-width:34px;font-weight:700;color:var(--text-2)}
 .bcard .sum{font-size:13px;color:var(--text-2)}
 .bcard ul{margin:6px 0 0 18px;padding:0;font-size:13px}
+.star{color:#f2f2f5}
 .bscore{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}
 .bprice{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 12px}.bprice input{accent-color:#d9d9de;width:180px}.bprice .sub{flex-basis:100%}
 .bpr{margin:0 0 6px;font-size:13px;color:var(--text-2,#b9b9c2)}.bpr .pin{width:90px;margin-left:6px;background:#1b1b1e;color:inherit;border:1px solid #2e2e33;border-radius:4px;padding:3px 6px;font:inherit}
@@ -550,12 +551,11 @@ async function renderBest(){
   h+=c.points>0?`<div class="bscore"><b>${c.overall==null?"-":Math.round(c.overall)}</b><span>Value score</span></div><div class="sum">Performance score ${c.score==null?"-":Math.round(c.score)}. Price bar ${c.price_bar==null?"-":"-"+(+c.price_bar).toFixed(1)}.</div>`
    :`<div class="bscore"><b>${c.score==null?"-":Math.round(c.score)}</b><span>Performance score</span></div>`;
   h+=`<div class="bpr"><label>Price <input class="pin" data-n="${esc(c.name)}" inputmode="decimal" placeholder="none" value="${c.price??""}"></label></div>`;
-  h+=`<div class="sum">${c.ranked?"":(c.points>0&&c.price==null&&c.score!=null?"Not ranked: add a price. ":"Not ranked: too few checks have a result. ")}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}). Best value in ${c.wins.length} checks.</div>`;
-  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span>${val(c,k)}</span></div>`;h+="</div>";}
+  h+=`<div class="sum">${c.ranked?"":(c.points>0&&c.price==null&&c.score!=null?"Not ranked: add a price. ":"Not ranked: too few checks have a result. ")}${c.sessions} session${c.sessions===1?"":"s"}. Faults: ${c.problems.length} Problem, ${c.watch.length} Watch (worst result: ${st}).</div>`;
+  if(pk.length){h+='<div class="pgrid">';for(const k of pk)h+=`<div class="prow" title="${lab(k)}: ${val(c,k)}, score ${Math.round(c.perf[k])}"><span>${lab(k)}</span><span class="pbar"><i style="width:${c.perf[k]}%"></i></span><span>${val(c,k)}${c.wins.includes(k)?' <span class="star" title="Better than all other controllers">&#9733;</span>':""}</span></div>`;h+="</div>";}
   h+="<ul>";
   for(const k of c.problems)h+=`<li>Problem: ${lab(k)} (${val(c,k)})</li>`;
   for(const k of c.watch)h+=`<li>Watch: ${lab(k)} (${val(c,k)})</li>`;
-  if(c.wins.length)h+=`<li>Best value: ${c.wins.map(lab).join(", ")}</li>`;
   h+="</ul></div>";
  }
  $("best").innerHTML=h;

@@ -527,4 +527,4 @@ def test_app_has_chart_tab_coloured_best_bars_and_loader():
     h = (pathlib.Path(__file__).parent.parent / "padlab" / "app.html").read_text(encoding="utf-8")
     assert 'id="tab-chart"' in h and "async function renderChart()" in h
     assert 'g-"+c.grades[k]' in h and ".pbar i.g-ok" in h
-    assert 'loader("Making the report")' in h and ".loading .scr,.loading .fb,.loading .da,.loading .stk-in" in h
+    assert 'loader("Making the report")' in h and ".loading .main,.loading .scr,.loading .fb,.loading .da,.loading .stk-in" in h

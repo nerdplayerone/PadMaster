@@ -186,15 +186,15 @@ main{position:relative}
 @media (prefers-reduced-motion:reduce){.ch-fill,.ch-lim,.ch-dot,.ch-lab{transition:none}}
 /* Loading animation: a small controller, the face buttons light up one by one */
 .loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 0;color:var(--text-2);font-size:13px;letter-spacing:.08em}
-.loading svg{width:168px;height:112px}
-.loading .body{fill:none;stroke:var(--silver);stroke-width:3;stroke-linejoin:round}
+.loading svg{width:150px;height:105px}
+.loading .body{fill:none;stroke:var(--silver);stroke-width:2.6;stroke-linejoin:round}
 .loading .fb{fill:var(--line-2);animation:padblink 1.2s infinite}
 .loading .fb:nth-of-type(2){animation-delay:.3s}.loading .fb:nth-of-type(3){animation-delay:.6s}.loading .fb:nth-of-type(4){animation-delay:.9s}
 .loading .dp{fill:var(--silver);opacity:.8}
-.loading .stk{fill:none;stroke:var(--muted);stroke-width:2}
+.loading .stk{fill:none;stroke:var(--muted);stroke-width:1.8}
 .loading .stk-in{fill:var(--silver);animation:padstick 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
 @keyframes padblink{0%,60%,100%{fill:var(--line-2)}20%{fill:var(--text)}}
-@keyframes padstick{0%,100%{transform:translate(0,0)}25%{transform:translate(3px,-2px)}50%{transform:translate(0,3px)}75%{transform:translate(-3px,-1px)}}
+@keyframes padstick{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-1.5px)}50%{transform:translate(0,2px)}75%{transform:translate(-2px,-1px)}}
 .loading .dots::after{content:"";animation:paddots 1.2s steps(4) infinite}
 @keyframes paddots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
 @media (prefers-reduced-motion:reduce){.loading .fb,.loading .stk-in,.loading .dots::after{animation:none}}
@@ -304,12 +304,12 @@ function when(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return iso
  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+"  "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 
 function loader(text){
- return `<div class="loading" role="status"><svg viewBox="0 0 120 80" aria-hidden="true">
-  <path class="body" d="M30 14h60c14 0 22 10 25 26l3 18c2 12-10 18-18 10l-10-10H30L20 68c-8 8-20 2-18-10l3-18C8 24 16 14 30 14z"/>
-  <rect class="dp" x="22" y="30" width="16" height="5" rx="1"/><rect class="dp" x="27.5" y="24.5" width="5" height="16" rx="1"/>
-  <circle class="fb" cx="92" cy="25" r="4"/><circle class="fb" cx="101" cy="33" r="4"/><circle class="fb" cx="92" cy="41" r="4"/><circle class="fb" cx="83" cy="33" r="4"/>
-  <circle class="stk" cx="47" cy="47" r="7"/><circle class="stk-in" cx="47" cy="47" r="3.5"/>
-  <circle class="stk" cx="73" cy="47" r="7"/><circle class="stk-in" cx="73" cy="47" r="3.5"/></svg>
+ return `<div class="loading" role="status"><svg viewBox="0 0 100 70" aria-hidden="true">
+  <path class="body" d="M30 8H70C82 8 88 12 91 22L97 50C99 63 87 69 79 60L71 51C66 48 34 48 29 51L21 60C13 69 1 63 3 50L9 22C12 12 18 8 30 8Z"/>
+  <rect class="dp" x="19" y="22.5" width="13" height="4" rx="1"/><rect class="dp" x="23.5" y="18" width="4" height="13" rx="1"/>
+  <circle class="fb" cx="74" cy="18.5" r="3"/><circle class="fb" cx="80.5" cy="24.5" r="3"/><circle class="fb" cx="74" cy="30.5" r="3"/><circle class="fb" cx="67.5" cy="24.5" r="3"/>
+  <circle class="stk" cx="38" cy="38" r="6"/><circle class="stk-in" cx="38" cy="38" r="3"/>
+  <circle class="stk" cx="62" cy="38" r="6"/><circle class="stk-in" cx="62" cy="38" r="3"/></svg>
   <div>${esc(text)}<span class="dots"></span></div></div>`;
 }
 

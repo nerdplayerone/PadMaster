@@ -289,7 +289,7 @@ last_live = None
 def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
         ipc: bool = False, stop_flag: dict | None = None, label: str = "",
         connection: str = "", idle_stop_s: float | None = None, guided: bool = False,
-        high_rate: bool = False) -> str:
+        high_rate: bool = False, trigger_stops: bool = False) -> str:
     """Log until Ctrl+C, a stop request, ``seconds``, or ``idle_stop_s`` with no use.
     Returns the log file path.
 
@@ -344,6 +344,8 @@ def run(out_dir: str, pad_index: int = 0, seconds: float | None = None,
     pause = 0.0 if high_rate else POLL_SLEEP_S
     if high_rate:
         meta["high_rate"] = True
+    if trigger_stops:
+        meta["trigger_stops"] = True  # selected by the user; PadMaster can't detect it
     plan = None
     if guided:
         from .guided import schedule

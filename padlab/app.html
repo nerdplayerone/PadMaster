@@ -199,6 +199,7 @@ main{position:relative}
   <div class="hint">Type a new name, or select a name you used before.</div>
   <div class="label" style="margin-top:10px"><label for="conn">Connection</label></div>
   <div class="row"><select id="conn"><option value="">Not set</option><option>Wired</option><option>Dongle</option><option>Bluetooth</option></select></div>
+  <label class="check" style="margin-top:10px;display:block" title="Select this if the trigger stops (short-travel switches) are on. Trigger stops change how the triggers report, so PadMaster does not grade the triggers in this session."><input type="checkbox" id="tstops"> Trigger stops are on</label>
   <label class="check" style="margin-top:10px;display:block" title="For pads that report faster than about 1900 Hz. PadMaster checks for input without a pause, so it keeps one CPU core busy. Games can run slower on some PCs."><input type="checkbox" id="highrate"> High-rate mode (8000 Hz pads)</label>
   <div class="label" style="margin-top:10px"><label for="autostop">Auto stop</label></div>
   <div class="row"><select id="autostop" title="Stop logging when the controller is not used for this time"><option value="0">Off</option><option value="5">After 5 min with no use</option><option value="10">After 10 min with no use</option><option value="20">After 20 min with no use</option><option value="30">After 30 min with no use</option></select></div>
@@ -366,6 +367,7 @@ async function loadPadNames(){
  $("padnames").innerHTML=r.names.map(n=>`<option value="${esc(n)}"></option>`).join("");
  if(!$("padname").value)$("padname").value=r.last||"";
  if(!$("conn").dataset.set){$("conn").value=r.last_connection||"";$("conn").dataset.set="1";}
+ if(!$("tstops").dataset.set){$("tstops").checked=!!r.trigger_stops;$("tstops").dataset.set="1";}
  if(!$("highrate").dataset.set){$("highrate").checked=!!r.high_rate;$("highrate").dataset.set="1";}
  if(!$("autostop").dataset.set){$("autostop").value=String(r.auto_stop_min??10);if(!$("autostop").value)$("autostop").value="10";$("autostop").dataset.set="1";}
 }
@@ -434,7 +436,7 @@ function showGuide(p){
 }
 async function start(guided){
  guided=guided===true;
- const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value,parseFloat($("autostop").value||"0"),guided,$("highrate").checked);
+ const r=await api.start(parseInt($("pad").value||"0",10),$("padname").value.trim(),$("conn").value,parseFloat($("autostop").value||"0"),guided,$("highrate").checked,$("tstops").checked);
  if(!r.ok){toast(r.message);return;}
  state="running";setBusy(true);guidedRun=guided;$("guided").disabled=true;
  $("s-time").textContent="0:00";$("s-inputs").textContent="0";$("s-disc").textContent="0";

@@ -507,3 +507,14 @@ def test_ipc_stop_uses_the_live_analysis(monkeypatch, tmp_path):
     cli.main(["log", "--ipc", "--out", str(tmp_path)])
     assert out[-1]["state"] == "done" and out[-1]["report"]
     assert path not in reads
+
+
+def test_app_passes_trigger_stops_to_the_logger(tmp_path):
+    from padlab.gui import Api
+    seen = {}
+
+    def popen(cmd, **k):
+        seen["cmd"] = cmd
+        raise OSError("not started in the test")
+    Api(str(tmp_path), popen=popen).start(0, "Pad", "Wired", 0, False, False, True)
+    assert "--trigger-stops" in seen["cmd"]

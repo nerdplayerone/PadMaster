@@ -127,10 +127,12 @@ class Api:
         return {"names": names, "last": load_settings(self._out_dir).get("last_pad_name", ""),
                 "last_connection": load_settings(self._out_dir).get("last_connection", ""),
                 "auto_stop_min": load_settings(self._out_dir).get("auto_stop_min", 10),
-                "high_rate": bool(load_settings(self._out_dir).get("high_rate", False))}
+                "high_rate": bool(load_settings(self._out_dir).get("high_rate", False)),
+                "trigger_stops": bool(load_settings(self._out_dir).get("trigger_stops", False))}
 
     def start(self, pad_index: int = 0, pad_name: str = "", connection: str = "",
-              auto_stop_min: float = 10, guided: bool = False, high_rate: bool = False) -> dict:
+              auto_stop_min: float = 10, guided: bool = False, high_rate: bool = False,
+              trigger_stops: bool = False) -> dict:
         with self._lock:
             if self._proc and self._proc.poll() is None:
                 return {"ok": False, "message": "Logging is already running."}
@@ -146,6 +148,7 @@ class Api:
                 auto_stop_min = 10.0
             save_setting(self._out_dir, "auto_stop_min", auto_stop_min)
             save_setting(self._out_dir, "high_rate", bool(high_rate))
+            save_setting(self._out_dir, "trigger_stops", bool(trigger_stops))
             cmd = padlab_command("log", "--ipc", "--pad", str(int(pad_index)), "--out", self._out_dir)
             if pad_name:
                 cmd += ["--name", pad_name]
@@ -153,6 +156,8 @@ class Api:
                 cmd += ["--connection", connection]
             if high_rate:
                 cmd += ["--high-rate"]
+            if trigger_stops:
+                cmd += ["--trigger-stops"]
             if guided:
                 cmd += ["--guided"]
             elif auto_stop_min:

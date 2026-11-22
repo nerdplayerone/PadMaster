@@ -116,6 +116,8 @@ This test shows if Steam Input changes how often the PC gets new values from the
 
 Use the same pad, the same connection and the same USB port for both sessions. If the update rate shows "at the limit", the real rate can be higher than PadMaster can see. PadMaster checks for input about 1900 times per second on a typical PC, so it can measure rates up to about 1900 Hz. A pad that reports at 4000 or 8000 Hz shows "at the limit". For these pads, select **High-rate mode** before you click Start. PadMaster then checks for input without a pause, so it can measure up to about 8000 Hz, but it keeps one CPU core busy while it logs. Games can run slower on some PCs. The update rate score is 100 at 2000 Hz and above. When Steam Input is on, PadMaster can see Steam's virtual controller and not the real pad (inference, not tested yet). The result then shows what Steam passes on to games.
 
+**Trigger stops:** if your controller has trigger stops (short-travel switches) and they are on, select **Trigger stops are on** before you click Start. Trigger stops change how the triggers report, so PadMaster then does not grade the triggers and does not use them in Compare or Best controller. To test the triggers, turn the stops off and log a new session.
+
 ## How it works
 
 - PadMaster uses SDL2 through [pygame-ce](https://github.com/pygame-community/pygame-ce). It sets `SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1`, so it gets controller input while the game has focus.

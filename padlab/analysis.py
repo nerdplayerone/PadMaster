@@ -1174,6 +1174,14 @@ def build_findings(r: Report) -> None:
         if not t.get("enough"):
             _f(F, f"{name}", label, NODATA, "-", "Not enough trigger data.")
             continue
+        if r.meta.get("trigger_stops"):
+            # Owner request (2026-11-22): trigger stops shorten the travel or make the trigger
+            # digital, so the start deadzone and the full pull are not faults of the trigger.
+            _f(F, f"{name}_stops", f"{label}: trigger stops on", INFO, "Not graded",
+               f"The user selected that the trigger stops were on. PadMaster does not grade the triggers in this "
+               f"session. Highest value seen: {pct(t['end'])}. Smallest pull seen: {pct(t['start'])}. "
+               "To test the triggers, turn the stops off and log a new session.")
+            continue
         if t["digital"]:
             _f(F, f"{name}_type", f"{label}: type", INFO, "Digital",
                f"The trigger was fully off or fully on for {t['end_share']:.0%} of its values (a hair-trigger or digital mode). "
@@ -1351,7 +1359,8 @@ def metric_values(r: Report) -> dict[str, float | None]:
         out[f"{side}_bits"] = ok(min(bits, THRESHOLDS["bits_cap"])) if bits is not None and not math.isnan(bits) else None
     for name in ("lt", "rt"):
         t = r.triggers.get(name, {})
-        out[f"{name}_start"] = ok(t.get("start")) if t.get("enough") and not t.get("digital") else None
+        out[f"{name}_start"] = (ok(t.get("start")) if t.get("enough") and not t.get("digital")
+                                and not r.meta.get("trigger_stops") else None)
     out["doubles"] = float(r.buttons.get("double_total", 0))
     out["bounce"] = float(r.buttons.get("bounce_total", 0))
     fp = r.dpad.get("flicker_pct")

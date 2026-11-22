@@ -350,3 +350,22 @@ def test_live_analysis_gives_the_same_report(tmp_path, monkeypatch):
         b = analysis.analyse(read_log(out))
         assert render(a) == render(b)
         assert a.sticks["l"]["enough"] and a.session == b.session
+
+
+def test_trigger_stops_are_not_graded(tmp_path):
+    """Owner request (2026-11-22): trigger stops make the trigger checks wrong. When the user
+    selects that the stops are on, the triggers are info only and not used in Compare or Best."""
+    from padlab.analysis import INFO, analyse, metric_values
+    from padlab.logfile import read_log
+    from tests.synth import build
+    path = str(tmp_path / "padlab_20261122_120000.csv.gz")
+    build(path)
+    log = read_log(path)
+    plain = analyse(log)
+    log.meta["trigger_stops"] = True
+    stops = analyse(log)
+    keys = {f.key: f for f in stops.findings}
+    assert keys["lt_stops"].status == INFO and keys["rt_stops"].status == INFO
+    assert not any(k in keys for k in ("lt_start", "lt_end", "rt_start", "rt_end", "lt_type", "rt_type"))
+    assert metric_values(stops)["lt_start"] is None
+    assert any(f.key in ("lt_start", "lt_type") for f in plain.findings)
